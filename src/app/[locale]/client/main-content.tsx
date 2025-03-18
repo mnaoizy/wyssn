@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState, useMemo } from 'react';
 import { useUtterances } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { useSpeechRecognition, Utterance } from '@/hooks/use-speech-recognition';
@@ -16,21 +16,95 @@ interface MainContentProps {
   heroDescription: string;
 }
 
-// 提案の型定義
-interface Suggestion {
-  id?: string;
+// 提案の型定義 (サーバー側から返される基本型)
+interface BaseSuggestion {
   category?: string;
   confidenceLevel?: number;
   content?: string;
   translation?: string;
+}
+
+// クライアント側で拡張する提案型
+interface ClientSuggestion extends BaseSuggestion {
+  id: string; // 必須のID (クライアント側で生成)
   isPinned?: boolean;
 }
+
+// リデューサーの状態型
+interface SuggestionsState {
+  hiddenIndices: Set<number>;
+  pinnedSuggestions: ClientSuggestion[];
+}
+
+// リデューサーのアクション型
+type SuggestionsAction =
+  | { type: 'HIDE_SUGGESTION'; index: number }
+  | { type: 'TOGGLE_PIN'; suggestion: ClientSuggestion }
+  | { type: 'UNPIN_SUGGESTION'; index: number }
+  | { type: 'RESET_HIDDEN' };
+
+// 一意のIDを生成する関数
+const generateUniqueId = (): string => {
+  return `suggestion-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+};
+
+// リデューサー関数
+const suggestionsReducer = (state: SuggestionsState, action: SuggestionsAction): SuggestionsState => {
+  switch (action.type) {
+    case 'HIDE_SUGGESTION':
+      // 非表示インデックスを追加
+      const newHiddenIndices = new Set(state.hiddenIndices);
+      newHiddenIndices.add(action.index);
+      return {
+        ...state,
+        hiddenIndices: newHiddenIndices
+      };
+
+    case 'TOGGLE_PIN':
+      const suggestion = action.suggestion;
+
+      // 既存のピン留めインデックスを検索
+      const existingPinIndex = state.pinnedSuggestions.findIndex(
+        pinned => pinned.id === suggestion.id
+      );
+
+      if (existingPinIndex >= 0) {
+        // ピン解除
+        return {
+          ...state,
+          pinnedSuggestions: state.pinnedSuggestions.filter((_, i) => i !== existingPinIndex)
+        };
+      } else {
+        // ピン留め
+        return {
+          ...state,
+          pinnedSuggestions: [...state.pinnedSuggestions, { ...suggestion, isPinned: true }]
+        };
+      }
+
+    case 'UNPIN_SUGGESTION':
+      // 指定されたインデックスのピン留め提案を削除
+      return {
+        ...state,
+        pinnedSuggestions: state.pinnedSuggestions.filter((_, i) => i !== action.index)
+      };
+
+    case 'RESET_HIDDEN':
+      // 非表示状態をリセット
+      return {
+        ...state,
+        hiddenIndices: new Set()
+      };
+
+    default:
+      return state;
+  }
+};
 
 export const MainContent: React.FC<MainContentProps> = ({
   heroTitle,
   heroDescription
 }) => {
-
   const [transcription, setTranscription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。サピア・ウォーフの仮説では、使用する言語によって世界の認識の仕方が変わるとされていますが、最近の研究では部分的に支持されつつも批判も多いことを知りました。例えば、色彩語彙と色の認識には確かに関連性があるようですが、思考全体を言語が決定づけるわけではないようです。'); // デフォルト値を設定
 
   const { submit, isLoading, object } = useObject({
@@ -38,58 +112,31 @@ export const MainContent: React.FC<MainContentProps> = ({
     schema: conversationSuggestionSchema,
   });
 
-  // どの提案が非表示になっているかを追跡する状態
-  const [hiddenIndices, setHiddenIndices] = useState<Set<number>>(new Set());
+  // APIから返された提案にIDを割り当てる
+  const suggestionsWithId = useMemo<ClientSuggestion[]>(() => {
+    if (!object?.suggestions) return [];
 
-  // ピン留めされた提案を保存する配列
-  const [pinnedSuggestions, setPinnedSuggestions] = useState<Suggestion[]>([]);
+    return object.suggestions.map((suggestion): ClientSuggestion => ({
+      ...suggestion,
+      id: generateUniqueId()
+    }));
+  }, [object?.suggestions]);
 
-  // 提案を非表示にする関数
-  const handleHideSuggestion = (index: number) => {
-    setHiddenIndices(prev => {
-      const newSet = new Set(prev);
-      newSet.add(index);
-      return newSet;
-    });
-  };
-
-  // 提案をピン留め/解除するトグル関数
-  const handleTogglePinSuggestion = (suggestion: Suggestion) => {
-    if (!suggestion.id) {
-      // IDがない場合はランダムなIDを生成
-      suggestion.id = `suggestion-${Date.now()}`;
-    }
-
-    // すでにピン留め提案があるか確認 (IDで比較)
-    const existingPinIndex = pinnedSuggestions.findIndex(
-      pinned => pinned.id === suggestion.id
-    );
-
-    if (existingPinIndex >= 0) {
-      // すでにピン留めされている場合は削除（ピン解除）
-      setPinnedSuggestions(prev => prev.filter((_, i) => i !== existingPinIndex));
-    } else {
-      // ピン留めされていない場合は追加
-      const pinnedSuggestion = { ...suggestion, isPinned: true };
-      setPinnedSuggestions(prev => [...prev, pinnedSuggestion]);
-    }
-  };
-
-  // ピン留めされた提案を削除する
-  const handleUnpinSuggestion = (index: number) => {
-    setPinnedSuggestions(prev => prev.filter((_, i) => i !== index));
-  };
+  // useReducerで提案の状態管理
+  const [suggestionsState, dispatch] = useReducer(suggestionsReducer, {
+    hiddenIndices: new Set<number>(),
+    pinnedSuggestions: []
+  });
 
   // 特定の提案がピン留めされているか確認する関数
-  const checkIsPinned = (suggestion: Suggestion): boolean => {
-    if (!suggestion.id) return false;
-    return pinnedSuggestions.some(pinned => pinned.id === suggestion.id);
+  const checkIsPinned = (suggestion: ClientSuggestion): boolean => {
+    return suggestionsState.pinnedSuggestions.some(pinned => pinned.id === suggestion.id);
   };
 
   const handleSubmit = () => {
-    // 新しい提案を生成する前に非表示状態をリセット
-    setHiddenIndices(new Set());
-    // ピン留めは保持したままにする（resetしない）
+    // 非表示状態をリセット
+    dispatch({ type: 'RESET_HIDDEN' });
+    // ピン留めは保持したままにする
 
     // 文字列を直接渡す
     submit(transcription);
@@ -212,24 +259,24 @@ export const MainContent: React.FC<MainContentProps> = ({
 
               <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                 {/* ピン留めされた提案を表示 */}
-                {pinnedSuggestions.map((suggestion, index) => (
-                  <div key={`pinned-${suggestion.id || index}`} className="bg-white shadow rounded-lg p-4 pb-6 border-2 border-blue-200 flex flex-col min-h-40 justify-start h-full relative">
+                {suggestionsState.pinnedSuggestions.map((suggestion, index) => (
+                  <div key={`pinned-${suggestion.id}`} className="bg-white shadow rounded-lg p-4 pb-6 border-2 border-blue-200 flex flex-col min-h-40 justify-start h-full relative">
                     <div className="flex justify-between items-start">
-                      <span className="font-semibold text-gray-900 text-md">{suggestion?.category}</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion?.category)}`}>
-                        {suggestion?.confidenceLevel}%
+                      <span className="font-semibold text-gray-900 text-md">{suggestion.category}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
+                        {suggestion.confidenceLevel}%
                       </span>
                     </div>
-                    <p className="mt-2 text-gray-600 text-left text-sm">{suggestion?.content}</p>
+                    <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
                     {
-                      suggestion?.translation && (
+                      suggestion.translation && (
                         <div className='w-full h-[1px] bg-gray-100 my-2' />
                       )
                     }
 
                     {
-                      suggestion?.translation && <span className='text-gray-600 text-sm text-left'>
-                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion?.translation}
+                      suggestion.translation && <span className='text-gray-600 text-sm text-left'>
+                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion.translation}
                       </span>
                     }
                     <div className="absolute -bottom-2 right-1">
@@ -237,14 +284,14 @@ export const MainContent: React.FC<MainContentProps> = ({
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => handleUnpinSuggestion(index)}
+                          onClick={() => dispatch({ type: 'UNPIN_SUGGESTION', index })}
                         >
                           <Trash2Icon />
                         </Button>
                         <Button
                           variant="default"
                           size="icon"
-                          onClick={() => handleTogglePinSuggestion(suggestion)}
+                          onClick={() => dispatch({ type: 'TOGGLE_PIN', suggestion })}
                         >
                           <PinIcon />
                         </Button>
@@ -254,26 +301,26 @@ export const MainContent: React.FC<MainContentProps> = ({
                 ))}
 
                 {/* 通常の提案を表示 (ピン留めされていないもののみ) */}
-                {object && object.suggestions && object.suggestions.filter((suggestion): suggestion is Suggestion => !!suggestion).map((suggestion, index) => (
+                {suggestionsWithId.map((suggestion, index) => (
                   // hiddenIndicesにindexが含まれておらず、かつピン留めされていない提案のみ表示
-                  !hiddenIndices.has(index) && !checkIsPinned(suggestion) && (
-                    <div key={`regular-${suggestion?.id || index}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
+                  !suggestionsState.hiddenIndices.has(index) && !checkIsPinned(suggestion) && (
+                    <div key={`regular-${suggestion.id}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
                       <div className="flex justify-between items-start">
-                        <span className="font-semibold text-gray-900 text-md">{suggestion?.category}</span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion?.category)}`}>
-                          {suggestion?.confidenceLevel}%
+                        <span className="font-semibold text-gray-900 text-md">{suggestion.category}</span>
+                        <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
+                          {suggestion.confidenceLevel}%
                         </span>
                       </div>
-                      <p className="mt-2 text-gray-600 text-left text-sm">{suggestion?.content}</p>
+                      <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
                       {
-                        suggestion?.translation && (
+                        suggestion.translation && (
                           <div className='w-full h-[1px] bg-gray-100 my-2' />
                         )
                       }
 
                       {
-                        suggestion?.translation && <span className='text-gray-600 text-sm text-left'>
-                          <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion?.translation}
+                        suggestion.translation && <span className='text-gray-600 text-sm text-left'>
+                          <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion.translation}
                         </span>
                       }
                       <div className="absolute -bottom-2 right-1">
@@ -281,14 +328,14 @@ export const MainContent: React.FC<MainContentProps> = ({
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => handleHideSuggestion(index)}
+                            onClick={() => dispatch({ type: 'HIDE_SUGGESTION', index })}
                           >
                             <Trash2Icon />
                           </Button>
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => suggestion && handleTogglePinSuggestion(suggestion)}
+                            onClick={() => dispatch({ type: 'TOGGLE_PIN', suggestion })}
                           >
                             <PinIcon />
                           </Button>
