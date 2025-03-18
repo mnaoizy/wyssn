@@ -1,10 +1,11 @@
 import { getI18n } from '@/locale/server';
 import { LanguageSelector } from '@/components/language-selector';
 import { Menu } from 'lucide-react';
-import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
+import { UtteranceProvider } from '@/contexts/utterance-context';
+import { MainContent } from './client/main-content';
 
 export default async function Home() {
-  const t = await getI18n()
+  const t = await getI18n();
 
   return (
     <div className="font-sans flex flex-col min-h-screen">
@@ -44,25 +45,13 @@ export default async function Home() {
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="flex-grow flex flex-col">
-        {/* Hero Section */}
-        <section className="flex-grow flex items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24">
-          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center">
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-neutral-900 mb-4 sm:mb-6 lg:mb-8 leading-tight tracking-[-0.02em]">
-              {t('hero.title')}
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-neutral-700 mb-8 sm:mb-10 lg:mb-12 font-light leading-relaxed tracking-tight max-w-3xl mx-auto lg:max-w-4xl xl:max-w-5xl">
-              {t('hero.description')}
-            </p>
-
-            <div className='w-full mb-8'>
-              <SpeechRecognitionMinimal />
-            </div>
-
-          </div>
-        </section>
-      </main>
+      {/* Main Content - Wrapped in UtteranceProvider */}
+      <UtteranceProvider>
+        <MainContent
+          heroTitle={t('hero.title')}
+          heroDescription={t('hero.description')}
+        />
+      </UtteranceProvider>
 
       {/* Footer */}
       <footer className="border-t border-neutral-200 py-6 sm:py-8 bg-neutral-50 mt-auto">

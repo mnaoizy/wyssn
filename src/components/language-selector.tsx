@@ -14,7 +14,9 @@ import { Suspense, useReducer, useTransition, useEffect } from "react"
 const SUPPORTED_LOCALES = {
     en: "English",
     fr: "Français",
-    ja: "日本語"
+    ja: "日本語",
+    "zh-CN": "简体中文",
+    "zh-TW": "繁體中文",
 } as const
 
 type Locale = keyof typeof SUPPORTED_LOCALES

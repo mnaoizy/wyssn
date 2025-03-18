@@ -8,5 +8,7 @@ export const {
 } = createI18nServer({
     en: () => import('./en'),
     fr: () => import('./fr'),
-    ja: () => import('./ja')
+    ja: () => import('./ja'),
+    "zh-CN": () => import('./zh-CN'),
+    "zh-TW": () => import('./zh-TW')
 })

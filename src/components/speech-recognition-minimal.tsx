@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSpeechRecognition, LanguageSelector, MicButton } from '@/hooks/use-speech-recognition';
-import { TextMorph } from '@/components/motion-primitives/text-morph';
 import { Button } from './ui/button';
+import { useUtterances } from '@/contexts/utterance-context';
 
 export const SpeechRecognitionMinimal = () => {
     // Add client-side only initialization
     const [mounted, setMounted] = useState(false);
+    // Get utterances from context instead of just from the hook
+    const { utterances: contextUtterances, setUtterances } = useUtterances();
 
     useEffect(() => {
         setMounted(true);
@@ -15,7 +17,6 @@ export const SpeechRecognitionMinimal = () => {
 
     const {
         isListening,
-        utterances,
         error,
         isSupported,
         currentLanguage,
@@ -28,6 +29,7 @@ export const SpeechRecognitionMinimal = () => {
         onFinalUtterance(utterance, allUtterances) {
             console.log('Final utterance:', utterance);
             console.log('All utterances:', allUtterances);
+            setUtterances(allUtterances);
         },
     });
 
@@ -72,10 +74,8 @@ export const SpeechRecognitionMinimal = () => {
                 </div>
             )}
 
-            <div className="w-full">
-                <TextMorph className='text-sm tracking-wider text-gray-400 dark:text-white'>
-                    {utterances.map(u => u.text.trim()).join("") || 'マイクボタンをクリックして話してください...'}
-                </TextMorph>
+            <div className="text-sm text-gray-500">
+                {contextUtterances.map(u => u.text.trim()).join("") || 'マイクボタンをクリックして話してください...'}
             </div>
         </div>
     );
