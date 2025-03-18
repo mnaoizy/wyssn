@@ -1,4 +1,5 @@
 import { getI18n } from '@/locale/server';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { SendHorizontal, Mail } from 'lucide-react';
 
 export default async function Home() {
@@ -13,12 +14,16 @@ export default async function Home() {
               <span className="font-serif text-lg font-semibold tracking-tighter select-none uppercase">Wyssn</span>
               <span className="text-xs text-neutral-500 font-mono mt-1 select-none">/wɪzn/</span>
             </div>
-            <div className="flex gap-6 opacity-30 select-none">
-              <span className="text-sm text-neutral-400 cursor-default">{t('nav.about')}</span>
-              <span className="text-sm text-neutral-400 cursor-default">{t('nav.changelog')}</span>
-              <span className="text-sm text-neutral-400 cursor-default">
-                {t('nav.signin')}
-              </span>
+            <LanguageSelector />
+
+            <div className="flex items-center gap-6">
+              <div className="flex gap-6 opacity-30 select-none">
+                <span className="text-sm text-neutral-400 cursor-default">{t('nav.about')}</span>
+                <span className="text-sm text-neutral-400 cursor-default">{t('nav.changelog')}</span>
+                <span className="text-sm text-neutral-400 cursor-default">
+                  {t('nav.signin')}
+                </span>
+              </div>
             </div>
           </div>
         </div>

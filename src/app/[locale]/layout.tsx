@@ -1,6 +1,8 @@
-import '../globals.css';
-import type { Metadata } from 'next';
+"use client";
+import { I18nProviderClient } from "@/locale/client";
+import { ReactElement, use } from "react";
 import { Fraunces, Outfit } from "next/font/google";
+import '../globals.css';
 
 // Font setup
 const serif = Fraunces({
@@ -17,19 +19,20 @@ const sans = Outfit({
   variable: "--font-sans",
 });
 
-export const metadata: Metadata = {
-  title: 'WYSSN - Never be at a loss for words',
-  description: 'Your AI-powered conversation companion that helps you maintain meaningful dialogues with contextually appropriate suggestions.',
-}
-
-export default function RootLayout({
+export default function Layout({
   children,
+  params,
 }: {
-  children: React.ReactNode
+  children: ReactElement;
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale } = use(params);
+
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
-      <body className="antialiased min-h-screen bg-white">{children}</body>
+    <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
+      <body className="antialiased min-h-screen bg-white">
+        <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
+      </body>
     </html>
-  )
+  );
 }
