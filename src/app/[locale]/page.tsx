@@ -1,5 +1,5 @@
 import { getI18n } from '@/locale/server';
-import { LanguageSelector } from '@/components/LanguageSelector';
+import { LanguageSelector } from '@/components/language-selector';
 import { SendHorizontal, Mail, Menu } from 'lucide-react';
 
 export default async function Home() {
