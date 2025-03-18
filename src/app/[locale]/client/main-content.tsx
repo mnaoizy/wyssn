@@ -18,6 +18,7 @@ interface MainContentProps {
 
 // 提案の型定義
 interface Suggestion {
+  id?: string;
   category?: string;
   confidenceLevel?: number;
   content?: string;
@@ -52,15 +53,23 @@ export const MainContent: React.FC<MainContentProps> = ({
     });
   };
 
-  // 提案をピン留めする関数
-  const handlePinSuggestion = (suggestion: Suggestion) => {
-    // すでに同じ内容のピン留め提案がないか確認
-    const alreadyPinned = pinnedSuggestions.some(
-      pinned => pinned.content === suggestion.content
+  // 提案をピン留め/解除するトグル関数
+  const handleTogglePinSuggestion = (suggestion: Suggestion) => {
+    if (!suggestion.id) {
+      // IDがない場合はランダムなIDを生成
+      suggestion.id = `suggestion-${Date.now()}`;
+    }
+
+    // すでにピン留め提案があるか確認 (IDで比較)
+    const existingPinIndex = pinnedSuggestions.findIndex(
+      pinned => pinned.id === suggestion.id
     );
 
-    if (!alreadyPinned) {
-      // コピーを作成してピン留めに追加
+    if (existingPinIndex >= 0) {
+      // すでにピン留めされている場合は削除（ピン解除）
+      setPinnedSuggestions(prev => prev.filter((_, i) => i !== existingPinIndex));
+    } else {
+      // ピン留めされていない場合は追加
       const pinnedSuggestion = { ...suggestion, isPinned: true };
       setPinnedSuggestions(prev => [...prev, pinnedSuggestion]);
     }
@@ -69,6 +78,12 @@ export const MainContent: React.FC<MainContentProps> = ({
   // ピン留めされた提案を削除する
   const handleUnpinSuggestion = (index: number) => {
     setPinnedSuggestions(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // 特定の提案がピン留めされているか確認する関数
+  const checkIsPinned = (suggestion: Suggestion): boolean => {
+    if (!suggestion.id) return false;
+    return pinnedSuggestions.some(pinned => pinned.id === suggestion.id);
   };
 
   const handleSubmit = () => {
@@ -198,7 +213,7 @@ export const MainContent: React.FC<MainContentProps> = ({
               <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                 {/* ピン留めされた提案を表示 */}
                 {pinnedSuggestions.map((suggestion, index) => (
-                  <div key={`pinned-${index}`} className="bg-white shadow rounded-lg p-4 pb-6 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
+                  <div key={`pinned-${suggestion.id || index}`} className="bg-white shadow rounded-lg p-4 pb-6 border-2 border-blue-200 flex flex-col min-h-40 justify-start h-full relative">
                     <div className="flex justify-between items-start">
                       <span className="font-semibold text-gray-900 text-md">{suggestion?.category}</span>
                       <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion?.category)}`}>
@@ -229,6 +244,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                         <Button
                           variant="default"
                           size="icon"
+                          onClick={() => handleTogglePinSuggestion(suggestion)}
                         >
                           <PinIcon />
                         </Button>
@@ -237,11 +253,11 @@ export const MainContent: React.FC<MainContentProps> = ({
                   </div>
                 ))}
 
-                {/* 通常の提案を表示 */}
-                {object && object.suggestions && object.suggestions.map((suggestion, index) => (
-                  // hiddenIndicesにindexが含まれていなければ表示する
-                  !hiddenIndices.has(index) && (
-                    <div key={`regular-${index}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
+                {/* 通常の提案を表示 (ピン留めされていないもののみ) */}
+                {object && object.suggestions && object.suggestions.filter((suggestion): suggestion is Suggestion => !!suggestion).map((suggestion, index) => (
+                  // hiddenIndicesにindexが含まれておらず、かつピン留めされていない提案のみ表示
+                  !hiddenIndices.has(index) && !checkIsPinned(suggestion) && (
+                    <div key={`regular-${suggestion?.id || index}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
                       <div className="flex justify-between items-start">
                         <span className="font-semibold text-gray-900 text-md">{suggestion?.category}</span>
                         <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion?.category)}`}>
@@ -272,7 +288,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => suggestion && handlePinSuggestion(suggestion)}
+                            onClick={() => suggestion && handleTogglePinSuggestion(suggestion)}
                           >
                             <PinIcon />
                           </Button>

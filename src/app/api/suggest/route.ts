@@ -85,7 +85,7 @@ User's previous statement:
 ${userInput}
 
 For each suggestion, include:
-- ID (short unique identifier for this suggestion)
+- ID (Short random ID like "dBvJIh7H")
 - Category (choose one: 感想の深掘り, 詳細の補足, 質問の展開, 関連話題への展開, 個人的感想)
 - Content (natural statement the user could say next)
 ${needsTranslation ? `- Translation (accurate translation of the content in ${translationLanguage})` : ''}
