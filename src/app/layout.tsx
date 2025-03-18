@@ -17,9 +17,18 @@ const sans = Outfit({
     variable: "--font-sans",
 });
 
+// Tell Next.js not to statically optimize
+export const dynamic = 'force-dynamic';
+
 // Dynamically generate metadata based on locale
 export async function generateMetadata(): Promise<{ title: string; description: string }> {
-    const locale = await getCurrentLocale();
+    // Default to English when locale isn't available
+    let locale = 'en';
+    try {
+        locale = await getCurrentLocale();
+    } catch (error) {
+        console.error('Failed to get current locale:', error);
+    }
 
     const metadataByLocale: Record<string, { title: string; description: string }> = {
         en: {
@@ -31,7 +40,7 @@ export async function generateMetadata(): Promise<{ title: string; description: 
             description: "Votre compagnon de conversation alimenté par l'IA qui vous aide à maintenir des dialogues significatifs avec des suggestions contextuelles appropriées.",
         },
         ja: {
-            title: "WYSSN - 言葉に困ることはありません",
+            title: "WYSSN - 心に浮かぶ言葉を、形にする手助けをします。",
             description: "AIで駆動された会話の相棒で、適切なコンテキストの提案で意味のある対話を維持するのに役立ちます。",
         }
     };
@@ -44,7 +53,13 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const locale = await getCurrentLocale();
+    // Default to English when locale isn't available
+    let locale = 'en';
+    try {
+        locale = await getCurrentLocale();
+    } catch (error) {
+        console.error('Failed to get current locale:', error);
+    }
 
     return (
         <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
