@@ -499,7 +499,7 @@ export const LanguageSelector = ({ value, onChange, disabled }: LanguageSelector
             onValueChange={(value: LanguageCode) => onChange(value)}
             disabled={disabled}
         >
-            <SelectTrigger className="w-[180px] flex gap-2">
+            <SelectTrigger className="flex gap-2">
                 <Globe className="h-4 w-4" />
                 <SelectValue placeholder="言語を選択" />
             </SelectTrigger>
@@ -529,7 +529,7 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
             disabled={disabled}
             className={`rounded-full p-3 ${isListening
                 ? 'bg-red-500 text-white animate-pulse'
-                : 'bg-blue-500 text-white'} 
+                : 'bg-gray-700 text-white'} 
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
             aria-label={isListening ? "音声認識を停止" : "音声認識を開始"}
         >
@@ -538,65 +538,6 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
     );
 };
 
-// 音声認識UIコンポーネント（使用例）
-export const SpeechRecognitionUI = () => {
-    const {
-        isListening,
-        transcript,
-        error,
-        isSupported,
-        currentLanguage,
-        startListening,
-        stopListening,
-        resetTranscript,
-        changeLanguage
-    } = useSpeechRecognition({
-        continuous: true,
-        interimResults: true
-    });
-
-    return (
-        <div className="p-4 max-w-md mx-auto">
-            <div className="flex items-center justify-between mb-4">
-                <LanguageSelector
-                    value={currentLanguage}
-                    onChange={changeLanguage}
-                    disabled={!isSupported}
-                />
-                <MicButton
-                    isListening={isListening}
-                    onStart={() => startListening()}
-                    onStop={stopListening}
-                    disabled={!isSupported}
-                />
-            </div>
-
-            {error ? (
-                <div className="text-red-500 mb-4">エラー: {error.message}</div>
-            ) : null}
-
-            {!isSupported ? (
-                <div className="text-yellow-500 mb-4">
-                    お使いのブラウザは音声認識をサポートしていません。Chrome などの別のブラウザをお試しください。
-                </div>
-            ) : null}
-
-            <div className="mt-4">
-                <h3 className="font-medium mb-2">認識結果:</h3>
-                <div className="p-4 bg-gray-100 rounded min-h-[100px] whitespace-pre-wrap">
-                    {transcript || 'まだ音声は認識されていません...'}
-                </div>
-                <button
-                    onClick={resetTranscript}
-                    className="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                    disabled={!transcript}
-                >
-                    結果をクリア
-                </button>
-            </div>
-        </div>
-    );
-};
 
 // Add TypeScript definitions for browser compatibility
 declare global {

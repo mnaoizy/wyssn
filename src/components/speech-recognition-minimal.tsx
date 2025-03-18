@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSpeechRecognition, LanguageSelector, MicButton } from '@/hooks/use-speech-recognition';
+import { TextMorph } from '@/components/motion-primitives/text-morph';
+import { Button } from './ui/button';
 
 export const SpeechRecognitionMinimal = () => {
     // Add client-side only initialization
@@ -31,21 +33,25 @@ export const SpeechRecognitionMinimal = () => {
 
     // Don't render anything until client-side
     if (!mounted) {
-        return <div className="p-4 border rounded-lg shadow-sm">
-            <div className="mt-3 p-3 bg-gray-50 rounded min-h-[80px] text-sm">
+        return <div className="w-full p-4 border rounded-lg shadow-sm">
+            <div className="mt-3 p-3 bg-gray-50 rounded min-h-[80px] text-sm flex items-center justify-center text-gray-400">
                 Loading speech recognition...
             </div>
         </div>;
     }
 
     return (
-        <div className="p-4 border rounded-lg shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-                <LanguageSelector
-                    value={currentLanguage}
-                    onChange={changeLanguage}
-                    disabled={!isSupported}
-                />
+        <div className="w-full max-w-full p-4 border rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div className='flex flex-row gap-2 flex-wrap'>
+                    <LanguageSelector
+                        value={currentLanguage}
+                        onChange={changeLanguage}
+                        disabled={!isSupported}
+                    />
+                    <Button variant="outline">コンテクストを追加</Button>
+                </div>
+
                 <MicButton
                     isListening={isListening}
                     onStart={startListening}
@@ -66,8 +72,10 @@ export const SpeechRecognitionMinimal = () => {
                 </div>
             )}
 
-            <div className="mt-3 p-3 bg-gray-50 rounded min-h-[80px] text-sm">
-                {utterances.map(u => u.text).join("") || 'マイクボタンをクリックして話してください...'}
+            <div className="w-full">
+                <TextMorph className='text-sm tracking-wider text-gray-400 dark:text-white'>
+                    {utterances.map(u => u.text.trim()).join("") || 'マイクボタンをクリックして話してください...'}
+                </TextMorph>
             </div>
         </div>
     );

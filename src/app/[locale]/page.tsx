@@ -1,6 +1,6 @@
 import { getI18n } from '@/locale/server';
 import { LanguageSelector } from '@/components/language-selector';
-import { SendHorizontal, Mail, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 
 export default async function Home() {
@@ -10,7 +10,7 @@ export default async function Home() {
     <div className="font-sans flex flex-col min-h-screen">
       {/* Navigation */}
       <nav className="border-b border-neutral-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <span className="font-serif text-lg font-semibold tracking-tighter select-none uppercase">Wyssn</span>
@@ -48,47 +48,25 @@ export default async function Home() {
       <main className="flex-grow flex flex-col">
         {/* Hero Section */}
         <section className="flex-grow flex items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center">
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-neutral-900 mb-4 sm:mb-6 lg:mb-8 leading-tight tracking-[-0.02em]">
               {t('hero.title')}
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-neutral-700 mb-8 sm:mb-10 lg:mb-12 font-light leading-relaxed tracking-tight max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-neutral-700 mb-8 sm:mb-10 lg:mb-12 font-light leading-relaxed tracking-tight max-w-3xl mx-auto lg:max-w-4xl xl:max-w-5xl">
               {t('hero.description')}
             </p>
 
-            <div className='mb-8'>
+            <div className='w-full mb-8'>
               <SpeechRecognitionMinimal />
             </div>
 
-            {/* Waitlist Form */}
-            <div className="max-w-md mx-auto select-none opacity-30">
-              <div className="relative flex items-center mb-2">
-                <input
-                  type="email"
-                  placeholder={t('hero.email_placeholder')}
-                  disabled
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-12 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 transition-colors text-sm sm:text-base"
-                />
-                <button
-                  disabled
-                  className="absolute right-1.5 bg-neutral-900 text-white p-1.5 sm:p-2 rounded-full cursor-not-allowed opacity-90 hover:opacity-100 transition-opacity"
-                  aria-label="Join waitlist"
-                >
-                  <SendHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
-              </div>
-              <p className="text-xs sm:text-sm text-neutral-500 italic flex items-center justify-center gap-1">
-                <Mail className="w-3 h-3" />
-                {t('hero.waitlist')}
-              </p>
-            </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
       <footer className="border-t border-neutral-200 py-6 sm:py-8 bg-neutral-50 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl">
           <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-4">
             <span className="font-serif text-neutral-800 font-medium uppercase text-sm order-1 md:order-none">wyssn</span>
 
