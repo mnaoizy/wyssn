@@ -16,7 +16,14 @@ interface MainContentProps {
   heroDescription: string;
 }
 
-
+// 提案の型定義
+interface Suggestion {
+  category?: string;
+  confidenceLevel?: number;
+  content?: string;
+  translation?: string;
+  isPinned?: boolean;
+}
 
 export const MainContent: React.FC<MainContentProps> = ({
   heroTitle,
@@ -33,6 +40,9 @@ export const MainContent: React.FC<MainContentProps> = ({
   // どの提案が非表示になっているかを追跡する状態
   const [hiddenIndices, setHiddenIndices] = useState<Set<number>>(new Set());
 
+  // ピン留めされた提案を保存する配列
+  const [pinnedSuggestions, setPinnedSuggestions] = useState<Suggestion[]>([]);
+
   // 提案を非表示にする関数
   const handleHideSuggestion = (index: number) => {
     setHiddenIndices(prev => {
@@ -42,9 +52,30 @@ export const MainContent: React.FC<MainContentProps> = ({
     });
   };
 
+  // 提案をピン留めする関数
+  const handlePinSuggestion = (suggestion: Suggestion) => {
+    // すでに同じ内容のピン留め提案がないか確認
+    const alreadyPinned = pinnedSuggestions.some(
+      pinned => pinned.content === suggestion.content
+    );
+
+    if (!alreadyPinned) {
+      // コピーを作成してピン留めに追加
+      const pinnedSuggestion = { ...suggestion, isPinned: true };
+      setPinnedSuggestions(prev => [...prev, pinnedSuggestion]);
+    }
+  };
+
+  // ピン留めされた提案を削除する
+  const handleUnpinSuggestion = (index: number) => {
+    setPinnedSuggestions(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = () => {
     // 新しい提案を生成する前に非表示状態をリセット
     setHiddenIndices(new Set());
+    // ピン留めは保持したままにする（resetしない）
+
     // 文字列を直接渡す
     submit(transcription);
   };
@@ -165,10 +196,52 @@ export const MainContent: React.FC<MainContentProps> = ({
               </h2>
 
               <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                {/* ピン留めされた提案を表示 */}
+                {pinnedSuggestions.map((suggestion, index) => (
+                  <div key={`pinned-${index}`} className="bg-white shadow rounded-lg p-4 pb-6 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
+                    <div className="flex justify-between items-start">
+                      <span className="font-semibold text-gray-900 text-md">{suggestion?.category}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion?.category)}`}>
+                        {suggestion?.confidenceLevel}%
+                      </span>
+                    </div>
+                    <p className="mt-2 text-gray-600 text-left text-sm">{suggestion?.content}</p>
+                    {
+                      suggestion?.translation && (
+                        <div className='w-full h-[1px] bg-gray-100 my-2' />
+                      )
+                    }
+
+                    {
+                      suggestion?.translation && <span className='text-gray-600 text-sm text-left'>
+                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion?.translation}
+                      </span>
+                    }
+                    <div className="absolute -bottom-2 right-1">
+                      <div className="mb-3 scale-80 origin-bottom-right flex flex-row gap-1">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleUnpinSuggestion(index)}
+                        >
+                          <Trash2Icon />
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="icon"
+                        >
+                          <PinIcon />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* 通常の提案を表示 */}
                 {object && object.suggestions && object.suggestions.map((suggestion, index) => (
                   // hiddenIndicesにindexが含まれていなければ表示する
                   !hiddenIndices.has(index) && (
-                    <div key={index} className="bg-white shadow rounded-lg p-4 pb-6 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
+                    <div key={`regular-${index}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
                       <div className="flex justify-between items-start">
                         <span className="font-semibold text-gray-900 text-md">{suggestion?.category}</span>
                         <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion?.category)}`}>
@@ -196,7 +269,11 @@ export const MainContent: React.FC<MainContentProps> = ({
                           >
                             <Trash2Icon />
                           </Button>
-                          <Button variant="outline" size="icon">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => suggestion && handlePinSuggestion(suggestion)}
+                          >
                             <PinIcon />
                           </Button>
                         </div>
