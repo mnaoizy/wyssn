@@ -1,4 +1,35 @@
+'use client';
+
 import { useReducer, useEffect, useCallback, useRef } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Mic, Globe } from 'lucide-react';
+
+// サポートされている言語のリスト（コード：名前 のマッピング）
+export const SUPPORTED_LANGUAGES = {
+    'en-US': '英語（アメリカ）',
+    'zh-CN': '中国語（簡体 / 普通話）',
+    'zh-TW': '中国語（繁体 / 台湾華語）',
+    'zh-HK': '広東語（香港）',
+    'es-ES': 'スペイン語（スペイン）',
+    'fr-FR': 'フランス語（フランス）',
+    'de-DE': 'ドイツ語',
+    'pt-PT': 'ポルトガル語（ポルトガル）',
+    'pt-BR': 'ポルトガル語（ブラジル）',
+    'ru-RU': 'ロシア語',
+    'ja-JP': '日本語',
+    'ko-KR': '韓国語',
+    'it-IT': 'イタリア語',
+    'ar-SA': 'アラビア語（サウジアラビア）',
+    'hi-IN': 'ヒンディー語（インド）',
+    'bn-IN': 'ベンガル語（インド）',
+    'tr-TR': 'トルコ語',
+    'id-ID': 'インドネシア語',
+    'th-TH': 'タイ語',
+    'vi-VN': 'ベトナム語'
+} as const;
+
+// 言語コードの型
+export type LanguageCode = keyof typeof SUPPORTED_LANGUAGES;
 
 // Type definitions for the Web Speech API
 interface SpeechRecognitionErrorEvent extends Event {
@@ -50,13 +81,14 @@ export interface Utterance {
     timestamp: number;
     confidence: number;
     isFinal: boolean;
+    lang?: LanguageCode; // 言語情報を追加
 }
 
 // Speech Recognition hook type definitions
 export interface SpeechRecognitionOptions {
     continuous?: boolean;
     interimResults?: boolean;
-    lang?: string;
+    lang?: LanguageCode; // 型を限定
     maxAlternatives?: number;
     grammars?: SpeechGrammarList;
     shouldPersistTranscript?: boolean;
@@ -72,10 +104,12 @@ export interface UseSpeechRecognitionReturn {
     error: Error | null;
     isSupported: boolean;
     utterances: Utterance[];
+    currentLanguage: LanguageCode;
     startListening: (options?: SpeechRecognitionOptions) => void;
     stopListening: () => void;
     resetTranscript: () => void;
     clearUtterances: () => void;
+    changeLanguage: (lang: LanguageCode) => void;
 }
 
 // SpeechRecognition API type definition
@@ -120,6 +154,7 @@ interface SpeechRecognitionState {
     interimTranscript: string;
     error: Error | null;
     utterances: Utterance[];
+    currentLanguage: LanguageCode;
 }
 
 // Define action types for the reducer
@@ -130,6 +165,7 @@ type SpeechRecognitionAction =
     | { type: 'CLEAR_ERROR' }
     | { type: 'RESET_TRANSCRIPT', payload?: { keepUtterances?: boolean } }
     | { type: 'CLEAR_UTTERANCES' }
+    | { type: 'CHANGE_LANGUAGE', payload: LanguageCode }
     | {
         type: 'UPDATE_RESULTS',
         payload: {
@@ -140,14 +176,15 @@ type SpeechRecognitionAction =
         }
     };
 
-// Initial state for the reducer
+// Initial state for the reducer (デフォルト言語を日本語に設定)
 const initialState: SpeechRecognitionState = {
     isListening: false,
     transcript: '',
     finalTranscript: '',
     interimTranscript: '',
     error: null,
-    utterances: []
+    utterances: [],
+    currentLanguage: 'ja-JP'
 };
 
 // Reducer function
@@ -190,6 +227,11 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
                 ...state,
                 utterances: []
             };
+        case 'CHANGE_LANGUAGE':
+            return {
+                ...state,
+                currentLanguage: action.payload
+            };
         case 'UPDATE_RESULTS': {
             const { finalText, interimText, newUtterances, persistTranscript } = action.payload;
             const updatedUtterances = persistTranscript
@@ -212,7 +254,7 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
 }
 
 /**
- * React hook for browser speech recognition API with utterance history
+ * React hook for browser speech recognition API with utterance history and language selection
  * 
  * @param options - Configuration options for speech recognition
  * @returns An object containing speech recognition state, utterance history, and control functions
@@ -220,7 +262,11 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
 export const useSpeechRecognition = (
     options: SpeechRecognitionOptions = {}
 ): UseSpeechRecognitionReturn => {
-    const [state, dispatch] = useReducer(speechRecognitionReducer, initialState);
+    const [state, dispatch] = useReducer(speechRecognitionReducer, {
+        ...initialState,
+        currentLanguage: options.lang || initialState.currentLanguage
+    });
+
     const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
     const isSupported = !!SpeechRecognition;
     const optionsRef = useRef(options);
@@ -242,6 +288,20 @@ export const useSpeechRecognition = (
         }
     }, []);
 
+    // Change language function
+    const changeLanguage = useCallback((lang: LanguageCode) => {
+        dispatch({ type: 'CHANGE_LANGUAGE', payload: lang });
+
+        // 言語変更時に認識中なら再起動
+        if (state.isListening) {
+            stopListening();
+            // 少し遅延を入れて、stopしてから再開する
+            setTimeout(() => {
+                startListening({ lang });
+            }, 300);
+        }
+    }, [state.isListening]);
+
     // Start listening function
     const startListening = useCallback(
         (customOptions: SpeechRecognitionOptions = {}) => {
@@ -255,13 +315,19 @@ export const useSpeechRecognition = (
 
             try {
                 // Create a new recognition instance
-                const mergedOptions = { ...optionsRef.current, ...customOptions };
+                const mergedOptions = {
+                    ...optionsRef.current,
+                    ...customOptions,
+                    // カスタムオプションで言語が指定されていない場合は、現在の言語を使用
+                    lang: customOptions.lang || state.currentLanguage
+                };
+
                 const recognition = new SpeechRecognition();
 
                 // Apply options
                 recognition.continuous = !!mergedOptions.continuous;
                 recognition.interimResults = !!mergedOptions.interimResults;
-                if (mergedOptions.lang) recognition.lang = mergedOptions.lang;
+                recognition.lang = mergedOptions.lang || state.currentLanguage; // 常に現在選択されている言語を使用
                 if (mergedOptions.maxAlternatives) recognition.maxAlternatives = mergedOptions.maxAlternatives;
                 if (mergedOptions.grammars) recognition.grammars = mergedOptions.grammars;
 
@@ -278,6 +344,7 @@ export const useSpeechRecognition = (
                     let interimText = '';
                     let finalText = persistTranscript ? state.finalTranscript : '';
                     const currentTime = event.timeStamp || Date.now();
+                    const currentLang = recognition.lang as LanguageCode;
 
                     // Process and store new utterances
                     const newUtterances: Utterance[] = [];
@@ -291,25 +358,27 @@ export const useSpeechRecognition = (
                             if (result.isFinal) {
                                 finalText += (finalText ? ' ' : '') + transcriptText;
 
-                                // Add final utterance
+                                // Add final utterance with language info
                                 newUtterances.push({
                                     id: generateId(),
                                     text: transcriptText,
                                     timestamp: currentTime,
                                     confidence: confidence,
-                                    isFinal: true
+                                    isFinal: true,
+                                    lang: currentLang // 言語情報を追加
                                 });
                             } else {
                                 interimText += transcriptText;
 
-                                // Add interim utterance
+                                // Add interim utterance with language info
                                 if (mergedOptions.interimResults) {
                                     newUtterances.push({
                                         id: generateId(),
                                         text: transcriptText,
                                         timestamp: currentTime,
                                         confidence: confidence,
-                                        isFinal: false
+                                        isFinal: false,
+                                        lang: currentLang // 言語情報を追加
                                     });
                                 }
                             }
@@ -367,7 +436,7 @@ export const useSpeechRecognition = (
                 });
             }
         },
-        [cleanupRecognition, isSupported, state.finalTranscript, state.utterances]
+        [cleanupRecognition, isSupported, state.finalTranscript, state.utterances, state.currentLanguage]
     );
 
     // Stop listening function
@@ -407,11 +476,126 @@ export const useSpeechRecognition = (
         error: state.error,
         isSupported,
         utterances: state.utterances,
+        currentLanguage: state.currentLanguage,
         startListening,
         stopListening,
         resetTranscript,
         clearUtterances,
+        changeLanguage
     };
+};
+
+// 言語選択コンポーネント
+interface LanguageSelectorProps {
+    value: LanguageCode;
+    onChange: (language: LanguageCode) => void;
+    disabled?: boolean;
+}
+
+export const LanguageSelector = ({ value, onChange, disabled }: LanguageSelectorProps) => {
+    return (
+        <Select
+            value={value}
+            onValueChange={(value: LanguageCode) => onChange(value)}
+            disabled={disabled}
+        >
+            <SelectTrigger className="w-[180px] flex gap-2">
+                <Globe className="h-4 w-4" />
+                <SelectValue placeholder="言語を選択" />
+            </SelectTrigger>
+            <SelectContent>
+                {Object.entries(SUPPORTED_LANGUAGES).map(([code, name]) => (
+                    <SelectItem key={code} value={code}>
+                        {name}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+};
+
+// マイクボタンコンポーネント
+interface MicButtonProps {
+    isListening: boolean;
+    onStart: () => void;
+    onStop: () => void;
+    disabled?: boolean;
+}
+
+export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonProps) => {
+    return (
+        <button
+            onClick={isListening ? onStop : onStart}
+            disabled={disabled}
+            className={`rounded-full p-3 ${isListening
+                ? 'bg-red-500 text-white animate-pulse'
+                : 'bg-blue-500 text-white'} 
+                ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
+            aria-label={isListening ? "音声認識を停止" : "音声認識を開始"}
+        >
+            <Mic className="h-6 w-6" />
+        </button>
+    );
+};
+
+// 音声認識UIコンポーネント（使用例）
+export const SpeechRecognitionUI = () => {
+    const {
+        isListening,
+        transcript,
+        error,
+        isSupported,
+        currentLanguage,
+        startListening,
+        stopListening,
+        resetTranscript,
+        changeLanguage
+    } = useSpeechRecognition({
+        continuous: true,
+        interimResults: true
+    });
+
+    return (
+        <div className="p-4 max-w-md mx-auto">
+            <div className="flex items-center justify-between mb-4">
+                <LanguageSelector
+                    value={currentLanguage}
+                    onChange={changeLanguage}
+                    disabled={!isSupported}
+                />
+                <MicButton
+                    isListening={isListening}
+                    onStart={() => startListening()}
+                    onStop={stopListening}
+                    disabled={!isSupported}
+                />
+            </div>
+
+            {error ? (
+                <div className="text-red-500 mb-4">エラー: {error.message}</div>
+            ) : null}
+
+            {!isSupported ? (
+                <div className="text-yellow-500 mb-4">
+                    お使いのブラウザは音声認識をサポートしていません。Chrome などの別のブラウザをお試しください。
+                </div>
+            ) : null}
+
+            <div className="mt-4">
+                <h3 className="font-medium mb-2">認識結果:</h3>
+                <div className="p-4 bg-gray-100 rounded min-h-[100px] whitespace-pre-wrap">
+                    {transcript || 'まだ音声は認識されていません...'}
+                </div>
+                <button
+                    onClick={resetTranscript}
+                    className="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                    disabled={!transcript}
+                >
+                    結果をクリア
+                </button>
+            </div>
+        </div>
+    );
 };
 
 // Add TypeScript definitions for browser compatibility

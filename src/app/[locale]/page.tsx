@@ -1,6 +1,7 @@
 import { getI18n } from '@/locale/server';
 import { LanguageSelector } from '@/components/language-selector';
 import { SendHorizontal, Mail, Menu } from 'lucide-react';
+import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 
 export default async function Home() {
   const t = await getI18n()
@@ -54,6 +55,10 @@ export default async function Home() {
             <p className="text-base sm:text-lg md:text-xl text-neutral-700 mb-8 sm:mb-10 lg:mb-12 font-light leading-relaxed tracking-tight max-w-3xl mx-auto">
               {t('hero.description')}
             </p>
+
+            <div className='mb-8'>
+              <SpeechRecognitionMinimal />
+            </div>
 
             {/* Waitlist Form */}
             <div className="max-w-md mx-auto select-none opacity-30">
