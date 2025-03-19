@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useUtterances } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
@@ -10,7 +10,6 @@ import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid';
 import { useSuggestions } from '@/hooks/use-suggestions';
 import { ClientSuggestion } from '@/types/suggestions';
 import { useI18n } from '@/locale/client';
-import { Button } from '@/components/ui/button';
 
 interface MainContentProps {
   heroTitle: string;
@@ -21,8 +20,6 @@ export const MainContent: React.FC<MainContentProps> = ({
   heroTitle,
   heroDescription
 }) => {
-  const [transcription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。'); // Default value
-
   // TypeScriptエラーを修正するために初期値を提供
   const submitRef = useRef<((data: { message: string }) => void) | undefined>(undefined);
   const resetHiddenRef = useRef<(() => void) | undefined>(undefined);
@@ -55,14 +52,38 @@ export const MainContent: React.FC<MainContentProps> = ({
   const { utterances } = useUtterances();
   const t = useI18n();
 
+  // Store the last processed utterance ID to avoid duplicate submissions
+  const lastProcessedUtteranceIdRef = useRef<string | null>(null);
 
-  const handleSubmit = () => {
-    console.log('Manual submit with transcription:', transcription);
-    resetHidden();
-    submit({
-      message: transcription,
-    });
-  };
+  // Watch for new final utterances and trigger submit
+  useEffect(() => {
+    if (utterances.length > 0 && submitRef.current) {
+      const finalUtterances = utterances.filter(u => u.isFinal);
+
+      if (finalUtterances.length > 0) {
+        // Get the latest final utterance
+        const latestUtterance = finalUtterances[finalUtterances.length - 1];
+
+        // Only process if we haven't processed this utterance before
+        if (latestUtterance.id !== lastProcessedUtteranceIdRef.current) {
+          console.log('Processing new final utterance:', latestUtterance);
+          lastProcessedUtteranceIdRef.current = latestUtterance.id;
+
+          // Get all final utterances text combined
+          const finalText = finalUtterances.map(u => u.text).join(' ');
+
+          // Use the actual utterance text for auto-submission
+          if (submitRef.current && finalText.trim()) {
+            console.log('Auto-submitting with utterance text:', finalText);
+            resetHidden();
+            submitRef.current({
+              message: finalText,
+            });
+          }
+        }
+      }
+    }
+  }, [utterances]);
 
   // Check if utterances exist
   const hasUtterances = utterances.length > 0;
@@ -100,13 +121,6 @@ export const MainContent: React.FC<MainContentProps> = ({
           </div>
 
           <div className='mt-8'>
-            <Button
-              onClick={handleSubmit}
-              disabled={isLoading || !transcription.trim()}
-            >
-              Generate Suggestions
-            </Button>
-
             <div className="mt-6">
               <h2 className="font-serif text-md sm:text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
                 {t("main.suggestion_heading")}
