@@ -4,7 +4,7 @@ import { useReducer, useEffect, useCallback, useRef } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mic, Globe } from 'lucide-react';
 
-// サポートされている言語のリスト（コード：名前 のマッピング）
+// サポートされている言語のリスト
 export const SUPPORTED_LANGUAGES = {
     'en-US': '英語（アメリカ）',
     'zh-CN': '中国語（簡体 / 普通話）',
@@ -28,74 +28,28 @@ export const SUPPORTED_LANGUAGES = {
     'vi-VN': 'ベトナム語'
 } as const;
 
-// 言語コードの型
 export type LanguageCode = keyof typeof SUPPORTED_LANGUAGES;
 
-// Type definitions for the Web Speech API
-interface SpeechRecognitionErrorEvent extends Event {
-    error: string;
-    message: string;
-}
-
-interface SpeechRecognitionEvent extends Event {
-    resultIndex: number;
-    results: SpeechRecognitionResultList;
-    timeStamp: number;
-}
-
-interface SpeechRecognitionAlternative {
-    transcript: string;
-    confidence: number;
-}
-
-interface SpeechRecognitionResultList {
-    length: number;
-    item(index: number): SpeechRecognitionResult;
-    [index: number]: SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-    length: number;
-    item(index: number): SpeechRecognitionAlternative;
-    [index: number]: SpeechRecognitionAlternative;
-    isFinal: boolean;
-}
-
-interface SpeechGrammarList {
-    length: number;
-    item(index: number): SpeechGrammar;
-    [index: number]: SpeechGrammar;
-    addFromURI(src: string, weight?: number): void;
-    addFromString(string: string, weight?: number): void;
-}
-
-interface SpeechGrammar {
-    src: string;
-    weight: number;
-}
-
-// Utterance record for keeping track of individual speech segments
+// Utterance type
 export interface Utterance {
     id: string;
     text: string;
     timestamp: number;
     confidence: number;
     isFinal: boolean;
-    lang?: LanguageCode; // 言語情報を追加
+    lang?: LanguageCode;
 }
 
-// Speech Recognition hook type definitions
+// Options for speech recognition
 export interface SpeechRecognitionOptions {
     continuous?: boolean;
     interimResults?: boolean;
-    lang?: LanguageCode; // 型を限定
-    maxAlternatives?: number;
-    grammars?: SpeechGrammarList;
+    lang?: LanguageCode;
     shouldPersistTranscript?: boolean;
     onFinalUtterance?: (utterance: Utterance, allUtterances: Utterance[]) => void;
 }
 
-// Our custom hook result interface with utterance history
+// Hook return type
 export interface UseSpeechRecognitionReturn {
     isListening: boolean;
     transcript: string;
@@ -112,18 +66,33 @@ export interface UseSpeechRecognitionReturn {
     changeLanguage: (lang: LanguageCode) => void;
 }
 
-// SpeechRecognition API type definition
-type SpeechRecognitionApi = {
-    new(): SpeechRecognitionInstance;
-    prototype: SpeechRecognitionInstance;
-};
+// Web Speech API types for better type safety
+interface SpeechRecognitionErrorEvent extends Event {
+    error: string;
+    message: string;
+}
+
+interface SpeechRecognitionResult {
+    isFinal: boolean;
+    [index: number]: { transcript: string; confidence: number };
+}
+
+interface SpeechRecognitionResultList {
+    length: number;
+    item(index: number): SpeechRecognitionResult;
+    [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionEvent extends Event {
+    resultIndex: number;
+    results: SpeechRecognitionResultList;
+    timeStamp: number;
+}
 
 interface SpeechRecognitionInstance extends EventTarget {
     continuous: boolean;
     interimResults: boolean;
     lang: string;
-    maxAlternatives: number;
-    grammars: SpeechGrammarList;
     start(): void;
     stop(): void;
     abort(): void;
@@ -133,20 +102,25 @@ interface SpeechRecognitionInstance extends EventTarget {
     onstart: (() => void) | null;
 }
 
-// Browser compatibility check for SpeechRecognition
-const SpeechRecognition: SpeechRecognitionApi | null = typeof window !== 'undefined'
-    ? (window.SpeechRecognition || window.webkitSpeechRecognition) as SpeechRecognitionApi
+// Browser compatibility
+declare global {
+    interface Window {
+        SpeechRecognition: {
+            new(): SpeechRecognitionInstance;
+            prototype: SpeechRecognitionInstance;
+        };
+        webkitSpeechRecognition: {
+            new(): SpeechRecognitionInstance;
+            prototype: SpeechRecognitionInstance;
+        };
+    }
+}
+
+const SpeechRecognition = typeof window !== 'undefined'
+    ? (window.SpeechRecognition || window.webkitSpeechRecognition)
     : null;
 
-// Generate a unique ID for each utterance
-const generateId = (): string => {
-    return Math.random().toString(36).substring(2, 11);
-};
-
-// 処理済みの発話IDを追跡するためのグローバルセット
-const processedUtteranceIds = new Set<string>();
-
-// Define state type for the reducer
+// State for the reducer
 interface SpeechRecognitionState {
     isListening: boolean;
     transcript: string;
@@ -157,18 +131,16 @@ interface SpeechRecognitionState {
     currentLanguage: LanguageCode;
 }
 
-// Define action types for the reducer
+// Actions for the reducer
 type SpeechRecognitionAction =
     | { type: 'START_LISTENING' }
     | { type: 'STOP_LISTENING' }
     | { type: 'SET_ERROR', payload: Error }
-    | { type: 'CLEAR_ERROR' }
     | { type: 'RESET_TRANSCRIPT', payload?: { keepUtterances?: boolean } }
     | { type: 'CLEAR_UTTERANCES' }
     | { type: 'CHANGE_LANGUAGE', payload: LanguageCode }
     | {
-        type: 'UPDATE_RESULTS',
-        payload: {
+        type: 'UPDATE_RESULTS', payload: {
             finalText: string,
             interimText: string,
             newUtterances: Utterance[],
@@ -176,7 +148,7 @@ type SpeechRecognitionAction =
         }
     };
 
-// Initial state for the reducer (デフォルト言語を日本語に設定)
+// Initial state
 const initialState: SpeechRecognitionState = {
     isListening: false,
     transcript: '',
@@ -187,31 +159,21 @@ const initialState: SpeechRecognitionState = {
     currentLanguage: 'ja-JP'
 };
 
+// Generate a unique ID for each utterance
+const generateId = (): string => Math.random().toString(36).substring(2, 11);
+
+// We need an utterance history that persists between renders
+const utteranceHistory: Utterance[] = [];
+
 // Reducer function
 function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechRecognitionAction): SpeechRecognitionState {
     switch (action.type) {
         case 'START_LISTENING':
-            return {
-                ...state,
-                isListening: true,
-                error: null
-            };
+            return { ...state, isListening: true, error: null };
         case 'STOP_LISTENING':
-            return {
-                ...state,
-                isListening: false
-            };
+            return { ...state, isListening: false };
         case 'SET_ERROR':
-            return {
-                ...state,
-                error: action.payload,
-                isListening: false
-            };
-        case 'CLEAR_ERROR':
-            return {
-                ...state,
-                error: null
-            };
+            return { ...state, error: action.payload, isListening: false };
         case 'RESET_TRANSCRIPT': {
             const keepUtterances = action.payload?.keepUtterances || false;
             return {
@@ -223,29 +185,18 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
             };
         }
         case 'CLEAR_UTTERANCES':
-            return {
-                ...state,
-                utterances: []
-            };
+            return { ...state, utterances: [] };
         case 'CHANGE_LANGUAGE':
-            return {
-                ...state,
-                currentLanguage: action.payload
-            };
+            return { ...state, currentLanguage: action.payload };
         case 'UPDATE_RESULTS': {
             const { finalText, interimText, newUtterances, persistTranscript } = action.payload;
-
-            // 重要な変更点: 新しい発話を既存の発話に追加して、すべての履歴を保持します
-            // 最終的な発話だけでなく、すべての発話を保持するように修正
             const updatedUtterances = persistTranscript
                 ? [...state.utterances, ...newUtterances]
                 : newUtterances;
 
-            const combinedTranscript = (finalText ? finalText : '') + (interimText ? ' ' + interimText : '');
-
             return {
                 ...state,
-                transcript: combinedTranscript,
+                transcript: (finalText || '') + (interimText ? ' ' + interimText : ''),
                 finalTranscript: finalText,
                 interimTranscript: interimText,
                 utterances: updatedUtterances
@@ -257,10 +208,7 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
 }
 
 /**
- * React hook for browser speech recognition API with utterance history and language selection
- * 
- * @param options - Configuration options for speech recognition
- * @returns An object containing speech recognition state, utterance history, and control functions
+ * React hook for speech recognition with support for utterance history
  */
 export const useSpeechRecognition = (
     options: SpeechRecognitionOptions = {}
@@ -279,7 +227,7 @@ export const useSpeechRecognition = (
         optionsRef.current = options;
     }, [options]);
 
-    // Clean up the speech recognition instance
+    // Cleanup recognition instance
     const cleanupRecognition = useCallback(() => {
         if (recognitionRef.current) {
             recognitionRef.current.onresult = null;
@@ -291,65 +239,68 @@ export const useSpeechRecognition = (
         }
     }, []);
 
-    // Change language function
+    // Stop listening function
+    const stopListening = useCallback(() => {
+        if (recognitionRef.current) {
+            try {
+                recognitionRef.current.stop();
+            } catch (error) {
+                console.error('Error stopping speech recognition:', error);
+            }
+        }
+        dispatch({ type: 'STOP_LISTENING' });
+    }, []);
+
+    // Change language
     const changeLanguage = useCallback((lang: LanguageCode) => {
         dispatch({ type: 'CHANGE_LANGUAGE', payload: lang });
 
-        // 言語変更時に認識中なら再起動
+        // Restart recognition if currently listening
         if (state.isListening) {
             stopListening();
-            // 少し遅延を入れて、stopしてから再開する
             setTimeout(() => {
                 startListening({ lang });
             }, 300);
         }
     }, [state.isListening]);
 
-    // Start listening function
+    // Start listening
     const startListening = useCallback(
         (customOptions: SpeechRecognitionOptions = {}) => {
             if (!isSupported) {
-                dispatch({ type: 'SET_ERROR', payload: new Error('Speech recognition is not supported in this browser') });
+                dispatch({
+                    type: 'SET_ERROR',
+                    payload: new Error('Speech recognition is not supported in this browser')
+                });
                 return;
             }
 
-            // Clean up any existing instance
             cleanupRecognition();
 
             try {
-                // Create a new recognition instance
                 const mergedOptions = {
                     ...optionsRef.current,
                     ...customOptions,
-                    // カスタムオプションで言語が指定されていない場合は、現在の言語を使用
                     lang: customOptions.lang || state.currentLanguage
                 };
 
                 const recognition = new SpeechRecognition();
 
-                // Apply options
                 recognition.continuous = !!mergedOptions.continuous;
                 recognition.interimResults = !!mergedOptions.interimResults;
-                recognition.lang = mergedOptions.lang || state.currentLanguage; // 常に現在選択されている言語を使用
-                if (mergedOptions.maxAlternatives) recognition.maxAlternatives = mergedOptions.maxAlternatives;
-                if (mergedOptions.grammars) recognition.grammars = mergedOptions.grammars;
+                recognition.lang = mergedOptions.lang || state.currentLanguage;
 
-                // Check if we should persist transcript from previous sessions
                 const persistTranscript = mergedOptions.shouldPersistTranscript !== false;
 
-                // Reset transcript if not persisting
                 if (!persistTranscript) {
                     dispatch({ type: 'RESET_TRANSCRIPT' });
                 }
 
-                // Set up event handlers
                 recognition.onresult = (event: SpeechRecognitionEvent) => {
                     let interimText = '';
                     let finalText = persistTranscript ? state.finalTranscript : '';
                     const currentTime = event.timeStamp || Date.now();
                     const currentLang = recognition.lang as LanguageCode;
-
-                    // Process and store new utterances
                     const newUtterances: Utterance[] = [];
 
                     for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -368,7 +319,7 @@ export const useSpeechRecognition = (
                                     timestamp: currentTime,
                                     confidence: confidence,
                                     isFinal: true,
-                                    lang: currentLang // 言語情報を追加
+                                    lang: currentLang
                                 });
                             } else {
                                 interimText += transcriptText;
@@ -381,7 +332,7 @@ export const useSpeechRecognition = (
                                         timestamp: currentTime,
                                         confidence: confidence,
                                         isFinal: false,
-                                        lang: currentLang // 言語情報を追加
+                                        lang: currentLang
                                     });
                                 }
                             }
@@ -399,24 +350,34 @@ export const useSpeechRecognition = (
                         }
                     });
 
+                    // Before updating state, add only FINAL utterances to our global history if persistence is enabled
+                    const finalUtterances = newUtterances.filter(u => u.isFinal);
+
+                    if (persistTranscript && finalUtterances.length > 0) {
+                        // Add only final utterances to our history
+                        utteranceHistory.push(...finalUtterances);
+                    } else if (!persistTranscript) {
+                        // Clear history and add only new final utterances
+                        utteranceHistory.length = 0;
+                        if (finalUtterances.length > 0) {
+                            utteranceHistory.push(...finalUtterances);
+                        }
+                    }
+
                     // Call onFinalUtterance callback for each new final utterance
                     const onFinalUtterance = mergedOptions.onFinalUtterance;
-                    if (onFinalUtterance && typeof onFinalUtterance === 'function') {
-                        const finalUtterances = newUtterances.filter(u => u.isFinal);
+                    if (onFinalUtterance && typeof onFinalUtterance === 'function' && finalUtterances.length > 0) {
+                        // Use the last final utterance from this batch
+                        const lastFinalUtterance = finalUtterances[finalUtterances.length - 1];
 
-                        // ここが重要: updatedUtterances の計算方法を修正
-                        // フィルタリングせずに全ての発話を含める
-                        const updatedUtterances = persistTranscript
-                            ? [...state.utterances, ...newUtterances]
-                            : newUtterances;
-
-                        finalUtterances.forEach(utterance => {
-                            // まだ処理していないIDのみコールバックを呼び出す
-                            if (!processedUtteranceIds.has(utterance.id)) {
-                                processedUtteranceIds.add(utterance.id);
-                                onFinalUtterance(utterance, updatedUtterances);
-                            }
+                        // Call the callback with only the final utterances history
+                        console.log('Calling onFinalUtterance with final utterances history:', {
+                            utterance: lastFinalUtterance,
+                            historyLength: utteranceHistory.length,
+                            finalOnly: true
                         });
+
+                        onFinalUtterance(lastFinalUtterance, [...utteranceHistory]);
                     }
                 };
 
@@ -442,28 +403,20 @@ export const useSpeechRecognition = (
                 });
             }
         },
-        [cleanupRecognition, isSupported, state.finalTranscript, state.utterances, state.currentLanguage]
+        [cleanupRecognition, isSupported, state.finalTranscript, state.utterances, state.currentLanguage, stopListening]
     );
-
-    // Stop listening function
-    const stopListening = useCallback(() => {
-        if (recognitionRef.current) {
-            try {
-                recognitionRef.current.stop();
-            } catch (error) {
-                console.error('Error stopping speech recognition:', error);
-            }
-        }
-        dispatch({ type: 'STOP_LISTENING' });
-    }, []);
 
     // Reset transcript function
     const resetTranscript = useCallback(() => {
+        // Also reset the global utterance history
+        utteranceHistory.length = 0;
         dispatch({ type: 'RESET_TRANSCRIPT' });
     }, []);
 
     // Clear utterances only
     const clearUtterances = useCallback(() => {
+        // Also clear the global utterance history
+        utteranceHistory.length = 0;
         dispatch({ type: 'CLEAR_UTTERANCES' });
     }, []);
 
@@ -543,12 +496,3 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
         </button>
     );
 };
-
-
-// Add TypeScript definitions for browser compatibility
-declare global {
-    interface Window {
-        SpeechRecognition: SpeechRecognitionApi;
-        webkitSpeechRecognition: SpeechRecognitionApi;
-    }
-}

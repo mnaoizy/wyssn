@@ -37,6 +37,7 @@ export const SpeechRecognitionMinimal = () => {
         onFinalUtterance(utterance, allUtterances) {
             // すべての発話を保持するが、表示は制御する
             setUtterances(allUtterances);
+            console.log('allUtterances:', allUtterances);
             // 暫定的な文字起こしをクリア（確定したため）
             setInterimText('');
         },
