@@ -9,6 +9,7 @@ export const {
 } = createI18nClient({
     "en-US": () => import('./en-US'),
     "fr-FR": () => import('./fr-FR'),
+    "de-DE": () => import('./de-DE'),
     "ja-JP": () => import('./ja-JP'),
     "zh-CN": () => import('./zh-CN'),
     "zh-TW": () => import('./zh-TW')

@@ -21,5 +21,17 @@ export default {
         'terms': 'Conditions',
         'contact': 'Contact',
         'copyright': '© 2025 WYSSN. Tous droits réservés.'
+    },
+    // Suggestion categories
+    'categories': {
+        'deeper_reflection': "Réflexion Approfondie",
+        'additional_details': "Détails Supplémentaires",
+        'question_expansion': "Développement de la Question",
+        'related_topics': "Sujets Connexes",
+        'personal_opinion': "Opinion Personnelle"
+    },
+    // Main
+    'main': {
+        'translation': 'Traduction',
     }
 } as const

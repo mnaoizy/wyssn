@@ -22,5 +22,17 @@ export default {
         'terms': '使用条款',
         'contact': '联系我们',
         'copyright': '© 2025 WYSSN. 保留所有权利。'
+    },
+    // Suggestion categories
+    'categories': {
+        'deeper_reflection': "深度反思",
+        'additional_details': "附加详情",
+        'question_expansion': "问题扩展",
+        'related_topics': "相关主题",
+        'personal_opinion': "个人观点"
+    },
+    // Main
+    'main': {
+        'translation': '翻译',
     }
 } as const

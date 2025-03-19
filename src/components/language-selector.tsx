@@ -14,6 +14,7 @@ import { Suspense, useReducer, useTransition, useEffect } from "react"
 const SUPPORTED_LOCALES = {
     "en-US": "English",
     "fr-FR": "Français",
+    "de-DE": "Deutsch",
     "ja-JP": "日本語",
     "zh-CN": "简体中文",
     "zh-TW": "繁體中文",

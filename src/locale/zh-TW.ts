@@ -22,5 +22,17 @@ export default {
         'terms': '使用條款',
         'contact': '聯絡我們',
         'copyright': '© 2025 WYSSN. 版權所有。'
+    },
+    // Suggestion categories
+    'categories': {
+        'deeper_reflection': "深度反思",
+        'additional_details': "附加詳情",
+        'question_expansion': "問題擴展",
+        'related_topics': "相關主題",
+        'personal_opinion': "個人觀點"
+    },
+    // Main
+    'main': {
+        'translation': '翻譯',
     }
 } as const

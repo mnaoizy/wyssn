@@ -30,5 +30,9 @@ export default {
         'question_expansion': "Question Expansion",
         'related_topics': "Related Topics",
         'personal_opinion': "Personal Opinion"
+    },
+    // Main
+    'main': {
+        'translation': 'Translation',
     }
 } as const

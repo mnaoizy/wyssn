@@ -30,5 +30,9 @@ export default {
         'question_expansion': "質問の展開",
         'related_topics': "関連話題への展開",
         'personal_opinion': "個人的感想"
+    },
+    // Main
+    'main': {
+        'translation': '翻訳',
     }
 } as const

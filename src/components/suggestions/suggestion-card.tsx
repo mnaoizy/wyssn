@@ -67,7 +67,10 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
                 {
                     suggestion.translation && <span className='text-gray-600 text-sm text-left'>
-                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>Translation</span>{suggestion.translation}
+                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>
+                            {t("main.translation")}
+                        </span>
+                        {suggestion.translation}
                     </span>
                 }
             </div>
