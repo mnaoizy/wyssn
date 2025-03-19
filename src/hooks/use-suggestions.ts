@@ -78,9 +78,18 @@ export function useSuggestions(initialSuggestions?: ClientSuggestion[]) {
         }));
     }, [initialSuggestions]);
 
-    // Function to check if a suggestion is pinned
+    // Function to check if a suggestion is pinned using ID
     const checkIsPinned = (suggestion: ClientSuggestion): boolean => {
-        return suggestionsState.pinnedSuggestions.some(pinned => pinned.id === suggestion.id);
+        return suggestionsState.pinnedSuggestions.some(
+            pinned => pinned.id === suggestion.id
+        );
+    };
+
+    // Function to check for content duplication
+    const hasDuplicateContent = (suggestion: ClientSuggestion): boolean => {
+        return suggestionsState.pinnedSuggestions.some(
+            pinned => pinned.content === suggestion.content
+        );
     };
 
     // Function to reset hidden suggestions
@@ -93,6 +102,7 @@ export function useSuggestions(initialSuggestions?: ClientSuggestion[]) {
         suggestionsWithId,
         dispatch,
         checkIsPinned,
+        hasDuplicateContent,
         resetHidden
     };
 }

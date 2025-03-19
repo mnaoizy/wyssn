@@ -123,7 +123,11 @@ export const MainContent: React.FC<MainContentProps> = ({
               <h2 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
                 You can probably say...
               </h2>
-
+              {isLoading && (
+                <div className="mt-4 mb-3 text-center">
+                  <div className="animate-pulse">Generating conversation suggestions...</div>
+                </div>
+              )}
               <SuggestionsGrid
                 suggestionsWithId={suggestionsWithId}
                 suggestionsState={suggestionsState}
@@ -132,11 +136,6 @@ export const MainContent: React.FC<MainContentProps> = ({
                 isLoading={isLoading}
               />
             </div>
-            {isLoading && (
-              <div className="mt-6 text-center">
-                <div className="animate-pulse">Generating conversation suggestions...</div>
-              </div>
-            )}
           </div>
         </div>
       </section>

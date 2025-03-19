@@ -45,46 +45,53 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
     return (
         <div
-            className={`bg-white shadow rounded-lg p-4 ${isPinned ? 'pb-6' : 'pb-10'} ${isPinned ? 'border-2 border-blue-200' : 'border border-gray-200'
-                } flex flex-col min-h-40 justify-start h-full relative`}
+            className={`bg-white shadow rounded-lg p-4 ${isPinned ? 'border-2 border-blue-200' : 'border border-gray-200'
+                } flex flex-col min-h-42 h-full relative`}
         >
-            <div className="flex justify-between items-start">
-                <span className="font-semibold text-gray-900 text-md">
-                    {t(`categories.${suggestion.category}` as keyof typeof t)}
-                </span>
-                <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
-                    {suggestion.confidenceLevel}%
-                </span>
-            </div>
-            <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
-            {
-                suggestion.translation && (
-                    <div className='w-full h-[1px] bg-gray-100 my-2' />
-                )
-            }
+            {/* Content Section - Aligned at the top */}
+            <div className="flex-grow flex flex-col items-start">
+                <div className="flex justify-between items-start w-full">
+                    <span className="font-semibold text-gray-900 text-md">
+                        {t(`categories.${suggestion.category}` as keyof typeof t)}
+                    </span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
+                        {suggestion.confidenceLevel}%
+                    </span>
+                </div>
+                <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
+                {
+                    suggestion.translation && (
+                        <div className='w-full h-[1px] bg-gray-100 my-2' />
+                    )
+                }
 
-            {
-                suggestion.translation && <span className='text-gray-600 text-sm text-left'>
-                    <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>Translation</span>{suggestion.translation}
-                </span>
-            }
-            <div className="absolute -bottom-2 right-1">
-                <div className="mb-3 scale-80 origin-bottom-right flex flex-row gap-1">
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={isDisabled}
-                        onClick={onHide}
-                    >
-                        <Trash2Icon />
-                    </Button>
+                {
+                    suggestion.translation && <span className='text-gray-600 text-sm text-left'>
+                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>Translation</span>{suggestion.translation}
+                    </span>
+                }
+            </div>
+
+            {/* Button Section - Fixed at the bottom */}
+            <div className="mt-4">
+                <div className="grid grid-cols-2 gap-2">
                     <Button
                         variant={isPinned ? "default" : "outline"}
                         size="icon"
                         disabled={isDisabled}
                         onClick={onTogglePin}
+                        className='w-full'
                     >
                         <PinIcon />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        disabled={isDisabled}
+                        onClick={onHide}
+                        className='w-full'
+                    >
+                        <Trash2Icon />
                     </Button>
                 </div>
             </div>
