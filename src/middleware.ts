@@ -1,8 +1,7 @@
 import { createI18nMiddleware } from 'next-international/middleware'
 import { NextRequest, NextResponse } from 'next/server'
+import { defaultLocale, locales } from '@/locale/config'
 
-const locales = ['en-US', 'fr-FR', 'de-DE', 'ja-JP', 'zh-CN', 'zh-TW']
-const defaultLocale = 'en-US'
 
 const I18nMiddleware = createI18nMiddleware({
     locales,
@@ -16,7 +15,7 @@ export function middleware(request: NextRequest) {
     if (pathname === '/') {
         // Get preferred locale from Accept-Language header
         const acceptLanguage = request.headers.get('accept-language') || ''
-        const preferredLocale = getPreferredLocale(acceptLanguage, locales, defaultLocale)
+        const preferredLocale = getPreferredLocale(acceptLanguage, Array.from(locales), defaultLocale)
 
         // Redirect to the preferred locale
         const url = new URL(`/${preferredLocale}`, request.url)

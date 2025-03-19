@@ -1,4 +1,5 @@
 import { createI18nClient } from 'next-international/client'
+import { messagesImport } from './config'
 
 export const {
     useI18n,
@@ -6,11 +7,4 @@ export const {
     I18nProviderClient,
     useChangeLocale,
     useCurrentLocale
-} = createI18nClient({
-    "en-US": () => import('./en-US'),
-    "fr-FR": () => import('./fr-FR'),
-    "de-DE": () => import('./de-DE'),
-    "ja-JP": () => import('./ja-JP'),
-    "zh-CN": () => import('./zh-CN'),
-    "zh-TW": () => import('./zh-TW')
-})
+} = createI18nClient(messagesImport)
