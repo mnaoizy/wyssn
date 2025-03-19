@@ -250,19 +250,6 @@ export const useSpeechRecognition = (
         dispatch({ type: 'STOP_LISTENING' });
     }, []);
 
-    // Change language
-    const changeLanguage = useCallback((lang: LanguageCode) => {
-        dispatch({ type: 'CHANGE_LANGUAGE', payload: lang });
-
-        // Restart recognition if currently listening
-        if (state.isListening) {
-            stopListening();
-            setTimeout(() => {
-                startListening({ lang });
-            }, 300);
-        }
-    }, [state.isListening]);
-
     // Start listening
     const startListening = useCallback(
         (customOptions: SpeechRecognitionOptions = {}) => {
@@ -402,7 +389,7 @@ export const useSpeechRecognition = (
                 });
             }
         },
-        [cleanupRecognition, isSupported, state.finalTranscript, state.utterances, state.currentLanguage, stopListening]
+        [cleanupRecognition, isSupported, state.finalTranscript, state.currentLanguage]
     );
 
     // Reset transcript function
@@ -418,6 +405,19 @@ export const useSpeechRecognition = (
         utteranceHistory.length = 0;
         dispatch({ type: 'CLEAR_UTTERANCES' });
     }, []);
+
+    // Change language - defining after startListening to avoid circular deps
+    const changeLanguage = useCallback((lang: LanguageCode) => {
+        dispatch({ type: 'CHANGE_LANGUAGE', payload: lang });
+
+        // Restart recognition if currently listening
+        if (state.isListening) {
+            stopListening();
+            setTimeout(() => {
+                startListening({ lang });
+            }, 300);
+        }
+    }, [state.isListening, startListening, stopListening]);
 
     // Clean up on unmount
     useEffect(() => {
