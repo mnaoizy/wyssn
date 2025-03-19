@@ -40,7 +40,8 @@ export default {
     'main': {
         'translation': 'Translation',
         'suggestion_heading': 'Keep the conversation going with...',
-        'prompt_speak': 'Tap or click the microphone and start speaking...'
+        'prompt_speak': 'Tap or click the microphone and start speaking...',
+        'add_context': 'Add context',
     },
 
     // Changelog page

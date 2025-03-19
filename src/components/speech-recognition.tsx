@@ -12,7 +12,7 @@ import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid';
 import { useSuggestions } from '@/hooks/use-suggestions';
 import { ClientSuggestion } from '@/types/suggestions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Clock } from 'lucide-react';
+import { Clock, RocketIcon } from 'lucide-react';
 import { Spinner } from '@/components/spinner';
 
 export interface SpeechRecognitionProps {
@@ -241,7 +241,10 @@ export const SpeechRecognition = ({
 
                   </div>
 
-                  <Button variant="outline">Add Context</Button>
+                  <Button variant="outline">
+                    <RocketIcon />
+                    {t("main.add_context")}
+                  </Button>
                 </div>
                 {
                   mounted && (
