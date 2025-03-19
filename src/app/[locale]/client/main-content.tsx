@@ -3,14 +3,13 @@
 import React, { useEffect, useReducer, useState, useMemo } from 'react';
 import { useUtterances } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
-import { useSpeechRecognition, Utterance } from '@/hooks/use-speech-recognition';
+import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PinIcon, Trash2Icon } from 'lucide-react';
 import { conversationSuggestionSchema } from '@/types/shared-types';
 import { useI18n } from '@/locale/client';
-// import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 interface MainContentProps {
   heroTitle: string;
@@ -31,6 +30,15 @@ interface ClientSuggestion extends BaseSuggestion {
   isPinned?: boolean;
 }
 
+// SuggestionCardコンポーネントのProps型
+interface SuggestionCardProps {
+  suggestion: ClientSuggestion;
+  isPinned: boolean;
+  onTogglePin: () => void;
+  onHide: () => void;
+  isDisabled?: boolean;
+}
+
 // リデューサーの状態型
 interface SuggestionsState {
   hiddenIndices: Set<number>;
@@ -47,6 +55,83 @@ type SuggestionsAction =
 // 一意のIDを生成する関数
 const generateUniqueId = (): string => {
   return `suggestion-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+};
+
+// カテゴリーの色を取得する関数
+function getCategoryColor(category?: string): string {
+  switch (category) {
+    case 'deeper_reflection':
+      return 'bg-blue-100 text-blue-800';
+    case 'additional_details':
+      return 'bg-green-100 text-green-800';
+    case 'question_expansion':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'related_topics':
+      return 'bg-purple-100 text-purple-800';
+    case 'personal_opinion':
+      return 'bg-amber-100 text-amber-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+}
+
+// 共通のSuggestionCardコンポーネント
+const SuggestionCard: React.FC<SuggestionCardProps> = ({
+  suggestion,
+  isPinned,
+  onTogglePin,
+  onHide,
+  isDisabled = false
+}) => {
+  const t = useI18n();
+
+  return (
+    <div
+      className={`bg-white shadow rounded-lg p-4 ${isPinned ? 'pb-6' : 'pb-10'} ${isPinned ? 'border-2 border-blue-200' : 'border border-gray-200'
+        } flex flex-col min-h-40 justify-start h-full relative`}
+    >
+      <div className="flex justify-between items-start">
+        <span className="font-semibold text-gray-900 text-md">
+          {t(`categories.${suggestion.category}` as keyof typeof t)}
+        </span>
+        <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
+          {suggestion.confidenceLevel}%
+        </span>
+      </div>
+      <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
+      {
+        suggestion.translation && (
+          <div className='w-full h-[1px] bg-gray-100 my-2' />
+        )
+      }
+
+      {
+        suggestion.translation && <span className='text-gray-600 text-sm text-left'>
+          <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion.translation}
+        </span>
+      }
+      <div className="absolute -bottom-2 right-1">
+        <div className="mb-3 scale-80 origin-bottom-right flex flex-row gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={isDisabled}
+            onClick={onHide}
+          >
+            <Trash2Icon />
+          </Button>
+          <Button
+            variant={isPinned ? "default" : "outline"}
+            size="icon"
+            disabled={isDisabled}
+            onClick={onTogglePin}
+          >
+            <PinIcon />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 // リデューサー関数
@@ -107,8 +192,6 @@ export const MainContent: React.FC<MainContentProps> = ({
   heroDescription
 }) => {
   const [transcription, setTranscription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。サピア・ウォーフの仮説では、使用する言語によって世界の認識の仕方が変わるとされていますが、最近の研究では部分的に支持されつつも批判も多いことを知りました。例えば、色彩語彙と色の認識には確かに関連性があるようですが、思考全体を言語が決定づけるわけではないようです。'); // デフォルト値を設定
-  const t = useI18n(); // 国際化のフックを使用
-  // const { user, isAuthenticated } = useKindeBrowserClient();
 
   const { submit, isLoading, object } = useObject({
     api: "/api/suggest",
@@ -165,23 +248,10 @@ export const MainContent: React.FC<MainContentProps> = ({
     setUtterances(speechUtterances);
   }, [speechUtterances, setUtterances]);
 
-  // For testing transitions
-  const addTestUtterance = () => {
-    const testUtterance: Utterance = {
-      id: `test-${Date.now()}`,
-      text: 'これはテスト文章です。',
-      timestamp: Date.now(),
-      confidence: 0.9,
-      isFinal: true,
-      lang: 'ja-JP'
-    };
 
-    setUtterances([...utterances, testUtterance]);
-  };
-
-  const clearAllUtterances = () => {
-    setUtterances([]);
-  };
+  // const clearAllUtterances = () => {
+  //   setUtterances([]);
+  // };
 
   // Check if utterances exist
   const hasUtterances = utterances.length > 0;
@@ -218,26 +288,6 @@ export const MainContent: React.FC<MainContentProps> = ({
             <SpeechRecognitionMinimal />
           </div>
 
-          {/* Test controls - for development only */}
-          <div className="mt-4 flex justify-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={addTestUtterance}
-              className="text-xs"
-            >
-              テスト文章を追加
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearAllUtterances}
-              className="text-xs"
-            >
-              クリア
-            </Button>
-          </div>
-
           <div className='mt-8'>
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">音声入力</h2>
@@ -250,13 +300,12 @@ export const MainContent: React.FC<MainContentProps> = ({
               />
             </div>
 
-            <button
+            <Button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               disabled={isLoading || !transcription.trim()}
             >
               提案を生成
-            </button>
+            </Button>
             <div className="mt-6">
               <h2 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
                 You can probably say...
@@ -265,92 +314,27 @@ export const MainContent: React.FC<MainContentProps> = ({
               <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                 {/* ピン留めされた提案を表示 */}
                 {suggestionsState.pinnedSuggestions.map((suggestion, index) => (
-                  <div key={`pinned-${suggestion.id}`} className="bg-white shadow rounded-lg p-4 pb-6 border-2 border-blue-200 flex flex-col min-h-40 justify-start h-full relative">
-                    <div className="flex justify-between items-start">
-                      <span className="font-semibold text-gray-900 text-md">
-                        {t(`categories.${suggestion.category}` as keyof typeof t)}
-                      </span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
-                        {suggestion.confidenceLevel}%
-                      </span>
-                    </div>
-                    <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
-                    {
-                      suggestion.translation && (
-                        <div className='w-full h-[1px] bg-gray-100 my-2' />
-                      )
-                    }
-
-                    {
-                      suggestion.translation && <span className='text-gray-600 text-sm text-left'>
-                        <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion.translation}
-                      </span>
-                    }
-                    <div className="absolute -bottom-2 right-1">
-                      <div className="mb-3 scale-80 origin-bottom-right flex flex-row gap-1">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => dispatch({ type: 'UNPIN_SUGGESTION', index })}
-                        >
-                          <Trash2Icon />
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="icon"
-                          onClick={() => dispatch({ type: 'TOGGLE_PIN', suggestion })}
-                        >
-                          <PinIcon />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <SuggestionCard
+                    key={`pinned-${suggestion.id}`}
+                    suggestion={suggestion}
+                    isPinned={true}
+                    onTogglePin={() => dispatch({ type: 'TOGGLE_PIN', suggestion })}
+                    onHide={() => dispatch({ type: 'UNPIN_SUGGESTION', index })}
+                  />
                 ))}
 
                 {/* 通常の提案を表示 (ピン留めされていないもののみ) */}
                 {suggestionsWithId.map((suggestion, index) => (
                   // hiddenIndicesにindexが含まれておらず、かつピン留めされていない提案のみ表示
                   !suggestionsState.hiddenIndices.has(index) && !checkIsPinned(suggestion) && (
-                    <div key={`regular-${suggestion.id}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
-                      <div className="flex justify-between items-start">
-                        <span className="font-semibold text-gray-900 text-md">
-                          {t(`categories.${suggestion.category}` as keyof typeof t)}
-                        </span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
-                          {suggestion.confidenceLevel}%
-                        </span>
-                      </div>
-                      <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
-                      {
-                        suggestion.translation && (
-                          <div className='w-full h-[1px] bg-gray-100 my-2' />
-                        )
-                      }
-
-                      {
-                        suggestion.translation && <span className='text-gray-600 text-sm text-left'>
-                          <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion.translation}
-                        </span>
-                      }
-                      <div className="absolute -bottom-2 right-1">
-                        <div className="mb-3 scale-80 origin-bottom-right flex flex-row gap-1">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => dispatch({ type: 'HIDE_SUGGESTION', index })}
-                          >
-                            <Trash2Icon />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => dispatch({ type: 'TOGGLE_PIN', suggestion })}
-                          >
-                            <PinIcon />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                    <SuggestionCard
+                      key={`regular-${suggestion.id}`}
+                      suggestion={suggestion}
+                      isPinned={false}
+                      onTogglePin={() => dispatch({ type: 'TOGGLE_PIN', suggestion })}
+                      onHide={() => dispatch({ type: 'HIDE_SUGGESTION', index })}
+                      isDisabled={isLoading}
+                    />
                   )
                 ))}
               </div>
@@ -362,26 +346,7 @@ export const MainContent: React.FC<MainContentProps> = ({
             )}
           </div>
         </div>
-
-
       </section>
     </main>
   );
 };
-
-function getCategoryColor(category?: string): string {
-  switch (category) {
-    case 'deeper_reflection':
-      return 'bg-blue-100 text-blue-800';
-    case 'additional_details':
-      return 'bg-green-100 text-green-800';
-    case 'question_expansion':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'related_topics':
-      return 'bg-purple-100 text-purple-800';
-    case 'personal_opinion':
-      return 'bg-amber-100 text-amber-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-}

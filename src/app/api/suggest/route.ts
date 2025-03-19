@@ -1,5 +1,5 @@
 import { ConversationRequest, conversationRequestSchema, conversationSuggestionSchema } from '@/types/shared-types';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { streamObject, DeepPartial, generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
         // 入力言語を検出する（非ストリーミング）
         const { text: detectedLanguage } = await generateText({
-            model: openai('gpt-4o-mini'),
+            model: google('gemini-2.0-flash-lite-preview-02-05'),
             prompt: `
 Detect the language of the following text and return only the ISO language code (e.g., "en-US", "ja-JP", "fr-FR", "zh-CN", etc.):
 
@@ -57,7 +57,7 @@ Return ONLY the language code without any additional text or explanation.
 
         // 英語のプロンプトを使用し、言語情報を渡す
         const result = await streamObject({
-            model: openai('gpt-4o-mini'),
+            model: google('gemini-2.0-flash-lite-preview-02-05'),
             prompt: `
 You are a conversation assistant. Based on what the user has just said, suggest ${number} ways they could continue speaking that would naturally extend the conversation.
 
