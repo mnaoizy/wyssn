@@ -13,20 +13,21 @@ import { useSuggestions } from '@/hooks/use-suggestions';
 import { ClientSuggestion } from '@/types/suggestions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Clock } from 'lucide-react';
+import { Spinner } from '@/components/spinner';
 
-export interface SpeechRecognitionMinimalProps {
+export interface SpeechRecognitionProps {
   heroTitle?: string;
   heroDescription?: string;
   utteranceInterval?: number;
   onUtteranceIntervalChange?: (interval: number) => void;
 }
 
-export const SpeechRecognitionMinimal = ({
+export const SpeechRecognition = ({
   heroTitle,
   heroDescription,
   utteranceInterval = 2,
   onUtteranceIntervalChange
-}: SpeechRecognitionMinimalProps) => {
+}: SpeechRecognitionProps) => {
   // Add client-side only initialization
   const [mounted, setMounted] = useState(false);
   // Get utterances from context instead of just from the hook
@@ -172,14 +173,6 @@ export const SpeechRecognitionMinimal = ({
   // Check if utterances exist
   const hasUtterances = contextUtterances.length > 0;
 
-  // Don't render anything until client-side
-  if (!mounted) {
-    return <div className="w-full p-4 border rounded-lg shadow-sm">
-      <div className="mt-3 p-3 bg-gray-50 rounded min-h-[80px] text-sm flex items-center justify-center text-gray-400">
-        Loading speech recognition...
-      </div>
-    </div>;
-  }
 
   return (
     <main className="flex-grow flex flex-col">
@@ -211,101 +204,103 @@ export const SpeechRecognitionMinimal = ({
             </div>
           )}
 
-          <div className="w-full max-w-full p-4 border rounded-lg shadow-sm mb-8">
-            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-              <div className='flex flex-row gap-2 flex-wrap'>
-                {/* <LanguageSelector
-                                    value={currentLanguage}
-                                    onChange={changeLanguage}
-                                    disabled={!isSupported}
-                                /> */}
+          {
+            mounted ? <div className="w-full max-w-full p-4 border rounded-lg shadow-sm mb-8">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div className='flex flex-row gap-2 flex-wrap'>
+                  {/* 発話間隔設定コントロール */}
+                  <div className="flex items-center gap-2">
+                    <div className="">
+                      <Select
+                        value={onUtteranceIntervalChange ? utteranceInterval.toString() : localUtteranceInterval.toString()}
+                        onValueChange={(value) => {
+                          const interval = parseInt(value, 10);
+                          if (onUtteranceIntervalChange) {
+                            onUtteranceIntervalChange(interval);
+                          } else {
+                            setLocalUtteranceInterval(interval);
+                          }
+                          utteranceCounterRef.current = 0; // カウンターをリセット
+                          console.log(`Utterance interval set to ${interval}`);
+                        }}
+                      >
+                        <SelectTrigger>
+                          <Clock />
+                          <SelectValue placeholder="発話頻度設定" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">毎回生成</SelectItem>
+                          <SelectItem value="2">2回に1回</SelectItem>
+                          <SelectItem value="3">3回に1回</SelectItem>
+                          <SelectItem value="5">5回に1回</SelectItem>
+                          <SelectItem value="10">10回に1回</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                {/* 発話間隔設定コントロール */}
-                <div className="flex items-center gap-2">
-                  <div className="">
-                    <Select
-                      value={onUtteranceIntervalChange ? utteranceInterval.toString() : localUtteranceInterval.toString()}
-                      onValueChange={(value) => {
-                        const interval = parseInt(value, 10);
-                        if (onUtteranceIntervalChange) {
-                          onUtteranceIntervalChange(interval);
-                        } else {
-                          setLocalUtteranceInterval(interval);
-                        }
-                        utteranceCounterRef.current = 0; // カウンターをリセット
-                        console.log(`Utterance interval set to ${interval}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <Clock />
-                        <SelectValue placeholder="発話頻度設定" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">毎回生成</SelectItem>
-                        <SelectItem value="2">2回に1回</SelectItem>
-                        <SelectItem value="3">3回に1回</SelectItem>
-                        <SelectItem value="5">5回に1回</SelectItem>
-                        <SelectItem value="10">10回に1回</SelectItem>
-                      </SelectContent>
-                    </Select>
+
                   </div>
 
-
+                  <Button variant="outline">Add Context</Button>
                 </div>
+                {
+                  mounted && (
 
-                <Button variant="outline">Add Context</Button>
+                    <MicButton
+                      isListening={isListening}
+                      onStart={startListening}
+                      onStop={stopListening}
+                      disabled={!isSupported}
+                    />
+                  )
+                }
               </div>
 
-              <MicButton
-                isListening={isListening}
-                onStart={startListening}
-                onStop={stopListening}
-                disabled={!isSupported}
-              />
-            </div>
+              {error && (
+                <div className="text-red-500 text-sm mb-2">
+                  {error.message}
+                </div>
+              )}
 
-            {error && (
-              <div className="text-red-500 text-sm mb-2">
-                {error.message}
-              </div>
-            )}
+              {!isSupported && (
+                <div className="text-yellow-500 text-sm mb-2">
+                  Your browser does not support speech recognition.
+                </div>
+              )}
 
-            {!isSupported && (
-              <div className="text-yellow-500 text-sm mb-2">
-                Your browser does not support speech recognition.
-              </div>
-            )}
-
-            <div className="text-sm text-gray-500">
-              <div className="max-h-60 overflow-auto p-3 bg-gray-50 rounded">
-                {finalUtterances.length > 0 || interimText ? (
-                  <div className="whitespace-pre-wrap">
-                    {/* Concatenate finalized utterances with spaces */}
-                    <span>
-                      {finalUtterances.map(u => u.text).join(' ')}
-                    </span>
-
-                    {/* Display the latest interim utterance with a pulse effect */}
-                    {interimText && (
-                      <span className="ml-1 text-gray-400 animate-pulse">
-                        {interimText}
+              <div className="text-sm text-gray-500">
+                <div className="max-h-60 overflow-auto p-3 bg-gray-50 rounded">
+                  {finalUtterances.length > 0 || interimText ? (
+                    <div className="whitespace-pre-wrap">
+                      {/* Concatenate finalized utterances with spaces */}
+                      <span>
+                        {finalUtterances.map(u => u.text).join(' ')}
                       </span>
-                    )}
 
-                    {finalUtterances.length === 0 && !interimText && (
-                      <span className="text-gray-400">
-                        {t("main.prompt_speak")}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    {t("main.prompt_speak")}
-                  </div>
-                )}
+                      {/* Display the latest interim utterance with a pulse effect */}
+                      {interimText && (
+                        <span className="ml-1 text-gray-400 animate-pulse">
+                          {interimText}
+                        </span>
+                      )}
+
+                      {finalUtterances.length === 0 && !interimText && (
+                        <span className="text-gray-400">
+                          {t("main.prompt_speak")}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      {t("main.prompt_speak")}
+                    </div>
+                  )}
+                </div>
               </div>
+            </div> : <div className='flex justify-center items-center h-32'>
+              <Spinner />
             </div>
-          </div>
+          }
 
           <div className='mt-8'>
             <div className="mt-6">

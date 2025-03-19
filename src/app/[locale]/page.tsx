@@ -1,6 +1,6 @@
 import { getI18n } from '@/locale/server';
 import { UtteranceProvider } from '@/contexts/utterance-context';
-import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
+import { SpeechRecognition } from '@/components/speech-recognition';
 
 export default async function Home() {
   const t = await getI18n();
@@ -9,7 +9,7 @@ export default async function Home() {
     <main>
       {/* Main Content - Wrapped in UtteranceProvider */}
       <UtteranceProvider>
-        <SpeechRecognitionMinimal
+        <SpeechRecognition
           heroTitle={t('hero.title')}
           heroDescription={t('hero.description')}
         />
