@@ -12,9 +12,9 @@ import { Globe, Loader2 } from "lucide-react"
 import { Suspense, useReducer, useTransition, useEffect } from "react"
 
 const SUPPORTED_LOCALES = {
-    en: "English",
-    fr: "Français",
-    ja: "日本語",
+    "en-US": "English",
+    "fr-FR": "Français",
+    "ja-JP": "日本語",
     "zh-CN": "简体中文",
     "zh-TW": "繁體中文",
 } as const

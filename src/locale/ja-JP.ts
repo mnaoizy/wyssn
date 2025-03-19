@@ -20,5 +20,14 @@ export default {
         'terms': '利用規約',
         'contact': 'お問い合わせ',
         'copyright': '© 2025 WYSSN. All rights reserved.'
+    },
+
+    // Suggestion categories
+    'categories': {
+        'deeper_reflection': "感想の深掘り",
+        'additional_details': "詳細の補足",
+        'question_expansion': "質問の展開",
+        'related_topics': "関連話題への展開",
+        'personal_opinion': "個人的感想"
     }
 } as const

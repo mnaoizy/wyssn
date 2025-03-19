@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useEffect, useReducer, useState, useMemo } from 'react';
@@ -8,8 +9,9 @@ import { experimental_useObject as useObject } from '@ai-sdk/react';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { conversationSuggestionSchema } from '@/app/api/suggest/route';
 import { PinIcon, Trash2Icon } from 'lucide-react';
+import { conversationSuggestionSchema } from '@/types/shared-types';
+import { useI18n } from '@/locale/client';
 
 interface MainContentProps {
   heroTitle: string;
@@ -106,6 +108,7 @@ export const MainContent: React.FC<MainContentProps> = ({
   heroDescription
 }) => {
   const [transcription, setTranscription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。サピア・ウォーフの仮説では、使用する言語によって世界の認識の仕方が変わるとされていますが、最近の研究では部分的に支持されつつも批判も多いことを知りました。例えば、色彩語彙と色の認識には確かに関連性があるようですが、思考全体を言語が決定づけるわけではないようです。'); // デフォルト値を設定
+  const t = useI18n(); // 国際化のフックを使用
 
   const { submit, isLoading, object } = useObject({
     api: "/api/suggest",
@@ -139,7 +142,9 @@ export const MainContent: React.FC<MainContentProps> = ({
     // ピン留めは保持したままにする
 
     // 文字列を直接渡す
-    submit(transcription);
+    submit({
+      message: transcription,
+    });
   };
 
   const { utterances, setUtterances } = useUtterances();
@@ -253,7 +258,7 @@ export const MainContent: React.FC<MainContentProps> = ({
               提案を生成
             </button>
             <div className="mt-6">
-              <h2 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-neutral-900 mb-2sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
+              <h2 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
                 You can probably say...
               </h2>
 
@@ -262,7 +267,9 @@ export const MainContent: React.FC<MainContentProps> = ({
                 {suggestionsState.pinnedSuggestions.map((suggestion, index) => (
                   <div key={`pinned-${suggestion.id}`} className="bg-white shadow rounded-lg p-4 pb-6 border-2 border-blue-200 flex flex-col min-h-40 justify-start h-full relative">
                     <div className="flex justify-between items-start">
-                      <span className="font-semibold text-gray-900 text-md">{suggestion.category}</span>
+                      <span className="font-semibold text-gray-900 text-md">
+                        {t(`categories.${suggestion.category}` as keyof typeof t)}
+                      </span>
                       <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
                         {suggestion.confidenceLevel}%
                       </span>
@@ -306,7 +313,9 @@ export const MainContent: React.FC<MainContentProps> = ({
                   !suggestionsState.hiddenIndices.has(index) && !checkIsPinned(suggestion) && (
                     <div key={`regular-${suggestion.id}`} className="bg-white shadow rounded-lg p-4 pb-10 border flex flex-col min-h-40 justify-start border-gray-200 h-full relative">
                       <div className="flex justify-between items-start">
-                        <span className="font-semibold text-gray-900 text-md">{suggestion.category}</span>
+                        <span className="font-semibold text-gray-900 text-md">
+                          {t(`categories.${suggestion.category}` as keyof typeof t)}
+                        </span>
                         <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
                           {suggestion.confidenceLevel}%
                         </span>
@@ -362,13 +371,15 @@ export const MainContent: React.FC<MainContentProps> = ({
 
 function getCategoryColor(category?: string): string {
   switch (category) {
-    case '感想の深掘り':
+    case 'deeper_reflection':
       return 'bg-blue-100 text-blue-800';
-    case '詳細の補足':
+    case 'additional_details':
       return 'bg-green-100 text-green-800';
-    case '関連話題への展開':
+    case 'question_expansion':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'related_topics':
       return 'bg-purple-100 text-purple-800';
-    case '個人的感想':
+    case 'personal_opinion':
       return 'bg-amber-100 text-amber-800';
     default:
       return 'bg-gray-100 text-gray-800';

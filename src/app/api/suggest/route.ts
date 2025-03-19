@@ -1,19 +1,9 @@
+import { ConversationRequest, conversationRequestSchema, conversationSuggestionSchema } from '@/types/shared-types';
 import { openai } from '@ai-sdk/openai';
 import { streamObject, DeepPartial, generateText } from 'ai';
-import { z } from 'zod';
+import { NextResponse } from 'next/server';
 
-// 会話提案のスキーマを定義
-export const conversationSuggestionSchema = z.object({
-    suggestions: z.array(
-        z.object({
-            category: z.string().describe('Suggestion category'),
-            content: z.string().describe('Content of the suggestion for the user to say next'),
-            translation: z.string().optional().describe('Translation of the suggestion'),
-            confidenceLevel: z.number().min(1).max(100).describe('Confidence level of this suggestion (1-100)'),
-            reasonForSuggestion: z.string().describe('Why this suggestion is appropriate based on what the user has already said'),
-        }),
-    ),
-})
+
 
 // 生成中の部分的なデータ型
 export type PartialConversationSuggestion = DeepPartial<typeof conversationSuggestionSchema>
@@ -23,21 +13,21 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
-        // messagesからユーザー入力を取得するか、リクエストボディに直接ユーザー入力がある場合はそれを使用
-        let userInput = '';
+        // リクエストボディを取得してバリデーション
+        const rawBody = await req.json();
+        const validationResult = conversationRequestSchema.safeParse(rawBody);
 
-        if (typeof body === 'string') {
-            userInput = body;
-        } else if (body.messages && Array.isArray(body.messages)) {
-            userInput = body.messages[0] || '';
-        } else if (body.message) {
-            userInput = body.message;
-        } else {
-            // テスト用のデフォルト入力
-            userInput = '最近、久しぶりにパズルにハマっています。特に1000ピースくらいの風景画を少しずつ組み立てていくのが、なんだか日々のストレス解消になっていて。集中していると時間があっという間に過ぎるんですよね。みなさんは、何か日常のリフレッシュ方法とかありますか？単純なことでも意外と効果あったりしますよね。';
+        if (!validationResult.success) {
+            return NextResponse.json(
+                { error: 'Invalid request', details: validationResult.error.format() },
+                { status: 400 }
+            );
         }
 
+        const body: ConversationRequest = validationResult.data;
+
+        // 検証済みのデータからユーザー入力を取得
+        const userInput = body.message;
         const number = 6;
         const translationLanguage = body.translationLanguage || 'ja-JP';
         const needsTranslation = translationLanguage && translationLanguage !== '';
@@ -46,7 +36,7 @@ export async function POST(req: Request) {
         const { text: detectedLanguage } = await generateText({
             model: openai('gpt-4o-mini'),
             prompt: `
-Detect the language of the following text and return only the ISO language code (e.g., "en", "ja", "fr", "es", "zh", etc.):
+Detect the language of the following text and return only the ISO language code (e.g., "en-US", "ja-JP", "fr-FR", "zh-CN", etc.):
 
 "${userInput}"
 
@@ -84,7 +74,7 @@ User's previous statement:
 ${userInput}
 
 For each suggestion, include:
-- Category (choose one: 感想の深掘り, 詳細の補足, 質問の展開, 関連話題への展開, 個人的感想)
+- Category (choose one: "deeper_reflection", "additional_details", "question_expansion", "related_topics", "personal_opinion")
 - Content (natural statement the user could say next)
 ${needsTranslation ? `- Translation (accurate translation of the content in ${translationLanguage})` : ''}
 - Confidence level (how appropriate this suggestion is, 1-100)
