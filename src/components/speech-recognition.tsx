@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useSpeechRecognition, MicButton } from '@/hooks/use-speech-recognition';
-import { Button } from '@/components/ui/button';
 import { useUtterances } from '@/contexts/utterance-context';
 import { useCurrentLocale, useI18n } from '@/locale/client';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
@@ -12,8 +11,9 @@ import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid';
 import { useSuggestions } from '@/hooks/use-suggestions';
 import { ClientSuggestion } from '@/types/suggestions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Clock, RocketIcon } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Spinner } from '@/components/spinner';
+import { AddContext } from './add-context';
 
 export interface SpeechRecognitionProps {
   heroTitle?: string;
@@ -241,10 +241,11 @@ export const SpeechRecognition = ({
 
                   </div>
 
-                  <Button variant="outline">
+                  {/* <Button variant="outline">
                     <RocketIcon />
                     {t("main.add_context")}
-                  </Button>
+                  </Button> */}
+                  <AddContext />
                 </div>
                 {
                   mounted && (
