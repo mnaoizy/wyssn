@@ -234,8 +234,11 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
             };
         case 'UPDATE_RESULTS': {
             const { finalText, interimText, newUtterances, persistTranscript } = action.payload;
+
+            // 重要な変更点: 新しい発話を既存の発話に追加して、すべての履歴を保持します
+            // 最終的な発話だけでなく、すべての発話を保持するように修正
             const updatedUtterances = persistTranscript
-                ? [...state.utterances.filter(u => u.isFinal), ...newUtterances]
+                ? [...state.utterances, ...newUtterances]
                 : newUtterances;
 
             const combinedTranscript = (finalText ? finalText : '') + (interimText ? ' ' + interimText : '');
@@ -400,8 +403,11 @@ export const useSpeechRecognition = (
                     const onFinalUtterance = mergedOptions.onFinalUtterance;
                     if (onFinalUtterance && typeof onFinalUtterance === 'function') {
                         const finalUtterances = newUtterances.filter(u => u.isFinal);
+
+                        // ここが重要: updatedUtterances の計算方法を修正
+                        // フィルタリングせずに全ての発話を含める
                         const updatedUtterances = persistTranscript
-                            ? [...state.utterances.filter(u => u.isFinal), ...newUtterances]
+                            ? [...state.utterances, ...newUtterances]
                             : newUtterances;
 
                         finalUtterances.forEach(utterance => {
@@ -527,7 +533,7 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
         <button
             onClick={isListening ? onStop : onStart}
             disabled={disabled}
-            className={`rounded-full p-3 ${isListening
+            className={`rounded-full cursor-pointer p-3 ${isListening
                 ? 'bg-red-500 text-white animate-pulse'
                 : 'bg-gray-700 text-white'} 
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}

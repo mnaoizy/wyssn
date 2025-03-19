@@ -34,5 +34,7 @@ export default {
     // Main
     'main': {
         'translation': '翻译',
+        'suggestion_heading': '你可以这样继续对话',
+        'prompt_speak': '点击麦克风按钮并开始说话...'
     }
 } as const

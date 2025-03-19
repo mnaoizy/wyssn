@@ -2,14 +2,19 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSpeechRecognition, LanguageSelector, MicButton } from '@/hooks/use-speech-recognition';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { useUtterances } from '@/contexts/utterance-context';
+import { useI18n } from '@/locale/client';
 
 export const SpeechRecognitionMinimal = () => {
     // Add client-side only initialization
     const [mounted, setMounted] = useState(false);
     // Get utterances from context instead of just from the hook
     const { utterances: contextUtterances, setUtterances } = useUtterances();
+    // 表示用の状態を追加
+    const [interimText, setInterimText] = useState('');
+
+    const t = useI18n()
 
     useEffect(() => {
         setMounted(true);
@@ -20,19 +25,46 @@ export const SpeechRecognitionMinimal = () => {
         error,
         isSupported,
         currentLanguage,
+        utterances: speechUtterances,
+        interimTranscript, // 現在の暫定的な文字起こしを取得
         startListening,
         stopListening,
         changeLanguage
     } = useSpeechRecognition({
         continuous: true,
+        shouldPersistTranscript: true,
         interimResults: true,
         onFinalUtterance(utterance, allUtterances) {
-            console.log('Final utterance:', utterance);
-            console.log('All utterances:', allUtterances);
+            // すべての発話を保持するが、表示は制御する
             setUtterances(allUtterances);
+            // 暫定的な文字起こしをクリア（確定したため）
+            setInterimText('');
         },
     });
 
+    // 暫定的な文字起こしを更新
+    useEffect(() => {
+        if (interimTranscript) {
+            setInterimText(interimTranscript);
+        }
+    }, [interimTranscript]);
+
+    // フックの発話履歴をコンテキストに反映する補助的なuseEffect
+    useEffect(() => {
+        if (speechUtterances.length > 0) {
+            const existingIds = new Set(contextUtterances.map(u => u.id));
+            const newUtterances = speechUtterances.filter(u => !existingIds.has(u.id));
+
+            if (newUtterances.length > 0) {
+                setUtterances([...contextUtterances, ...newUtterances]);
+            }
+        }
+    }, [speechUtterances, contextUtterances, setUtterances]);
+
+    // 確定済みの発話のみを取得
+    const finalUtterances = contextUtterances
+        .filter(u => u.isFinal)
+        .sort((a, b) => a.timestamp - b.timestamp); // タイムスタンプで古い順にソート
     // Don't render anything until client-side
     if (!mounted) {
         return <div className="w-full p-4 border rounded-lg shadow-sm">
@@ -75,7 +107,33 @@ export const SpeechRecognitionMinimal = () => {
             )}
 
             <div className="text-sm text-gray-500">
-                {contextUtterances.map(u => u.text.trim()).join("") || 'マイクボタンをクリックして話してください...'}
+                <div className="max-h-60 overflow-auto p-3 bg-gray-50 rounded">
+                    {finalUtterances.length > 0 || interimText ? (
+                        <div className="whitespace-pre-wrap">
+                            {/* 確定済みの発話をスペースを入れて連結 */}
+                            <span>
+                                {finalUtterances.map(u => u.text).join(' ')}
+                            </span>
+
+                            {/* 最新の暫定的な発話をパルスエフェクトで表示 */}
+                            {interimText && (
+                                <span className="ml-1 text-gray-400 animate-pulse">
+                                    {interimText}
+                                </span>
+                            )}
+
+                            {finalUtterances.length === 0 && !interimText && (
+                                <span className="text-gray-400">
+                                    {t("main.prompt_speak")}
+                                </span>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="text-center">
+                            {t("main.prompt_speak")}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

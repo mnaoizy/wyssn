@@ -11,6 +11,7 @@ import { conversationSuggestionSchema } from '@/types/shared-types';
 import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid';
 import { useSuggestions } from '@/hooks/use-suggestions';
 import { ClientSuggestion } from '@/types/suggestions';
+import { useI18n } from '@/locale/client';
 
 interface MainContentProps {
   heroTitle: string;
@@ -50,22 +51,48 @@ export const MainContent: React.FC<MainContentProps> = ({
   };
 
   const { utterances, setUtterances } = useUtterances();
+  const t = useI18n()
 
   const {
     utterances: speechUtterances,
   } = useSpeechRecognition({
     continuous: true,
+    shouldPersistTranscript: true, // 正しいオプション名に修正
     interimResults: true,
     onFinalUtterance(utterance, allUtterances) {
-      // Update the context with all utterances
+      // Update the context with all utterances using a different approach
+      // ここでは既存のutterancesとの結合は行わず、受け取ったallUtterancesをそのまま使用
       setUtterances(allUtterances);
     },
   });
 
-  // Keep the context updated with speechUtterances
+  // 発話履歴を監視し、新しい発話のみを追加するロジック
   useEffect(() => {
-    setUtterances(speechUtterances);
-  }, [speechUtterances, setUtterances]);
+    if (speechUtterances.length > 0) {
+      // ID ベースで既存の発話と新しい発話を識別
+      const existingIds = new Set(utterances.map(u => u.id));
+      const newUtterances = speechUtterances.filter(u => !existingIds.has(u.id));
+
+      if (newUtterances.length > 0) {
+        // 既存の発話と新しい発話を結合
+        setUtterances([...utterances, ...newUtterances]);
+      }
+    }
+  }, [speechUtterances, utterances, setUtterances]);
+
+  // テキストエリアに発話内容を反映する
+  useEffect(() => {
+    if (utterances.length > 0) {
+      // 確定済み（isFinal=true）の発話のみを取得し、テキストを結合
+      const finalTexts = utterances
+        .filter(utterance => utterance.isFinal)
+        .map(utterance => utterance.text.trim());
+
+      if (finalTexts.length > 0) {
+        setTranscription(finalTexts.join(' '));
+      }
+    }
+  }, [utterances]);
 
   // Check if utterances exist
   const hasUtterances = utterances.length > 0;
@@ -103,7 +130,7 @@ export const MainContent: React.FC<MainContentProps> = ({
           </div>
 
           <div className='mt-8'>
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Voice Input</h2>
               <textarea
                 value={transcription}
@@ -111,7 +138,7 @@ export const MainContent: React.FC<MainContentProps> = ({
                 className="w-full p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-24"
                 placeholder="Please enter voice input..."
               />
-            </div>
+            </div> */}
 
             <Button
               onClick={handleSubmit}
@@ -119,9 +146,17 @@ export const MainContent: React.FC<MainContentProps> = ({
             >
               Generate Suggestions
             </Button>
+
+            {/* 
+            <div className="mt-4 mb-2 text-left">
+              <div className="text-sm text-gray-500">
+                発話履歴数: {utterances.length}
+              </div>
+            </div> */}
+
             <div className="mt-6">
-              <h2 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
-                You can probably say...
+              <h2 className="font-serif text-md sm:text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
+                {t("main.suggestion_heading")}
               </h2>
               {isLoading && (
                 <div className="mt-4 mb-3 text-center">

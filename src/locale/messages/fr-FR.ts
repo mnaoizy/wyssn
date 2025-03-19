@@ -33,5 +33,7 @@ export default {
     // Main
     'main': {
         'translation': 'Traduction',
+        'suggestion_heading': 'Vous pouvez poursuivre la conversation ainsi',
+        'prompt_speak': 'Appuyez ou cliquez sur le microphone et commencez à parler...'
     }
 } as const

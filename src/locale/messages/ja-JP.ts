@@ -34,5 +34,7 @@ export default {
     // Main
     'main': {
         'translation': '翻訳',
+        'suggestion_heading': 'この後、こんなふうに続けてみましょう',
+        'prompt_speak': 'マイクボタンをタップまたはクリックして話してください...'
     }
 } as const
