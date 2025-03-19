@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useUtterances } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
@@ -10,6 +10,9 @@ import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid';
 import { useSuggestions } from '@/hooks/use-suggestions';
 import { ClientSuggestion } from '@/types/suggestions';
 import { useI18n } from '@/locale/client';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { InfoIcon } from 'lucide-react';
 
 interface MainContentProps {
   heroTitle: string;
@@ -24,6 +27,11 @@ export const MainContent: React.FC<MainContentProps> = ({
   const submitRef = useRef<((data: { message: string }) => void) | undefined>(undefined);
   const resetHiddenRef = useRef<(() => void) | undefined>(undefined);
   const isLoadingRef = useRef<boolean>(false);
+
+  // 発話間隔の設定（デフォルトは1 = 毎回）
+  const [utteranceInterval, setUtteranceInterval] = useState<number>(2);
+  // 発話カウンター
+  const utteranceCounterRef = useRef<number>(0);
 
   const { submit, isLoading, object } = useObject({
     api: "/api/suggest",
@@ -48,14 +56,13 @@ export const MainContent: React.FC<MainContentProps> = ({
     isLoadingRef.current = isLoading;
   }, [submit, resetHidden, isLoading]);
 
-
   const { utterances } = useUtterances();
   const t = useI18n();
 
   // Store the last processed utterance ID to avoid duplicate submissions
   const lastProcessedUtteranceIdRef = useRef<string | null>(null);
 
-  // Watch for new final utterances and trigger submit
+  // Watch for new final utterances and trigger submit based on interval
   useEffect(() => {
     if (utterances.length > 0 && submitRef.current) {
       const finalUtterances = utterances.filter(u => u.isFinal);
@@ -66,27 +73,44 @@ export const MainContent: React.FC<MainContentProps> = ({
 
         // Only process if we haven't processed this utterance before
         if (latestUtterance.id !== lastProcessedUtteranceIdRef.current) {
-          console.log('Processing new final utterance:', latestUtterance);
           lastProcessedUtteranceIdRef.current = latestUtterance.id;
+          // Increment the counter
+          utteranceCounterRef.current += 1;
+          // Check if we should submit based on the interval
+          const shouldSubmit = utteranceCounterRef.current >= utteranceInterval;
 
-          // Get all final utterances text combined
-          const finalText = finalUtterances.map(u => u.text).join(' ');
+          if (shouldSubmit) {
+            // Get all final utterances text combined
+            const finalText = finalUtterances.map(u => u.text).join(' ');
+            // Use the actual utterance text for auto-submission
+            if (submitRef.current && finalText.trim()) {
+              console.log('Auto-submitting with utterance text:', finalText);
+              if (resetHiddenRef.current) {
+                resetHiddenRef.current();
+              }
+              submitRef.current({
+                message: finalText,
+              });
 
-          // Use the actual utterance text for auto-submission
-          if (submitRef.current && finalText.trim()) {
-            console.log('Auto-submitting with utterance text:', finalText);
-            resetHidden();
-            submitRef.current({
-              message: finalText,
-            });
+              // Reset the counter after submission
+              utteranceCounterRef.current = 0;
+            }
           }
         }
       }
     }
-  }, [utterances]);
+  }, [utterances, utteranceInterval]);
 
   // Check if utterances exist
   const hasUtterances = utterances.length > 0;
+
+  // 間隔設定用のヘルパー関数
+  const handleIntervalChange = (value: string) => {
+    const interval = parseInt(value, 10);
+    setUtteranceInterval(interval);
+    utteranceCounterRef.current = 0; // カウンターをリセット
+    console.log(`Utterance interval set to ${interval}`);
+  };
 
   return (
     <main className="flex-grow flex flex-col">
@@ -118,6 +142,38 @@ export const MainContent: React.FC<MainContentProps> = ({
 
           <div className='w-full mb-8'>
             <SpeechRecognitionMinimal />
+
+            {/* 発話間隔設定コントロール */}
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <div className="w-48">
+                <Select
+                  value={utteranceInterval.toString()}
+                  onValueChange={handleIntervalChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="発話頻度設定" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">毎回生成</SelectItem>
+                    <SelectItem value="2">2回に1回</SelectItem>
+                    <SelectItem value="3">3回に1回</SelectItem>
+                    <SelectItem value="5">5回に1回</SelectItem>
+                    <SelectItem value="10">10回に1回</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <InfoIcon className="h-4 w-4 text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>サジェスチョンを生成する頻度を設定します。<br />「毎回生成」では全ての発話に対してサジェスチョンを生成し、<br />「3回に1回」では3つの発話ごとに1回だけ生成します。</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
 
           <div className='mt-8'>
