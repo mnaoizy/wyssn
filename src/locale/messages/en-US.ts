@@ -25,11 +25,14 @@ export default {
 
     // Suggestion categories
     'categories': {
-        'deeper_reflection': "Deeper Reflection",
-        'additional_details': "Additional Details",
-        'question_expansion': "Question Expansion",
-        'related_topics': "Related Topics",
-        'personal_opinion': "Personal Opinion"
+        'deeper_reflection': 'Deeper Reflection',
+        'additional_details': 'Additional Details',
+        'question_expansion': 'Question Expansion',
+        'related_topics': 'Related Topics',
+        'personal_opinion': 'Personal Opinion',
+        'related_thoughts': 'Related Thoughts',
+        'narrative_continuation': 'Narrative Continuation',
+        'additional_context': 'Additional Context'
     },
     // Main
     'main': {

@@ -5,7 +5,6 @@ import { useUtterances } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { conversationSuggestionSchema } from '@/types/shared-types';
 import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid';
@@ -62,7 +61,9 @@ export const MainContent: React.FC<MainContentProps> = ({
     onFinalUtterance(utterance, allUtterances) {
       // Update the context with all utterances using a different approach
       // ここでは既存のutterancesとの結合は行わず、受け取ったallUtterancesをそのまま使用
+      console.log('allUtterances:', allUtterances);
       setUtterances(allUtterances);
+      handleSubmit();
     },
   });
 
@@ -89,7 +90,7 @@ export const MainContent: React.FC<MainContentProps> = ({
         .map(utterance => utterance.text.trim());
 
       if (finalTexts.length > 0) {
-        setTranscription(finalTexts.join(' '));
+        setTranscription(utterances.map(u => u.text).join(' '));
       }
     }
   }, [utterances]);
@@ -140,12 +141,12 @@ export const MainContent: React.FC<MainContentProps> = ({
               />
             </div> */}
 
-            <Button
+            {/* <Button
               onClick={handleSubmit}
               disabled={isLoading || !transcription.trim()}
             >
               Generate Suggestions
-            </Button>
+            </Button> */}
 
             {/* 
             <div className="mt-4 mb-2 text-left">

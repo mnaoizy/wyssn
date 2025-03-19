@@ -56,25 +56,46 @@ Return ONLY the language code without any additional text or explanation.
         });
 
         // 英語のプロンプトを使用し、言語情報を渡す
+        // 元のコードから該当部分だけを抜粋し、プロンプト文を改善
+
+        // 英語のプロンプトを使用し、言語情報を渡す
         const result = await streamObject({
             model: google('gemini-2.0-flash-lite-preview-02-05'),
             prompt: `
 You are a conversation assistant. Based on what the user has just said, suggest ${number} ways they could continue speaking that would naturally extend the conversation.
 
 IMPORTANT INSTRUCTIONS:
-1. These suggestions are for "what the user should say next", NOT responses from the other person.
-2. NEVER invent facts, experiences, or events that were not mentioned by the user. Only suggest continuations based on information they've explicitly shared.
+1. These suggestions MUST be statements or narratives FROM THE USER'S PERSPECTIVE that they could say next, NOT questions they would ask someone else.
+2. ABSOLUTELY DO NOT invent facts, experiences, details, or events. Only suggest very general continuations based on information they've explicitly shared.
 3. DO NOT repeat what the user has already said with minor modifications.
 4. Suggestions should be authentically in the user's voice and perspective.
-5. Focus on the user elaborating on thoughts they've already introduced.
+5. Focus on how the user could elaborate on their own thoughts, experiences, or opinions they've already introduced, WITHOUT adding specific details that weren't mentioned.
+6. AVOID GENERATING QUESTIONS. Generate first-person statements that continue the user's narrative.
+7. When unsure about specific details, use vague, general statements that avoid making assumptions.
 
-For example, if the user says "I like puzzles", suggesting "What kind of puzzles do you like?" would be INCORRECT because that's a question someone else would ask the user.
+EXAMPLES OF GOOD SUGGESTIONS:
+If the user says "I like puzzles", do NOT suggest:
+- "I especially enjoy crossword puzzles because they challenge my vocabulary" (assumes specific preference)
+- "I started doing puzzles when I was a child, and it became a lifelong hobby" (assumes timeline)
+- "Recently I completed a 1000-piece landscape puzzle that took me two weeks" (invents specific event)
 
-Instead, suggest something like "I find that puzzle-solving helps me clear my mind after a long day at work" - something that extends their thought without introducing fictional experiences.
+Instead, suggest:
+- "I find puzzles to be a relaxing way to spend my free time"
+- "There's something satisfying about solving puzzles step by step"
+- "I like the different types of mental challenges that puzzles can offer"
 
-BAD EXAMPLE (inventing facts): "Last week I completed a 5000-piece puzzle of Mount Fuji" (unless they mentioned this)
-BAD EXAMPLE (just repeating): "Yes, I really enjoy puzzles a lot, they're so fun"
-GOOD EXAMPLE: "I'm thinking of trying wooden puzzles next since they seem to have more interesting piece shapes"
+If the user says "I was born in Japan and raised there all my life":
+BAD EXAMPLES (inventing facts not mentioned):
+- "I grew up in the Kansai region, specifically in Osaka" (invents specific location)
+- "My school years in Japan were quite structured, with lots of emphasis on studying" (assumes specific experience)
+- "Even though I was raised in Japan, I also traveled abroad occasionally with my family" (invents travel history)
+
+GOOD EXAMPLES (general statements without inventing specifics):
+- "Living in Japan my entire life has shaped how I see the world"
+- "I could share more about what it was like growing up in Japan if you're interested"
+- "The experience of growing up in Japan gave me a perspective that I appreciate"
+- "There are many aspects of Japanese culture that have influenced me throughout my life"
+- "I have many memories from different stages of my life in Japan"
 
 The user's input is in this language: ${detectedLanguage}
 Your suggestions MUST be in this SAME language.
@@ -85,18 +106,21 @@ User's previous statement:
 ${userInput}
 
 For each suggestion, include:
-- Category (choose one: "deeper_reflection", "additional_details", "question_expansion", "related_topics", "personal_opinion")
-- Content (natural statement the user could say next)
+- Category (choose one: "deeper_reflection", "additional_context", "narrative_continuation", "related_thoughts", "personal_perspective")
+- Content (natural first-person statement the user could say next WITHOUT inventing specific details)
 ${needsTranslation ? `- Translation (accurate translation of the content in ${translationLanguage})` : ''}
 - Confidence level (how appropriate this suggestion is, 1-100)
-- reasonForSuggestion (explain why this suggestion is grounded in what the user has actually said)
+- reasonForSuggestion (explain why this suggestion is grounded in what the user has actually said without adding fictional elements)
 
 IMPORTANT QUALITY CHECKS:
-- Each suggestion must pass the "truth test": Would the user ACTUALLY know this information about themselves?
+- Each suggestion must be in FIRST PERSON from the user's perspective
+- ZERO invented details: Do not create specific facts, locations, timelines, or experiences
+- Each suggestion should be general enough that it doesn't require knowledge the user hasn't shared
+- Vagueness is preferred over false specificity
 - Avoid generic statements that could apply to anyone
-- Do not invent specific experiences, facts, or details
 - Make sure suggestions sound natural in conversation
 - Ensure each suggestion has meaningful differences from others
+- NO QUESTIONS! Suggestions should be statements that continue the user's narrative
 ${needsTranslation ? `- The translation must accurately convey the same meaning as the original suggestion` : ''}
 
 Remember to provide ALL responses in the SAME LANGUAGE as the user's input (${detectedLanguage}) ${needsTranslation ? `with translations in ${translationLanguage}` : ''}.

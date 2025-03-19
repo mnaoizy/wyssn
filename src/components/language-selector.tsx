@@ -18,6 +18,7 @@ const SUPPORTED_LOCALES = {
     "ja-JP": "日本語",
     "zh-CN": "简体中文",
     "zh-TW": "繁體中文",
+    "ko-KR": "한국어",
 } as const
 
 type Locale = keyof typeof SUPPORTED_LOCALES

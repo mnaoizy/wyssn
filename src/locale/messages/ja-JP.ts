@@ -25,11 +25,14 @@ export default {
 
     // Suggestion categories
     'categories': {
-        'deeper_reflection': "感想の深掘り",
-        'additional_details': "詳細の補足",
-        'question_expansion': "質問の展開",
-        'related_topics': "関連話題への展開",
-        'personal_opinion': "個人的感想"
+        'deeper_reflection': '感想の深掘り',
+        'additional_details': '詳細の補足',
+        'question_expansion': '質問の展開',
+        'related_topics': '関連話題への展開',
+        'personal_opinion': '個人的感想',
+        'related_thoughts': '関連する考え',
+        'narrative_continuation': '話の続き',
+        'additional_context': '追加の文脈'
     },
     // Main
     'main': {

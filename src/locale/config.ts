@@ -1,4 +1,4 @@
-export const locales = ['en-US', 'fr-FR', 'de-DE', 'ja-JP', 'zh-CN', 'zh-TW'] as const;
+export const locales = ['en-US', 'fr-FR', 'de-DE', 'ja-JP', 'zh-CN', 'zh-TW', 'ko-KR'] as const;
 export type Locale = typeof locales[number];
 export const defaultLocale: Locale = 'en-US';
 
@@ -10,4 +10,5 @@ export const messagesImport = {
     "ja-JP": () => import('./messages/ja-JP'),
     "zh-CN": () => import('./messages/zh-CN'),
     "zh-TW": () => import('./messages/zh-TW'),
+    "ko-KR": () => import('./messages/ko-KR'),
 } as const;

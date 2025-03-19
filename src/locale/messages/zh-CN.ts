@@ -29,7 +29,10 @@ export default {
         'additional_details': "附加详情",
         'question_expansion': "问题扩展",
         'related_topics': "相关主题",
-        'personal_opinion': "个人观点"
+        'personal_opinion': "个人观点",
+        'related_thoughts': "相关思考",
+        'narrative_continuation': "叙事延续",
+        'additional_context': "附加内容"
     },
     // Main
     'main': {

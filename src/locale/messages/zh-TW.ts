@@ -25,11 +25,14 @@ export default {
     },
     // Suggestion categories
     'categories': {
-        'deeper_reflection': "深度反思",
-        'additional_details': "附加詳情",
-        'question_expansion': "問題擴展",
-        'related_topics': "相關主題",
-        'personal_opinion': "個人觀點"
+        'deeper_reflection': '深度反思',
+        'additional_details': '附加詳情',
+        'question_expansion': '問題擴展',
+        'related_topics': '相關主題',
+        'personal_opinion': '個人觀點',
+        'related_thoughts': '相關思考',
+        'narrative_continuation': '敘事延續',
+        'additional_context': '附加內容'
     },
     // Main
     'main': {
