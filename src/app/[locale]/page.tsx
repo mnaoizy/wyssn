@@ -1,12 +1,14 @@
-import { getI18n } from '@/locale/server';
+import { getI18n, getCurrentLocale } from '@/locale/server';
 import { LanguageSelector } from '@/components/language-selector';
 import { Menu } from 'lucide-react';
 import { UtteranceProvider } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import Link from 'next/link';
 
 export default async function Home() {
   const t = await getI18n();
+  const locale = await getCurrentLocale();
 
   return (
     <div className="font-sans flex flex-col min-h-screen">
@@ -25,7 +27,7 @@ export default async function Home() {
 
               <div className="flex gap-6">
                 <span>{t('nav.about')}</span>
-                <span>{t('nav.changelog')}</span>
+                <Link href={`/${locale}/changelog`} className="hover:text-neutral-500 transition-colors">{t('nav.changelog')}</Link>
                 <RegisterLink>
                   {t('nav.signup')}
                 </RegisterLink>
@@ -67,6 +69,7 @@ export default async function Home() {
               <span className="cursor-default">{t('footer.privacy')}</span>
               <span className="cursor-default">{t('footer.terms')}</span>
               <span className="cursor-default">{t('footer.contact')}</span>
+              <Link href={`/${locale}/changelog`} className="hover:text-neutral-500 transition-colors">{t('nav.changelog')}</Link>
             </div>
 
             <div className="text-xs sm:text-sm text-neutral-500 order-2 md:order-none mb-2 md:mb-0">

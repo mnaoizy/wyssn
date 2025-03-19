@@ -40,5 +40,11 @@ export default {
         'translation': 'Translation',
         'suggestion_heading': 'Keep the conversation going with...',
         'prompt_speak': 'Tap or click the microphone and start speaking...'
+    },
+
+    // Changelog page
+    'changelog': {
+        'title': 'Changelog',
+        'description': 'Track all updates and changes to the Wyssn application'
     }
 } as const
