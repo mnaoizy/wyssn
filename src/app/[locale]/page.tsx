@@ -2,7 +2,7 @@ import { getI18n } from '@/locale/server';
 import { LanguageSelector } from '@/components/language-selector';
 import { Menu } from 'lucide-react';
 import { UtteranceProvider } from '@/contexts/utterance-context';
-import { MainContent } from './client/main-content';
+import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default async function Home() {
@@ -51,7 +51,7 @@ export default async function Home() {
 
       {/* Main Content - Wrapped in UtteranceProvider */}
       <UtteranceProvider>
-        <MainContent
+        <SpeechRecognitionMinimal
           heroTitle={t('hero.title')}
           heroDescription={t('hero.description')}
         />
