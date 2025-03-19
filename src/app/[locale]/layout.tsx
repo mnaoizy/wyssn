@@ -7,6 +7,7 @@ import { LanguageSelector } from '@/components/language-selector';
 import { Menu } from 'lucide-react';
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import Link from 'next/link';
+import { buttonVariants } from "@/components/ui/button";
 
 // Separate component that uses the I18n context
 function LayoutContent({ children, locale }: { children: ReactElement; locale: string }) {
@@ -26,16 +27,17 @@ function LayoutContent({ children, locale }: { children: ReactElement; locale: s
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center justify-end space-x-4 flex-1">
               <LanguageSelector />
-
-              <div className="flex gap-6">
+              <div className="flex items-center space-x-4 text-sm">
                 <span>{t('nav.about')}</span>
                 <Link href={`/${locale}/changelog`} className="hover:text-neutral-500 transition-colors">{t('nav.changelog')}</Link>
-                <RegisterLink>
-                  {t('nav.signup')}
-                </RegisterLink>
-                <LoginLink>
-                  {t('nav.signin')}
-                </LoginLink>
+                <div className="space-x-2">
+                  <RegisterLink className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                    {t('nav.signup')}
+                  </RegisterLink>
+                  <LoginLink className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                    {t('nav.signin')}
+                  </LoginLink>
+                </div>
               </div>
             </div>
 
