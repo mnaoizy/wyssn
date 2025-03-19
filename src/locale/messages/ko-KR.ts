@@ -32,7 +32,8 @@ export default {
         'personal_opinion': '개인 의견 말하기',
         'related_thoughts': '관련 생각 이야기하기',
         'narrative_continuation': '이야기 이어가기',
-        'additional_context': '추가 맥락 제공하기'
+        'additional_context': '추가 맥락 제공하기',
+        'personal_perspective': '개인적인 시각 제공하기'
     },
 
     // Main

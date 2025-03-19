@@ -31,7 +31,8 @@ export default {
         'personal_opinion': 'Opinion Personnelle',
         'related_thoughts': 'Pensées Connexes',
         'narrative_continuation': 'Suite Narrative',
-        'additional_context': 'Contexte Supplémentaire'
+        'additional_context': 'Contexte Supplémentaire',
+        'personal_perspective': 'Perspective Personnelle',
     },
     // Main
     'main': {

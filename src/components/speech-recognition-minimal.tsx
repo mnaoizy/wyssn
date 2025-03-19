@@ -11,10 +11,10 @@ export const SpeechRecognitionMinimal = () => {
     const [mounted, setMounted] = useState(false);
     // Get utterances from context instead of just from the hook
     const { utterances: contextUtterances, setUtterances } = useUtterances();
-    // 表示用の状態を追加
+    // Add state for displaying interim text
     const [interimText, setInterimText] = useState('');
 
-    const t = useI18n()
+    const t = useI18n();
 
     useEffect(() => {
         setMounted(true);
@@ -26,7 +26,7 @@ export const SpeechRecognitionMinimal = () => {
         isSupported,
         currentLanguage,
         utterances: speechUtterances,
-        interimTranscript, // 現在の暫定的な文字起こしを取得
+        interimTranscript, // Get the current interim transcription
         startListening,
         stopListening,
         changeLanguage
@@ -35,22 +35,21 @@ export const SpeechRecognitionMinimal = () => {
         shouldPersistTranscript: true,
         interimResults: true,
         onFinalUtterance(utterance, allUtterances) {
-            // すべての発話を保持するが、表示は制御する
+            // Retain all utterances but control what is displayed
             setUtterances(allUtterances);
-            console.log('allUtterances:', allUtterances);
-            // 暫定的な文字起こしをクリア（確定したため）
+            // Clear interim transcription (since it has been finalized)
             setInterimText('');
         },
     });
 
-    // 暫定的な文字起こしを更新
+    // Update interim transcription
     useEffect(() => {
         if (interimTranscript) {
             setInterimText(interimTranscript);
         }
     }, [interimTranscript]);
 
-    // フックの発話履歴をコンテキストに反映する補助的なuseEffect
+    // Auxiliary useEffect to reflect the hook's utterance history in the context
     useEffect(() => {
         if (speechUtterances.length > 0) {
             const existingIds = new Set(contextUtterances.map(u => u.id));
@@ -62,10 +61,11 @@ export const SpeechRecognitionMinimal = () => {
         }
     }, [speechUtterances, contextUtterances, setUtterances]);
 
-    // 確定済みの発話のみを取得
+    // Get only finalized utterances
     const finalUtterances = contextUtterances
         .filter(u => u.isFinal)
-        .sort((a, b) => a.timestamp - b.timestamp); // タイムスタンプで古い順にソート
+        .sort((a, b) => a.timestamp - b.timestamp); // Sort by timestamp in ascending order
+
     // Don't render anything until client-side
     if (!mounted) {
         return <div className="w-full p-4 border rounded-lg shadow-sm">
@@ -84,7 +84,7 @@ export const SpeechRecognitionMinimal = () => {
                         onChange={changeLanguage}
                         disabled={!isSupported}
                     />
-                    <Button variant="outline">コンテクストを追加</Button>
+                    <Button variant="outline">Add Context</Button>
                 </div>
 
                 <MicButton
@@ -103,7 +103,7 @@ export const SpeechRecognitionMinimal = () => {
 
             {!isSupported && (
                 <div className="text-yellow-500 text-sm mb-2">
-                    お使いのブラウザは音声認識をサポートしていません。
+                    Your browser does not support speech recognition.
                 </div>
             )}
 
@@ -111,12 +111,12 @@ export const SpeechRecognitionMinimal = () => {
                 <div className="max-h-60 overflow-auto p-3 bg-gray-50 rounded">
                     {finalUtterances.length > 0 || interimText ? (
                         <div className="whitespace-pre-wrap">
-                            {/* 確定済みの発話をスペースを入れて連結 */}
+                            {/* Concatenate finalized utterances with spaces */}
                             <span>
                                 {finalUtterances.map(u => u.text).join(' ')}
                             </span>
 
-                            {/* 最新の暫定的な発話をパルスエフェクトで表示 */}
+                            {/* Display the latest interim utterance with a pulse effect */}
                             {interimText && (
                                 <span className="ml-1 text-gray-400 animate-pulse">
                                     {interimText}

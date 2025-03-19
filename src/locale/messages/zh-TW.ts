@@ -32,7 +32,8 @@ export default {
         'personal_opinion': '個人觀點',
         'related_thoughts': '相關思考',
         'narrative_continuation': '敘事延續',
-        'additional_context': '附加內容'
+        'additional_context': '附加內容',
+        'personal_perspective': '個人觀點'
     },
     // Main
     'main': {

@@ -32,7 +32,8 @@ export default {
         'personal_opinion': 'Personal Opinion',
         'related_thoughts': 'Related Thoughts',
         'narrative_continuation': 'Narrative Continuation',
-        'additional_context': 'Additional Context'
+        'additional_context': 'Additional Context',
+        'personal_perspective': 'Personal Perspective',
     },
     // Main
     'main': {
