@@ -16,7 +16,7 @@ interface MainContentProps {
   heroDescription: string;
 }
 
-// 提案の型定義 (サーバー側から返される基本型)
+// Base suggestion type definition (returned from server)
 interface BaseSuggestion {
   category?: string;
   confidenceLevel?: number;
@@ -24,13 +24,13 @@ interface BaseSuggestion {
   translation?: string;
 }
 
-// クライアント側で拡張する提案型
+// Client-side extended suggestion type
 interface ClientSuggestion extends BaseSuggestion {
-  id: string; // 必須のID (クライアント側で生成)
+  id: string; // Required ID (generated on client-side)
   isPinned?: boolean;
 }
 
-// SuggestionCardコンポーネントのProps型
+// SuggestionCard component props type
 interface SuggestionCardProps {
   suggestion: ClientSuggestion;
   isPinned: boolean;
@@ -39,25 +39,25 @@ interface SuggestionCardProps {
   isDisabled?: boolean;
 }
 
-// リデューサーの状態型
+// Reducer state type
 interface SuggestionsState {
   hiddenIndices: Set<number>;
   pinnedSuggestions: ClientSuggestion[];
 }
 
-// リデューサーのアクション型
+// Reducer action types
 type SuggestionsAction =
   | { type: 'HIDE_SUGGESTION'; index: number }
   | { type: 'TOGGLE_PIN'; suggestion: ClientSuggestion }
   | { type: 'UNPIN_SUGGESTION'; index: number }
   | { type: 'RESET_HIDDEN' };
 
-// 一意のIDを生成する関数
+// Function to generate unique ID
 const generateUniqueId = (): string => {
   return `suggestion-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 };
 
-// カテゴリーの色を取得する関数
+// Function to get category color
 function getCategoryColor(category?: string): string {
   switch (category) {
     case 'deeper_reflection':
@@ -75,7 +75,7 @@ function getCategoryColor(category?: string): string {
   }
 }
 
-// 共通のSuggestionCardコンポーネント
+// Shared SuggestionCard component
 const SuggestionCard: React.FC<SuggestionCardProps> = ({
   suggestion,
   isPinned,
@@ -107,7 +107,7 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
       {
         suggestion.translation && <span className='text-gray-600 text-sm text-left'>
-          <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>翻訳</span>{suggestion.translation}
+          <span className='font-medium bg-gray-100 text-gray-400 px-1 py-0.5 mr-1 -ml-1 text-xs rounded-[3px] text-left'>Translation</span>{suggestion.translation}
         </span>
       }
       <div className="absolute -bottom-2 right-1">
@@ -134,11 +134,11 @@ const SuggestionCard: React.FC<SuggestionCardProps> = ({
   );
 };
 
-// リデューサー関数
+// Reducer function
 const suggestionsReducer = (state: SuggestionsState, action: SuggestionsAction): SuggestionsState => {
   switch (action.type) {
     case 'HIDE_SUGGESTION':
-      // 非表示インデックスを追加
+      // Add to hidden indices
       const newHiddenIndices = new Set(state.hiddenIndices);
       newHiddenIndices.add(action.index);
       return {
@@ -149,19 +149,19 @@ const suggestionsReducer = (state: SuggestionsState, action: SuggestionsAction):
     case 'TOGGLE_PIN':
       const suggestion = action.suggestion;
 
-      // 既存のピン留めインデックスを検索
+      // Find existing pinned index
       const existingPinIndex = state.pinnedSuggestions.findIndex(
         pinned => pinned.id === suggestion.id
       );
 
       if (existingPinIndex >= 0) {
-        // ピン解除
+        // Unpin
         return {
           ...state,
           pinnedSuggestions: state.pinnedSuggestions.filter((_, i) => i !== existingPinIndex)
         };
       } else {
-        // ピン留め
+        // Pin
         return {
           ...state,
           pinnedSuggestions: [...state.pinnedSuggestions, { ...suggestion, isPinned: true }]
@@ -169,14 +169,14 @@ const suggestionsReducer = (state: SuggestionsState, action: SuggestionsAction):
       }
 
     case 'UNPIN_SUGGESTION':
-      // 指定されたインデックスのピン留め提案を削除
+      // Remove pinned suggestion at the specified index
       return {
         ...state,
         pinnedSuggestions: state.pinnedSuggestions.filter((_, i) => i !== action.index)
       };
 
     case 'RESET_HIDDEN':
-      // 非表示状態をリセット
+      // Reset hidden state
       return {
         ...state,
         hiddenIndices: new Set()
@@ -191,14 +191,14 @@ export const MainContent: React.FC<MainContentProps> = ({
   heroTitle,
   heroDescription
 }) => {
-  const [transcription, setTranscription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。サピア・ウォーフの仮説では、使用する言語によって世界の認識の仕方が変わるとされていますが、最近の研究では部分的に支持されつつも批判も多いことを知りました。例えば、色彩語彙と色の認識には確かに関連性があるようですが、思考全体を言語が決定づけるわけではないようです。'); // デフォルト値を設定
+  const [transcription, setTranscription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。サピア・ウォーフの仮説では、使用する言語によって世界の認識の仕方が変わるとされていますが、最近の研究では部分的に支持されつつも批判も多いことを知りました。例えば、色彩語彙と色の認識には確かに関連性があるようですが、思考全体を言語が決定づけるわけではないようです。'); // Default value
 
   const { submit, isLoading, object } = useObject({
     api: "/api/suggest",
     schema: conversationSuggestionSchema,
   });
 
-  // APIから返された提案にIDを割り当てる
+  // Assign IDs to suggestions returned from API
   const suggestionsWithId = useMemo<ClientSuggestion[]>(() => {
     if (!object?.suggestions) return [];
 
@@ -208,23 +208,23 @@ export const MainContent: React.FC<MainContentProps> = ({
     }));
   }, [object?.suggestions]);
 
-  // useReducerで提案の状態管理
+  // Use reducer for suggestions state management
   const [suggestionsState, dispatch] = useReducer(suggestionsReducer, {
     hiddenIndices: new Set<number>(),
     pinnedSuggestions: []
   });
 
-  // 特定の提案がピン留めされているか確認する関数
+  // Function to check if a suggestion is pinned
   const checkIsPinned = (suggestion: ClientSuggestion): boolean => {
     return suggestionsState.pinnedSuggestions.some(pinned => pinned.id === suggestion.id);
   };
 
   const handleSubmit = () => {
-    // 非表示状態をリセット
+    // Reset hidden state
     dispatch({ type: 'RESET_HIDDEN' });
-    // ピン留めは保持したままにする
+    // Keep pinned suggestions
 
-    // 文字列を直接渡す
+    // Pass string directly
     submit({
       message: transcription,
     });
@@ -261,14 +261,14 @@ export const MainContent: React.FC<MainContentProps> = ({
       {/* Hero Section */}
       <section className="flex-grow flex justify-center items-start py-8 sm:py-10 md:py-12 lg:py-16">
         <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center">
-          {/* ラッパーコンテナを追加して高さを固定 */}
+          {/* Add wrapper container with fixed height */}
           <div
             className={cn(
               "transition-all duration-1200 ease-custom h-auto",
               hasUtterances ? "mt-0" : "mt-48"
             )}
           >
-            {/* トランスフォームを適用する要素 */}
+            {/* Apply transform to this element */}
             <div
               className={cn(
                 "transform transition-transform duration-1000 ease-custom origin-center",
@@ -290,13 +290,13 @@ export const MainContent: React.FC<MainContentProps> = ({
 
           <div className='mt-8'>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">音声入力</h2>
+              <h2 className="text-xl font-semibold mb-2">Voice Input</h2>
               {/* <SpeechToTextWrapper onTranscriptionChange={handleTranscriptionChange} /> */}
               <textarea
                 value={transcription}
                 onChange={(e) => setTranscription(e.target.value)}
                 className="w-full p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-24"
-                placeholder="音声を入力してください..."
+                placeholder="Please enter voice input..."
               />
             </div>
 
@@ -304,7 +304,7 @@ export const MainContent: React.FC<MainContentProps> = ({
               onClick={handleSubmit}
               disabled={isLoading || !transcription.trim()}
             >
-              提案を生成
+              Generate Suggestions
             </Button>
             <div className="mt-6">
               <h2 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight text-left">
@@ -312,7 +312,7 @@ export const MainContent: React.FC<MainContentProps> = ({
               </h2>
 
               <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                {/* ピン留めされた提案を表示 */}
+                {/* Display pinned suggestions */}
                 {suggestionsState.pinnedSuggestions.map((suggestion, index) => (
                   <SuggestionCard
                     key={`pinned-${suggestion.id}`}
@@ -323,9 +323,9 @@ export const MainContent: React.FC<MainContentProps> = ({
                   />
                 ))}
 
-                {/* 通常の提案を表示 (ピン留めされていないもののみ) */}
+                {/* Display regular suggestions (only those not pinned) */}
                 {suggestionsWithId.map((suggestion, index) => (
-                  // hiddenIndicesにindexが含まれておらず、かつピン留めされていない提案のみ表示
+                  // Only display suggestions not in hiddenIndices and not pinned
                   !suggestionsState.hiddenIndices.has(index) && !checkIsPinned(suggestion) && (
                     <SuggestionCard
                       key={`regular-${suggestion.id}`}
@@ -341,7 +341,7 @@ export const MainContent: React.FC<MainContentProps> = ({
             </div>
             {isLoading && (
               <div className="mt-6 text-center">
-                <div className="animate-pulse">会話提案を生成中...</div>
+                <div className="animate-pulse">Generating conversation suggestions...</div>
               </div>
             )}
           </div>
