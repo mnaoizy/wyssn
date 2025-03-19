@@ -4,7 +4,8 @@ export default {
     'nav': {
         'about': '關於我們',
         'changelog': '更新日誌',
-        'signin': '登入'
+        'signin': '登入',
+        'signup': '註冊'
     },
 
     // Hero section

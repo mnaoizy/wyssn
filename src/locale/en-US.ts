@@ -3,7 +3,8 @@ export default {
     'nav': {
         'about': 'About',
         'changelog': 'Changelog',
-        'signin': 'Sign in'
+        'signin': 'Sign in',
+        'signup': 'Sign up'
     },
 
     // Hero section

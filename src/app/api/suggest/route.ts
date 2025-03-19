@@ -2,6 +2,7 @@ import { ConversationRequest, conversationRequestSchema, conversationSuggestionS
 import { openai } from '@ai-sdk/openai';
 import { streamObject, DeepPartial, generateText } from 'ai';
 import { NextResponse } from 'next/server';
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 
 
@@ -13,6 +14,16 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
     try {
+        const { isAuthenticated: checkAuthentication } = getKindeServerSession();
+
+        const isAuthenticated = await checkAuthentication();
+
+        if (!isAuthenticated) {
+            return NextResponse.json(
+                { error: 'Unauthorized', details: 'You must be logged in to access this resource' },
+                { status: 401 }
+            );
+        }
         // リクエストボディを取得してバリデーション
         const rawBody = await req.json();
         const validationResult = conversationRequestSchema.safeParse(rawBody);

@@ -3,6 +3,7 @@ import { LanguageSelector } from '@/components/language-selector';
 import { Menu } from 'lucide-react';
 import { UtteranceProvider } from '@/contexts/utterance-context';
 import { MainContent } from './client/main-content';
+import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default async function Home() {
   const t = await getI18n();
@@ -22,12 +23,15 @@ export default async function Home() {
             <div className="hidden md:flex items-center justify-end space-x-4 flex-1">
               <LanguageSelector />
 
-              <div className="flex gap-6 opacity-30 select-none">
-                <span className="text-sm text-neutral-400 cursor-default">{t('nav.about')}</span>
-                <span className="text-sm text-neutral-400 cursor-default">{t('nav.changelog')}</span>
-                <span className="text-sm text-neutral-400 cursor-default">
+              <div className="flex gap-6">
+                <span>{t('nav.about')}</span>
+                <span>{t('nav.changelog')}</span>
+                <RegisterLink>
+                  {t('nav.signup')}
+                </RegisterLink>
+                <LoginLink>
                   {t('nav.signin')}
-                </span>
+                </LoginLink>
               </div>
             </div>
 

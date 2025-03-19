@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useEffect, useReducer, useState, useMemo } from 'react';
@@ -6,12 +5,12 @@ import { useUtterances } from '@/contexts/utterance-context';
 import { SpeechRecognitionMinimal } from '@/components/speech-recognition-minimal';
 import { useSpeechRecognition, Utterance } from '@/hooks/use-speech-recognition';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
-
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PinIcon, Trash2Icon } from 'lucide-react';
 import { conversationSuggestionSchema } from '@/types/shared-types';
 import { useI18n } from '@/locale/client';
+// import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 interface MainContentProps {
   heroTitle: string;
@@ -109,6 +108,7 @@ export const MainContent: React.FC<MainContentProps> = ({
 }) => {
   const [transcription, setTranscription] = useState('大学の研究で認知言語学について調べていて、特に言語がどのように人間の思考パターンを形成するかという点に興味があります。サピア・ウォーフの仮説では、使用する言語によって世界の認識の仕方が変わるとされていますが、最近の研究では部分的に支持されつつも批判も多いことを知りました。例えば、色彩語彙と色の認識には確かに関連性があるようですが、思考全体を言語が決定づけるわけではないようです。'); // デフォルト値を設定
   const t = useI18n(); // 国際化のフックを使用
+  // const { user, isAuthenticated } = useKindeBrowserClient();
 
   const { submit, isLoading, object } = useObject({
     api: "/api/suggest",

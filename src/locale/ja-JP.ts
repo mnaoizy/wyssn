@@ -2,8 +2,9 @@ export default {
     // Navigation
     'nav': {
         'about': '概要',
-        'changelog': 'アップデート情報',
-        'signin': 'ログイン'
+        'changelog': '更新情報',
+        'signin': 'ログイン',
+        'signup': '新規登録'
     },
 
     // Hero section

@@ -3,7 +3,8 @@ export default {
     'nav': {
         'about': 'À propos',
         'changelog': 'Nouveautés',
-        'signin': 'Se connecter'
+        'signin': 'Se connecter',
+        'signup': 'S\'inscrire'
     },
 
     // Hero section
