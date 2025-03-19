@@ -1,4 +1,3 @@
-import { getI18n } from '@/locale/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { Metadata } from 'next';
@@ -21,17 +20,16 @@ async function getChangelogContent() {
 }
 
 export default async function ChangelogPage() {
-    const t = await getI18n();
     const changelogContent = await getChangelogContent();
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="mb-8">
                 <h1 className="text-3xl font-serif font-bold tracking-tight mb-2">
-                    {t('changelog.title')}
+                    Changelog
                 </h1>
                 <p className="text-neutral-500">
-                    {t('changelog.description')}
+                    Track all updates and changes to the Wyssn application
                 </p>
             </div>
 

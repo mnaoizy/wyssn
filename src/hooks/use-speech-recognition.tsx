@@ -1,34 +1,33 @@
 'use client';
 
 import { useReducer, useEffect, useCallback, useRef } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mic, Globe } from 'lucide-react';
+import { Mic } from 'lucide-react';
+import { Locale } from '@/locale/config';
 
-// サポートされている言語のリスト
-export const SUPPORTED_LANGUAGES = {
-    'en-US': '英語（アメリカ）',
-    'zh-CN': '中国語（簡体 / 普通話）',
-    'zh-TW': '中国語（繁体 / 台湾華語）',
-    'zh-HK': '広東語（香港）',
-    'es-ES': 'スペイン語（スペイン）',
-    'fr-FR': 'フランス語（フランス）',
-    'de-DE': 'ドイツ語',
-    'pt-PT': 'ポルトガル語（ポルトガル）',
-    'pt-BR': 'ポルトガル語（ブラジル）',
-    'ru-RU': 'ロシア語',
-    'ja-JP': '日本語',
-    'ko-KR': '韓国語',
-    'it-IT': 'イタリア語',
-    'ar-SA': 'アラビア語（サウジアラビア）',
-    'hi-IN': 'ヒンディー語（インド）',
-    'bn-IN': 'ベンガル語（インド）',
-    'tr-TR': 'トルコ語',
-    'id-ID': 'インドネシア語',
-    'th-TH': 'タイ語',
-    'vi-VN': 'ベトナム語'
-} as const;
+// export const SUPPORTED_LANGUAGES = {
+//     'en-US': '英語（アメリカ）',
+//     'zh-CN': '中国語（簡体 / 普通話）',
+//     'zh-TW': '中国語（繁体 / 台湾華語）',
+//     'zh-HK': '広東語（香港）',
+//     'es-ES': 'スペイン語（スペイン）',
+//     'fr-FR': 'フランス語（フランス）',
+//     'de-DE': 'ドイツ語',
+//     'pt-PT': 'ポルトガル語（ポルトガル）',
+//     'pt-BR': 'ポルトガル語（ブラジル）',
+//     'ru-RU': 'ロシア語',
+//     'ja-JP': '日本語',
+//     'ko-KR': '韓国語',
+//     'it-IT': 'イタリア語',
+//     'ar-SA': 'アラビア語（サウジアラビア）',
+//     'hi-IN': 'ヒンディー語（インド）',
+//     'bn-IN': 'ベンガル語（インド）',
+//     'tr-TR': 'トルコ語',
+//     'id-ID': 'インドネシア語',
+//     'th-TH': 'タイ語',
+//     'vi-VN': 'ベトナム語'
+// } as const;
 
-export type LanguageCode = keyof typeof SUPPORTED_LANGUAGES;
+export type LanguageCode = Locale;
 
 // Utterance type
 export interface Utterance {
@@ -442,35 +441,6 @@ export const useSpeechRecognition = (
         clearUtterances,
         changeLanguage
     };
-};
-
-// 言語選択コンポーネント
-interface LanguageSelectorProps {
-    value: LanguageCode;
-    onChange: (language: LanguageCode) => void;
-    disabled?: boolean;
-}
-
-export const LanguageSelector = ({ value, onChange, disabled }: LanguageSelectorProps) => {
-    return (
-        <Select
-            value={value}
-            onValueChange={(value: LanguageCode) => onChange(value)}
-            disabled={disabled}
-        >
-            <SelectTrigger className="flex gap-2">
-                <Globe className="h-4 w-4" />
-                <SelectValue placeholder="言語を選択" />
-            </SelectTrigger>
-            <SelectContent>
-                {Object.entries(SUPPORTED_LANGUAGES).map(([code, name]) => (
-                    <SelectItem key={code} value={code}>
-                        {name}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
-    );
 };
 
 // マイクボタンコンポーネント
