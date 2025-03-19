@@ -5,7 +5,8 @@ export default {
         'about': '关于我们',
         'changelog': '更新日志',
         'signin': '登录',
-        'signup': '注册'
+        'signup': '注册',
+        'signout': '登出'
     },
 
     // Hero section

@@ -5,13 +5,15 @@ import { AuthProvider } from "@/providers/auth-provider";
 import { ReactElement, use } from "react";
 import { LanguageSelector } from '@/components/language-selector';
 import { Menu } from 'lucide-react';
-import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { RegisterLink, LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import Link from 'next/link';
 import { buttonVariants } from "@/components/ui/button";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 // Separate component that uses the I18n context
 function LayoutContent({ children, locale }: { children: ReactElement; locale: string }) {
   const t = useI18n();
+  const { isAuthenticated } = useKindeBrowserClient();
 
   return (
     <div className="font-sans flex flex-col min-h-screen">
@@ -31,12 +33,24 @@ function LayoutContent({ children, locale }: { children: ReactElement; locale: s
                 <span>{t('nav.about')}</span>
                 <Link href={`/${locale}/changelog`} className="hover:text-neutral-500 transition-colors">{t('nav.changelog')}</Link>
                 <div className="space-x-2">
-                  <RegisterLink className={buttonVariants({ variant: "secondary", size: "sm" })}>
-                    {t('nav.signup')}
-                  </RegisterLink>
-                  <LoginLink className={buttonVariants({ variant: "secondary", size: "sm" })}>
-                    {t('nav.signin')}
-                  </LoginLink>
+                  {
+                    isAuthenticated ? (
+                      <LogoutLink lang={locale} postLogoutRedirectURL={`http://localhost:3000/${locale}`}>
+                        <button className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                          {t('nav.signout')}
+                        </button>
+                      </LogoutLink>
+                    ) : (
+                      <>
+                        <RegisterLink lang={locale} postLoginRedirectURL={`http://localhost:3000/${locale}`} authUrlParams={{ locale }} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                          {t('nav.signup')}
+                        </RegisterLink>
+                        <LoginLink lang={locale} postLoginRedirectURL={`http://localhost:3000/${locale}`} authUrlParams={{ locale }} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                          {t('nav.signin')}
+                        </LoginLink>
+                      </>
+                    )
+                  }
                 </div>
               </div>
             </div>

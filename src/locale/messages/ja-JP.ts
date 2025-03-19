@@ -4,7 +4,8 @@ export default {
         'about': '概要',
         'changelog': '更新情報',
         'signin': 'ログイン',
-        'signup': '新規登録'
+        'signup': '新規登録',
+        'signout': 'ログアウト'
     },
 
     // Hero section

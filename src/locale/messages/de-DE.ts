@@ -4,7 +4,8 @@ export default {
         'about': 'Über uns',
         'changelog': 'Änderungsprotokoll',
         'signin': 'Anmelden',
-        'signup': 'Registrieren'
+        'signup': 'Registrieren',
+        'signout': 'Abmelden',
     },
 
     // Hero section
