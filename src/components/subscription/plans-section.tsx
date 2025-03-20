@@ -141,7 +141,7 @@ export function PlansSection({ userSubscription }: PlansProps) {
                     price="¥0"
                     interval="month"
                     features={FREE_PLAN_FEATURES}
-                    buttonText="Current Plan"
+                    buttonText={!isSubscribed ? "Current Plan" : "Basic Plan"}
                     onSelect={() => { }}
                     isCurrentPlan={!isSubscribed}
                     disabled={true}
