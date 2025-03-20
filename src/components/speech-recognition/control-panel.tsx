@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { AddContext } from '@/components/add-context';
-import { Clock } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// import { Clock } from 'lucide-react';
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ControlPanelProps {
     utteranceInterval: number;
@@ -16,24 +16,24 @@ interface ControlPanelProps {
  * utterance intervals and additional actions
  */
 export const ControlPanel: React.FC<ControlPanelProps> = ({
-    utteranceInterval,
-    onUtteranceIntervalChange,
-    onExternalIntervalChange
+    // utteranceInterval,
+    // onUtteranceIntervalChange,
+    // onExternalIntervalChange
 }) => {
-    const handleIntervalChange = (value: string) => {
-        const interval = parseInt(value, 10);
-        onUtteranceIntervalChange(interval);
-        if (onExternalIntervalChange) {
-            onExternalIntervalChange(interval);
-        }
-        console.log(`Utterance interval set to ${interval}`);
-    };
+    // const handleIntervalChange = (value: string) => {
+    //     const interval = parseInt(value, 10);
+    //     onUtteranceIntervalChange(interval);
+    //     if (onExternalIntervalChange) {
+    //         onExternalIntervalChange(interval);
+    //     }
+    //     console.log(`Utterance interval set to ${interval}`);
+    // };
 
     return (
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <div className="flex flex-row gap-2 flex-wrap">
                 {/* 発話間隔設定コントロール */}
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                     <div>
                         <Select
                             value={utteranceInterval.toString()}
@@ -52,8 +52,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                             </SelectContent>
                         </Select>
                     </div>
-                </div>
-
+                </div> */}
                 <AddContext />
             </div>
         </div>
