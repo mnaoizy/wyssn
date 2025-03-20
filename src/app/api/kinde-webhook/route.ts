@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import jwksClient from "jwks-rsa";
 import jwt, { JwtHeader } from "jsonwebtoken";
 import { db } from "@/lib/prisma-client";
-
+import { Stripe } from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_SECRET_API_KEY!, {
+    apiVersion: '2025-02-24.acacia'
+});
 // Define types for Kinde events and payload
 type KindeEventType = 'user.created' | 'user.updated' | 'organization.created' | 'user.deleted';
 
@@ -132,14 +135,25 @@ async function handleUserCreated(eventData: KindeEventData) {
         const lastName = userData.last_name || '';
         const fullName = [firstName, lastName].filter(Boolean).join(' ');
 
+        // Stripeカスタマーを作成
+        const stripeCustomer = await stripe.customers.create({
+            email: userData.email,
+            name: fullName || 'Unknown Name',
+            metadata: {
+                kindeId: userData.id // KindeのIDをメタデータに保存して連携を容易にする
+            }
+        });
+
         // ユーザーをデータベースに作成
         const user = await db.user.create({
             data: {
                 name: fullName || 'Unknown Name',  // 名前が空の場合のフォールバック
                 email: userData.email,
                 kindeId: userData.id,  // KindeのIDも保存しておく
+                stripeCustomerId: stripeCustomer.id  // StripeのカスタマーIDも保存しておく
             }
         });
+
 
         console.log('User created in database:', user);
     } catch (error) {
