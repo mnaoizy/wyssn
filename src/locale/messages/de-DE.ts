@@ -40,7 +40,7 @@ export default {
     'main': {
         'translation': 'Übersetzung',
         'suggestion_heading': 'So könnten Sie das Gespräch fortsetzen',
-        'prompt_speak': 'Tippen oder klicken Sie auf das Mikrofon und beginnen Sie zu sprechen...',
+        'prompt_speak': 'Tippen oder klicken Sie auf das Mikrofon und beginnen Sie zu sprechen',
         'add_context': 'Kontext hinz'
     }
 } as const

@@ -40,7 +40,7 @@ export default {
     'main': {
         'translation': '翻訳',
         'suggestion_heading': 'この後、こんなふうに続けてみましょう',
-        'prompt_speak': 'マイクボタンをタップまたはクリックして話してください...',
+        'prompt_speak': 'マイクボタンをタップまたはクリックして話してください',
         'add_context': '文脈を追加'
     }
 } as const

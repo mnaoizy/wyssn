@@ -40,7 +40,7 @@ export default {
     'main': {
         'translation': '翻译',
         'suggestion_heading': '你可以这样继续对话',
-        'prompt_speak': '点击麦克风按钮并开始说话...',
+        'prompt_speak': '点击麦克风按钮并开始说话',
         'add_context': '添加上下文'
     }
 } as const
