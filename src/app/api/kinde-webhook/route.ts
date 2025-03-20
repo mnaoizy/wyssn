@@ -7,10 +7,10 @@ import { db } from "@/lib/prisma-client";
 type KindeEventType = 'user.created' | 'user.updated' | 'organization.created' | 'user.deleted';
 
 interface KindeUserData {
-    id: string;
-    first_name?: string;  // first_nameフィールドを追加
+    first_name?: string;
     last_name?: string;
     email: string;
+    id: string;
     is_suspended?: boolean;
     is_password_reset_requested?: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,9 +21,14 @@ interface KindeUserData {
     [key: string]: unknown;
 }
 
+interface KindeEventData {
+    user: KindeUserData;
+    [key: string]: unknown;
+}
+
 interface KindeEvent {
     type: KindeEventType;
-    data: KindeUserData;
+    data: KindeEventData;
     occurred_at: string;
     [key: string]: unknown;
 }
@@ -112,10 +117,16 @@ export async function POST(req: Request) {
 }
 
 // 個々のイベント処理を分離して管理しやすくする
-async function handleUserCreated(userData: KindeUserData) {
-    console.log('User created:', userData);
+async function handleUserCreated(eventData: KindeEventData) {
+    console.log('User created:', eventData);
 
     try {
+        // ユーザーデータはeventData.userに格納されている
+        const userData = eventData.user;
+        if (!userData) {
+            throw new Error('User data is missing in the event');
+        }
+
         // 名前を正しく組み立てる
         const firstName = userData.first_name || '';
         const lastName = userData.last_name || '';
@@ -137,10 +148,16 @@ async function handleUserCreated(userData: KindeUserData) {
     }
 }
 
-async function handleUserUpdated(userData: KindeUserData) {
-    console.log('User updated:', userData);
+async function handleUserUpdated(eventData: KindeEventData) {
+    console.log('User updated:', eventData);
 
     try {
+        // ユーザーデータはeventData.userに格納されている
+        const userData = eventData.user;
+        if (!userData) {
+            throw new Error('User data is missing in the event');
+        }
+
         // 名前を正しく組み立てる
         const firstName = userData.first_name || '';
         const lastName = userData.last_name || '';
@@ -162,10 +179,16 @@ async function handleUserUpdated(userData: KindeUserData) {
     }
 }
 
-async function handleUserDeleted(userData: KindeUserData) {
-    console.log('User deleted:', userData);
+async function handleUserDeleted(eventData: KindeEventData) {
+    console.log('User deleted:', eventData);
 
     try {
+        // ユーザーデータはeventData.userに格納されている
+        const userData = eventData.user;
+        if (!userData) {
+            throw new Error('User data is missing in the event');
+        }
+
         // ユーザーの削除処理
         // 完全に削除するか、削除フラグを立てるかはアプリケーションの要件による
         const user = await db.user.update({
