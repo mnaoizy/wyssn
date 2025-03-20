@@ -1,7 +1,6 @@
 import { Fraunces, Outfit } from "next/font/google";
 import { getCurrentLocale } from "@/locale/server";
 import { OpenPanelComponent } from '@openpanel/nextjs';
-
 import './globals.css';
 
 // Font setup
@@ -18,6 +17,7 @@ const sans = Outfit({
     display: "swap",
     variable: "--font-sans",
 });
+
 
 // Tell Next.js not to statically optimize
 export const dynamic = 'force-dynamic';
@@ -50,6 +50,8 @@ export async function generateMetadata(): Promise<{ title: string; description: 
     return metadataByLocale[locale] || metadataByLocale.en;
 }
 
+
+
 export default async function RootLayout({
     children,
 }: {
@@ -77,3 +79,4 @@ export default async function RootLayout({
         </>
     );
 }
+

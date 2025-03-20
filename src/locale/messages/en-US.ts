@@ -5,7 +5,8 @@ export default {
         'changelog': 'Changelog',
         'signin': 'Sign in',
         'signup': 'Sign up',
-        'signout': 'Sign out'
+        'signout': 'Sign out',
+        'account': 'Account'
     },
 
     // Hero section
@@ -48,5 +49,18 @@ export default {
     'changelog': {
         'title': 'Changelog',
         'description': 'Track all updates and changes to the Wyssn application'
+    },
+
+    // Account page
+    'account': {
+        'title': 'Account',
+        'manageSubscription': 'Manage your subscription and account settings',
+        'userInfo': 'User Information',
+        'name': 'Name',
+        'email': 'Email',
+        'subscription': 'Subscription',
+        'loading': 'Loading...',
+        'subscriptionSuccess': 'Your subscription has been successfully processed.',
+        'subscriptionCanceled': 'Your subscription process was canceled.'
     }
 } as const

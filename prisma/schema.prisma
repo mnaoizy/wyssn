@@ -42,6 +42,17 @@ model Subscription {
   @@map("subscriptions")
 }
 
+model StripeWebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique @map("stripe_event_id")
+  eventType     String   @map("event_type")
+  processedAt   DateTime @default(now()) @map("processed_at")
+  data          Json? // オプション: イベントデータを保存する場合
+
+  @@index([eventType])
+  @@map("stripe_webhook_events")
+}
+
 model Waitlist {
   id         String    @id @default(cuid())
   email      String    @unique
