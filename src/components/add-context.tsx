@@ -28,7 +28,7 @@ export function AddContext() {
             open={isOpen}
             onOpenChange={setIsOpen}
         >
-            <MorphingPopoverTrigger className='flex h-9 items-center rounded-lg border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50'>
+            <MorphingPopoverTrigger className='flex h-9 items-center rounded-lg border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer'>
                 <RocketIcon className='size-4 mr-[5px]' />
                 <motion.span layoutId={`popover-label-${uniqueId}`} className='text-sm'>
                     {t('main.add_context')}
@@ -59,7 +59,7 @@ export function AddContext() {
                         />
                         <div key='close' className='flex justify-between py-3 pr-4 pl-2'>
                             <Button
-                                variant="outline"
+                                variant="ghost"
                                 onClick={closeMenu}
                                 aria-label='Close popover'
                             >
@@ -67,6 +67,7 @@ export function AddContext() {
                             </Button>
                             <Button
                                 type='submit'
+                                variant="secondary"
                                 aria-label='Submit note'
                                 onClick={() => {
                                     closeMenu();
