@@ -192,7 +192,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                         <div
                             className={cn(
                                 "transition-all duration-1200 ease-custom h-auto",
-                                hasUtterances ? "mt-0" : "mt-16 md:mt-48"
+                                hasUtterances ? "mt-12 md:mt-0" : "mt-24 md:mt-48"
                             )}
                         >
                             {/* Apply transform to this element */}
