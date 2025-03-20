@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import jwksClient from "jwks-rsa";
 import jwt, { JwtHeader } from "jsonwebtoken";
+import { db } from "@/lib/prisma-client";
 
 // Define types for Kinde events and payload
 type KindeEventType = 'user.created' | 'user.updated' | 'organization.created' | 'user.deleted';
 
 interface KindeUserData {
     id: string;
-    given_name?: string;
+    last_name?: string;
     family_name?: string;
-    email?: string;
+    email: string;
     picture?: string;
     [key: string]: unknown;
 }
@@ -73,6 +74,12 @@ export async function POST(req: Request) {
             case "user.created":
                 // handle user created event
                 // e.g add user to database with event.data
+                db.user.create({
+                    data: {
+                        name: event.data.family_name + ' ' + event.data.last_name,
+                        email: event.data.email,
+                    }
+                });
                 console.log('User created:', event.data);
                 break;
             case "user.deleted":
