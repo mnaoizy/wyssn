@@ -4,7 +4,6 @@ import { SpeechRecognition } from '@/components/speech-recognition';
 
 export default async function Home() {
   const t = await getI18n();
-
   return (
     <main>
       {/* Main Content - Wrapped in UtteranceProvider */}

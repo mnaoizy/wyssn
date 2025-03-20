@@ -10,7 +10,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 export type PartialConversationSuggestion = DeepPartial<typeof conversationSuggestionSchema>
 
 // 最大30秒のストリーミングレスポンスを許可
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
     try {

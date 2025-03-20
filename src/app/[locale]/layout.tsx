@@ -35,17 +35,17 @@ function LayoutContent({ children, locale }: { children: ReactElement; locale: s
                 <div className="space-x-2">
                   {
                     isAuthenticated ? (
-                      <LogoutLink lang={locale}>
+                      <LogoutLink lang={locale} postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}>
                         <button className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.signout')}
                         </button>
                       </LogoutLink>
                     ) : (
                       <>
-                        <RegisterLink lang={locale} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <RegisterLink lang={locale} postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`} authUrlParams={{ locale }} className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.signup')}
                         </RegisterLink>
-                        <LoginLink lang={locale} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <LoginLink lang={locale} postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`} authUrlParams={{ locale }} className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.signin')}
                         </LoginLink>
                       </>
