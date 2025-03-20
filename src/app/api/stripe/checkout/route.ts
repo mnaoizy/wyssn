@@ -3,7 +3,7 @@ import { db } from "@/lib/prisma-client";
 import { NextResponse } from "next/server";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-export async function POST(request: Request) {
+export async function POST() {
     try {
         const { getUser } = getKindeServerSession();
         const user = await getUser();
@@ -29,8 +29,7 @@ export async function POST(request: Request) {
         }
 
         // You can add more options like price ID from request body if needed
-        const body = await request.json().catch(() => ({}));
-        const priceId = body.priceId || process.env.STRIPE_PRICE_ID || 'price_1R4hlq03WstOAJXK9oirzXBH';
+        const priceId = process.env.STRIPE_PRICE_ID
 
         // Create Checkout Session
         const session = await stripe.checkout.sessions.create({
