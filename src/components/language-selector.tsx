@@ -24,6 +24,7 @@ const SUPPORTED_LOCALES = {
     "ru-RU": "Русский",
     "uk-UA": "Українська",
     "it-IT": "Italiano",
+    "vi-VN": "Tiếng Việt"
 } as const
 
 type Locale = keyof typeof SUPPORTED_LOCALES
