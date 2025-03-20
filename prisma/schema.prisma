@@ -14,9 +14,11 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(cuid())
-  email String @unique
-  name  String
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  kindeId   String    @unique
+  deletedAt DateTime?
 }
 
 model Waitlist {
