@@ -8,24 +8,31 @@ import Link from "next/link";
 import { stripe } from "@/lib/stripe";
 import { buttonVariants } from "@/components/ui/button";
 
+type SearchParamsType = Promise<{ [key: string]: string | string[] | undefined }>;
+
 export default async function AccountPage({
+    params,
     searchParams,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    params: Promise<{ locale: string }>;
+    searchParams: SearchParamsType;
 }) {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
     const t = await getI18n();
+    // We need to await the params but don't need to store it as a variable
+    await params;
+    const resolvedSearchParams = await searchParams;
 
     // Redirect to login if user is not authenticated
     if (!user || !user.id) {
-        redirect("/api/auth/login");
+        redirect("/");
     }
 
     // Get query parameters
-    const success = (await searchParams).success;
-    const canceled = (await searchParams).canceled;
-    const error = (await searchParams).error;
+    const success = resolvedSearchParams.success;
+    const canceled = resolvedSearchParams.canceled;
+    const error = resolvedSearchParams.error;
 
     const showSuccess = success === "true";
     const showCanceled = canceled === "true";
@@ -57,17 +64,16 @@ export default async function AccountPage({
                 userSubscription = userSubs[0] || null;
 
                 // Create customer portal session
-                const portalSession = await stripe.billingPortal.sessions.create({
-                    customer: userBasic.stripeCustomerId,
-                    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/account`,
-                });
+                if (userBasic.stripeCustomerId) {
+                    const portalSession = await stripe.billingPortal.sessions.create({
+                        customer: userBasic.stripeCustomerId,
+                        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/account`,
+                    });
 
-                if (portalSession.url) {
-                    portalSessionUrl = portalSession.url;
+                    if (portalSession.url) {
+                        portalSessionUrl = portalSession.url;
+                    }
                 }
-
-                // Note: We don't need to retrieve the full user details since
-                // we have the basic user ID and subscription data
             } catch (subError) {
                 console.error("Error fetching subscription data:", subError);
                 // Continue with null subscription - we'll show the free plan
