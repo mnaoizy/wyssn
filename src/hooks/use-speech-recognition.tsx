@@ -1,8 +1,10 @@
 'use client';
 
 import { useReducer, useEffect, useCallback, useRef } from 'react';
-import { Mic } from 'lucide-react';
+import { MicIcon, MicOffIcon } from 'lucide-react';
 import { Locale } from '@/locale/config';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 // export const SUPPORTED_LANGUAGES = {
 //     'en-US': '英語（アメリカ）',
@@ -443,26 +445,50 @@ export const useSpeechRecognition = (
     };
 };
 
-// マイクボタンコンポーネント
 interface MicButtonProps {
     isListening: boolean;
     onStart: () => void;
     onStop: () => void;
     disabled?: boolean;
 }
-
 export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonProps) => {
     return (
-        <button
+        <Button
             onClick={isListening ? onStop : onStart}
+            variant="ghost"
             disabled={disabled}
-            className={`rounded-full cursor-pointer p-3 ${isListening
-                ? 'bg-red-500 text-white animate-pulse'
-                : 'bg-gray-700 text-white'} 
-                ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
+            className={cn(
+                "relative rounded-full cursor-pointer w-15 h-15 flex items-center justify-center overflow-hidden",
+                disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
+            )}
             aria-label={isListening ? "音声認識を停止" : "音声認識を開始"}
         >
-            <Mic className="h-6 w-6" />
-        </button>
+            {/* グラデーション背景 */}
+            <div
+                className={cn(
+                    "absolute inset-0",
+                    isListening
+                        ? "bg-gradient-to-br from-red-400 via-red-500 to-red-600 animate-pulse"
+                        : "bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300",
+                    !disabled && !isListening && "hover:from-gray-200 hover:via-gray-300 hover:to-gray-400",
+                    !disabled && isListening && "hover:from-red-500 hover:via-red-600 hover:to-red-700"
+                )}
+            />
+
+            {/* ホバーエフェクト用のトランジション - pulse と分離 */}
+            <div
+                className={cn(
+                    "absolute inset-0 opacity-0 transition-opacity duration-300",
+                    !disabled && "hover:opacity-100"
+                )}
+            />
+
+            {/* アイコン */}
+            {isListening ? (
+                <MicOffIcon className="relative z-10 size-6 text-white" />
+            ) : (
+                <MicIcon className="relative z-10 size-6 text-gray-700" />
+            )}
+        </Button>
     );
 };
