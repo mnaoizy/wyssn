@@ -21,23 +21,6 @@ export default async function AccountPage({
     if (!user || !user.id) {
         redirect("/api/auth/login");
     }
-    // Get user from database
-    const dbUser = await db.user.findUnique({
-        where: { kindeId: user.id },
-        select: { stripeCustomerId: true }
-    });
-
-    if (!dbUser || !dbUser.stripeCustomerId) {
-        // Redirect to subscription page if user doesn't have a Stripe customer ID
-        redirect("/")
-    }
-
-    // Create customer portal session
-    const portalSession = await stripe.billingPortal.sessions.create({
-        customer: dbUser.stripeCustomerId,
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/account`,
-    });
-
 
     // Get query parameters
     const success = (await searchParams).success;
@@ -49,15 +32,16 @@ export default async function AccountPage({
     const showError = error !== undefined;
     const errorType = error as string;
 
-    // Initialize with null subscription
+    // Initialize with null subscription and portal URL
     let userSubscription = null;
+    let portalSessionUrl = null;
 
     try {
         // First try to get the user without including subscriptions
         // This can help avoid complex join issues
         const userBasic = await db.user.findUnique({
             where: { kindeId: user.id },
-            select: { id: true }
+            select: { id: true, stripeCustomerId: true },
         });
 
         if (userBasic) {
@@ -71,6 +55,16 @@ export default async function AccountPage({
                 });
 
                 userSubscription = userSubs[0] || null;
+
+                // Create customer portal session
+                const portalSession = await stripe.billingPortal.sessions.create({
+                    customer: userBasic.stripeCustomerId,
+                    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/account`,
+                });
+
+                if (portalSession.url) {
+                    portalSessionUrl = portalSession.url;
+                }
 
                 // Note: We don't need to retrieve the full user details since
                 // we have the basic user ID and subscription data
@@ -91,9 +85,9 @@ export default async function AccountPage({
                     <h1 className="text-3xl font-bold">{t("account.title")}</h1>
                     <p className="text-muted-foreground mt-1">{t("account.manageSubscription")}</p>
                 </div>
-                {userSubscription && (
+                {userSubscription && portalSessionUrl && (
                     <Link
-                        href={portalSession.url}
+                        href={portalSessionUrl}
                         className={buttonVariants({ variant: "secondary" })}
                     >
                         Manage Subscription
