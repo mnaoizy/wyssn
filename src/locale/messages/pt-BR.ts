@@ -4,7 +4,8 @@ export default {
         'changelog': 'Registro de alterações',
         'signin': 'Entrar',
         'signup': 'Cadastrar-se',
-        'signout': 'Sair'
+        'signout': 'Sair',
+        'account': 'Conta'
     },
     'hero': {
         'title': 'What You Should Say Next',
@@ -38,5 +39,17 @@ export default {
     'changelog': {
         'title': 'Registro de alterações',
         'description': 'Acompanhe todas as atualizações e mudanças no aplicativo Wyssn'
+    },
+
+    'account': {
+        'title': 'Conta',
+        'manageSubscription': 'Gerencie sua assinatura e configurações da conta',
+        'userInfo': 'Informações do usuário',
+        'name': 'Nome',
+        'email': 'E-mail',
+        'subscription': 'Assinatura',
+        'loading': 'Carregando...',
+        'subscriptionSuccess': 'Sua assinatura foi processada com sucesso.',
+        'subscriptionCanceled': 'Seu processo de assinatura foi cancelado.'
     }
 } as const;

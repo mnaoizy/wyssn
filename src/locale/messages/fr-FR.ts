@@ -5,7 +5,8 @@ export default {
         'changelog': 'Nouveautés',
         'signin': 'Se connecter',
         'signup': 'S\'inscrire',
-        'signout': 'Se déconnecter'
+        'signout': 'Se déconnecter',
+        'account': 'Compte'
     },
 
     // Hero section
@@ -41,5 +42,24 @@ export default {
         'suggestion_heading': 'Vous pouvez poursuivre la conversation ainsi',
         'prompt_speak': 'Appuyez ou cliquez sur le microphone et commencez à parler',
         'add_context': 'Ajouter du contexte',
+    },
+
+    // Changelog page
+    'changelog': {
+        'title': 'Nouveautés',
+        'description': 'Suivez toutes les mises à jour et modifications de l\'application Wyssn'
+    },
+
+    // Account page
+    'account': {
+        'title': 'Compte',
+        'manageSubscription': 'Gérez votre abonnement et les paramètres de votre compte',
+        'userInfo': 'Informations utilisateur',
+        'name': 'Nom',
+        'email': 'E-mail',
+        'subscription': 'Abonnement',
+        'loading': 'Chargement...',
+        'subscriptionSuccess': 'Votre abonnement a été traité avec succès.',
+        'subscriptionCanceled': 'Votre processus d\'abonnement a été annulé.'
     }
 } as const

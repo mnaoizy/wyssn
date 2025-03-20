@@ -4,7 +4,8 @@ export default {
         'changelog': 'История изменений',
         'signin': 'Войти',
         'signup': 'Зарегистрироваться',
-        'signout': 'Выйти'
+        'signout': 'Выйти',
+        'account': 'Аккаунт'
     },
     'hero': {
         'title': 'What You Should Say Next',
@@ -38,5 +39,17 @@ export default {
     'changelog': {
         'title': 'История изменений',
         'description': 'Отслеживайте все обновления и изменения в приложении Wyssn'
+    },
+
+    'account': {
+        'title': 'Аккаунт',
+        'manageSubscription': 'Управление подпиской и настройками аккаунта',
+        'userInfo': 'Информация пользователя',
+        'name': 'Имя',
+        'email': 'Эл. почта',
+        'subscription': 'Подписка',
+        'loading': 'Загрузка...',
+        'subscriptionSuccess': 'Ваша подписка успешно обработана.',
+        'subscriptionCanceled': 'Процесс оформления подписки был отменен.'
     }
 } as const;

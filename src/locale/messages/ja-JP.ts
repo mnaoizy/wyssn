@@ -5,7 +5,8 @@ export default {
         'changelog': '更新情報',
         'signin': 'ログイン',
         'signup': '新規登録',
-        'signout': 'ログアウト'
+        'signout': 'ログアウト',
+        'account': 'アカウント'
     },
 
     // Hero section
@@ -42,5 +43,24 @@ export default {
         'suggestion_heading': 'この後、こんなふうに続けてみましょう',
         'prompt_speak': 'マイクボタンをタップまたはクリックして話してください',
         'add_context': '文脈を追加'
+    },
+
+    // Changelog page
+    'changelog': {
+        'title': '更新情報',
+        'description': 'Wyssnアプリケーションのすべての更新と変更を追跡する'
+    },
+
+    // Account page
+    'account': {
+        'title': 'アカウント',
+        'manageSubscription': 'サブスクリプションとアカウント設定の管理',
+        'userInfo': 'ユーザー情報',
+        'name': '名前',
+        'email': 'メール',
+        'subscription': 'サブスクリプション',
+        'loading': '読み込み中...',
+        'subscriptionSuccess': 'サブスクリプションが正常に処理されました。',
+        'subscriptionCanceled': 'サブスクリプション処理がキャンセルされました。'
     }
 } as const

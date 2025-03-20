@@ -6,7 +6,8 @@ export default {
         'changelog': '更新日誌',
         'signin': '登入',
         'signup': '註冊',
-        'signout': '登出'
+        'signout': '登出',
+        'account': '帳戶'
     },
 
     // Hero section
@@ -42,5 +43,24 @@ export default {
         'suggestion_heading': '您可以這樣繼續對話',
         'prompt_speak': '點擊麥克風按鈕並開始說話',
         'add_context': '添加上下文'
+    },
+
+    // Changelog page
+    'changelog': {
+        'title': '更新日誌',
+        'description': '追蹤Wyssn應用程式的所有更新和變更'
+    },
+
+    // Account page
+    'account': {
+        'title': '帳戶',
+        'manageSubscription': '管理您的訂閱和帳戶設定',
+        'userInfo': '用戶資訊',
+        'name': '姓名',
+        'email': '電子郵件',
+        'subscription': '訂閱',
+        'loading': '載入中...',
+        'subscriptionSuccess': '您的訂閱已成功處理。',
+        'subscriptionCanceled': '您的訂閱程序已取消。'
     }
 } as const

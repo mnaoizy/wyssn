@@ -6,6 +6,7 @@ export default {
         'signin': 'Iniciar sesión',
         'signup': 'Registrarse',
         'signout': 'Cerrar sesión',
+        'account': 'Cuenta',
     },
 
     // Hero section
@@ -48,5 +49,18 @@ export default {
     'changelog': {
         'title': 'Registro de cambios',
         'description': 'Sigue todas las actualizaciones y cambios en la aplicación Wyssn'
+    },
+
+    // Account page
+    'account': {
+        'title': 'Cuenta',
+        'manageSubscription': 'Administra tu suscripción y configuración de cuenta',
+        'userInfo': 'Información del usuario',
+        'name': 'Nombre',
+        'email': 'Correo electrónico',
+        'subscription': 'Suscripción',
+        'loading': 'Cargando...',
+        'subscriptionSuccess': 'Tu suscripción ha sido procesada con éxito.',
+        'subscriptionCanceled': 'Tu proceso de suscripción ha sido cancelado.'
     }
 } as const

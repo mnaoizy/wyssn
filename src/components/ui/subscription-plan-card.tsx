@@ -20,6 +20,7 @@ export interface PlanProps {
     onSelect: () => void;
     disabled?: boolean;
     isCurrentPlan?: boolean;
+    priceLoading?: boolean;
 }
 
 export function SubscriptionPlanCard({
@@ -33,23 +34,24 @@ export function SubscriptionPlanCard({
     onSelect,
     disabled = false,
     isCurrentPlan = false,
+    priceLoading = false,
 }: PlanProps) {
     return (
-        <div className={`flex flex-col rounded-lg border p-6 shadow-sm ${isPopular ? 'border-primary ring-2 ring-primary' : 'border-border'}`}>
+        <div className={`flex flex-col rounded-lg border p-6 shadow-sm bg-white transition-all hover:shadow-md ${isPopular ? 'border-primary ring-1 ring-primary' : 'border-gray-200'}`}>
             {isPopular && (
-                <div className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                <div className="inline-block self-start rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground mb-2">
                     Popular
                 </div>
             )}
-            <div className="mt-4">
+            <div>
                 <h3 className="text-xl font-semibold">{title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+                <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
             </div>
-            <div className="mt-4 flex items-baseline">
-                <span className="text-3xl font-bold">{price}</span>
+            <div className="mt-5 flex items-baseline">
+                <span className={`text-3xl font-bold ${priceLoading ? 'opacity-40' : ''}`}>{price}</span>
                 <span className="ml-1 text-sm font-medium text-muted-foreground">/{interval}</span>
             </div>
-            <ul className="mt-6 space-y-4 text-sm">
+            <ul className="mt-5 mb-6 space-y-3 text-sm flex-grow">
                 {features.map((feature, index) => (
                     <li key={index} className="flex items-start">
                         {feature.included ? (
@@ -63,7 +65,7 @@ export function SubscriptionPlanCard({
                     </li>
                 ))}
             </ul>
-            <div className="mt-6">
+            <div className="mt-auto">
                 <Button
                     onClick={onSelect}
                     className="w-full"

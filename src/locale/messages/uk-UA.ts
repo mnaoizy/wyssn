@@ -4,7 +4,8 @@ export default {
         'changelog': 'Журнал змін',
         'signin': 'Увійти',
         'signup': 'Зареєструватися',
-        'signout': 'Вийти'
+        'signout': 'Вийти',
+        'account': 'Обліковий запис'
     },
     'hero': {
         'title': 'What You Should Say Next',
@@ -38,5 +39,17 @@ export default {
     'changelog': {
         'title': 'Журнал змін',
         'description': 'Відстежуйте всі оновлення та зміни в застосунку Wyssn'
+    },
+
+    'account': {
+        'title': 'Обліковий запис',
+        'manageSubscription': 'Керуйте своєю передплатою та налаштуваннями облікового запису',
+        'userInfo': 'Інформація користувача',
+        'name': 'Ім\'я',
+        'email': 'Електронна пошта',
+        'subscription': 'Передплата',
+        'loading': 'Завантаження...',
+        'subscriptionSuccess': 'Вашу передплату успішно оброблено.',
+        'subscriptionCanceled': 'Процес оформлення передплати було скасовано.'
     }
 } as const;

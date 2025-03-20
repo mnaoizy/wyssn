@@ -19,57 +19,70 @@ export default async function AccountPage({
         redirect("/api/auth/login");
     }
 
-    // Fetch user's subscription data
-    const dbUser = await db.user.findUnique({
-        where: { kindeId: user.id },
-        include: { subscriptions: { orderBy: { createdAt: "desc" }, take: 1 } },
-    });
+    // Get query parameters
+    const success = (await searchParams).success;
+    const canceled = (await searchParams).canceled;
+    const showSuccess = success === "true";
+    const showCanceled = canceled === "true";
 
-    // Current active subscription if any
-    const userSubscription = dbUser?.subscriptions[0] || null;
+    // Initialize with null subscription
+    let userSubscription = null;
+    let dbUser = null;
 
-    // Check for Stripe success or cancel message
-    const showSuccess = (await searchParams).success === "true";
-    const showCanceled = (await searchParams).canceled === "true";
+    try {
+        // Fetch user's subscription data
+        dbUser = await db.user.findUnique({
+            where: { kindeId: user.id },
+            include: { subscriptions: { orderBy: { createdAt: "desc" }, take: 1 } },
+        });
+
+        // Current active subscription if any
+        userSubscription = dbUser?.subscriptions[0] || null;
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        // Continue with null subscription - we'll show the free plan
+    }
 
     return (
-        <div className="container py-10">
-            <div className="mb-8">
+        <div className="container max-w-4xl mx-auto py-10 px-4 sm:px-6">
+            <div className="mb-6">
                 <h1 className="text-3xl font-bold">{t("account.title")}</h1>
-                <p className="text-muted-foreground">{t("account.manageSubscription")}</p>
+                <p className="text-muted-foreground mt-1">{t("account.manageSubscription")}</p>
             </div>
 
             {showSuccess && (
-                <div className="mb-8 rounded-md bg-green-50 p-4 text-green-700">
+                <div className="mb-6 rounded-md bg-green-50 p-4 text-green-700">
                     <p>{t("account.subscriptionSuccess")}</p>
                 </div>
             )}
 
             {showCanceled && (
-                <div className="mb-8 rounded-md bg-amber-50 p-4 text-amber-700">
+                <div className="mb-6 rounded-md bg-amber-50 p-4 text-amber-700">
                     <p>{t("account.subscriptionCanceled")}</p>
                 </div>
             )}
 
-            <div className="grid gap-8">
-                <div>
-                    <h2 className="text-xl font-semibold mb-4">{t("account.userInfo")}</h2>
-                    <div className="rounded-md border p-4">
-                        <div className="mb-2">
-                            <span className="font-medium">{t("account.name")}:</span> {user.given_name} {user.family_name}
+            <div className="space-y-8">
+                <section>
+                    <h2 className="text-xl font-semibold mb-3">{t("account.userInfo")}</h2>
+                    <div className="rounded-md border border-gray-200 p-5 bg-white shadow-sm">
+                        <div className="mb-3">
+                            <div className="font-medium text-sm text-gray-500">{t("account.name")}</div>
+                            <div>{user.given_name} {user.family_name}</div>
                         </div>
                         <div>
-                            <span className="font-medium">{t("account.email")}:</span> {user.email}
+                            <div className="font-medium text-sm text-gray-500">{t("account.email")}</div>
+                            <div>{user.email}</div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <h2 className="text-xl font-semibold mb-4">{t("account.subscription")}</h2>
-                    <Suspense fallback={<div>{t("account.loading")}</div>}>
+                <section>
+                    <h2 className="text-xl font-semibold mb-3">{t("account.subscription")}</h2>
+                    <Suspense fallback={<div className="flex justify-center py-8">{t("account.loading")}</div>}>
                         <PlansSection userSubscription={userSubscription} />
                     </Suspense>
-                </div>
+                </section>
             </div>
         </div>
     );

@@ -5,7 +5,8 @@ export default {
         'changelog': '업데이트 내역',
         'signin': '로그인',
         'signup': '회원가입',
-        'signout': '로그아웃'
+        'signout': '로그아웃',
+        'account': '계정'
     },
 
     // Hero section
@@ -43,5 +44,24 @@ export default {
         'suggestion_heading': '다음과 같이 이어서 말해보세요',
         'prompt_speak': '마이크 버튼을 탭하거나 클릭해서 말해보세요',
         'add_context': '맥락 추가하기'
+    },
+
+    // Changelog page
+    'changelog': {
+        'title': '업데이트 내역',
+        'description': 'Wyssn 애플리케이션의 모든 업데이트 및 변경 사항을 확인하세요'
+    },
+
+    // Account page
+    'account': {
+        'title': '계정',
+        'manageSubscription': '구독 및 계정 설정 관리',
+        'userInfo': '사용자 정보',
+        'name': '이름',
+        'email': '이메일',
+        'subscription': '구독',
+        'loading': '로딩 중...',
+        'subscriptionSuccess': '구독이 성공적으로 처리되었습니다.',
+        'subscriptionCanceled': '구독 과정이 취소되었습니다.'
     }
 } as const;

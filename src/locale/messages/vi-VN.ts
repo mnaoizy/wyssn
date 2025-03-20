@@ -4,7 +4,8 @@ export default {
         'changelog': 'Lịch sử thay đổi',
         'signin': 'Đăng nhập',
         'signup': 'Đăng ký',
-        'signout': 'Đăng xuất'
+        'signout': 'Đăng xuất',
+        'account': 'Tài khoản'
     },
     'hero': {
         'title': 'What You Should Say Next',
@@ -38,5 +39,17 @@ export default {
     'changelog': {
         'title': 'Lịch sử thay đổi',
         'description': 'Theo dõi tất cả các bản cập nhật và thay đổi của ứng dụng Wyssn'
+    },
+
+    'account': {
+        'title': 'Tài khoản',
+        'manageSubscription': 'Quản lý gói đăng ký và cài đặt tài khoản của bạn',
+        'userInfo': 'Thông tin người dùng',
+        'name': 'Tên',
+        'email': 'Email',
+        'subscription': 'Gói đăng ký',
+        'loading': 'Đang tải...',
+        'subscriptionSuccess': 'Gói đăng ký của bạn đã được xử lý thành công.',
+        'subscriptionCanceled': 'Quá trình đăng ký gói của bạn đã bị hủy.'
     }
 } as const;

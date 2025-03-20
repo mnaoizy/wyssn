@@ -6,6 +6,7 @@ export default {
         'signin': 'Anmelden',
         'signup': 'Registrieren',
         'signout': 'Abmelden',
+        'account': 'Konto',
     },
 
     // Hero section
@@ -41,6 +42,25 @@ export default {
         'translation': 'Übersetzung',
         'suggestion_heading': 'So könnten Sie das Gespräch fortsetzen',
         'prompt_speak': 'Tippen oder klicken Sie auf das Mikrofon und beginnen Sie zu sprechen',
-        'add_context': 'Kontext hinz'
+        'add_context': 'Kontext hinzufügen'
+    },
+
+    // Changelog page
+    'changelog': {
+        'title': 'Änderungsprotokoll',
+        'description': 'Verfolgen Sie alle Aktualisierungen und Änderungen an der Wyssn-Anwendung'
+    },
+
+    // Account page
+    'account': {
+        'title': 'Konto',
+        'manageSubscription': 'Verwalten Sie Ihr Abonnement und Kontoeinstellungen',
+        'userInfo': 'Benutzerinformationen',
+        'name': 'Name',
+        'email': 'E-Mail',
+        'subscription': 'Abonnement',
+        'loading': 'Wird geladen...',
+        'subscriptionSuccess': 'Ihr Abonnement wurde erfolgreich verarbeitet.',
+        'subscriptionCanceled': 'Ihr Abonnementvorgang wurde abgebrochen.'
     }
 } as const

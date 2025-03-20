@@ -4,7 +4,8 @@ export default {
         'changelog': 'Registro delle modifiche',
         'signin': 'Accedi',
         'signup': 'Registrati',
-        'signout': 'Esci'
+        'signout': 'Esci',
+        'account': 'Account'
     },
     'hero': {
         'title': 'What You Should Say Next',
@@ -37,6 +38,18 @@ export default {
     },
     'changelog': {
         'title': 'Registro delle modifiche',
-        'description': 'Traccia tutti gli aggiornamenti e le modifiche all’applicazione Wyssn'
+        'description': 'Traccia tutti gli aggiornamenti e le modifiche all\'applicazione Wyssn'
+    },
+
+    'account': {
+        'title': 'Account',
+        'manageSubscription': 'Gestisci il tuo abbonamento e le impostazioni dell\'account',
+        'userInfo': 'Informazioni utente',
+        'name': 'Nome',
+        'email': 'Email',
+        'subscription': 'Abbonamento',
+        'loading': 'Caricamento...',
+        'subscriptionSuccess': 'Il tuo abbonamento è stato elaborato con successo.',
+        'subscriptionCanceled': 'Il processo di abbonamento è stato annullato.'
     }
 } as const;
