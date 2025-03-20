@@ -1,5 +1,7 @@
 import { Fraunces, Outfit } from "next/font/google";
 import { getCurrentLocale } from "@/locale/server";
+import { OpenPanelComponent } from '@openpanel/nextjs';
+
 import './globals.css';
 
 // Font setup
@@ -62,10 +64,16 @@ export default async function RootLayout({
     }
 
     return (
-        <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
-            <body className="antialiased min-h-screen bg-white">
-                {children}
-            </body>
-        </html>
+        <>
+            <OpenPanelComponent
+                clientId="19d41b03-df44-43b1-ace4-70756914d9be"
+                trackScreenViews={true}
+            />
+            <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
+                <body className="antialiased min-h-screen bg-white">
+                    {children}
+                </body>
+            </html>
+        </>
     );
 }
