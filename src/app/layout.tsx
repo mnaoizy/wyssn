@@ -2,6 +2,7 @@ import { Fraunces, Outfit } from "next/font/google";
 import { getCurrentLocale } from "@/locale/server";
 import { OpenPanelComponent } from '@openpanel/nextjs';
 import './globals.css';
+import { TopProgressBarProvider } from "@/providers/top-progress-provider";
 
 // Font setup
 const serif = Fraunces({
@@ -73,7 +74,9 @@ export default async function RootLayout({
             />
             <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
                 <body className="antialiased min-h-screen bg-white">
-                    {children}
+                    <TopProgressBarProvider>
+                        {children}
+                    </TopProgressBarProvider>
                 </body>
             </html>
         </>

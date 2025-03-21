@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/google": "^1.1.25",
     "@ai-sdk/openai": "^1.2.5",
+    "@bprogress/next": "^3.2.10",
     "@kinde-oss/kinde-auth-nextjs": "^2.5.3",
     "@openpanel/nextjs": "^1.0.7",
     "@prisma/client": "^6.5.0",
