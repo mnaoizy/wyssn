@@ -3,6 +3,7 @@ import { z } from 'zod';
 // リクエストスキーマの定義
 export const conversationRequestSchema = z.object({
     message: z.string(),
+    context: z.string().nullish(),
     translationLanguage: z.string().nullish(),
 });
 

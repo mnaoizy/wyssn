@@ -16,6 +16,7 @@ import { Spinner } from '@/components/spinner';
 import { RecognitionStatus } from './recognition-status';
 import { TranscriptDisplay } from './transcript-display';
 import { ControlPanel } from './control-panel';
+import toast from 'react-hot-toast';
 
 export interface SpeechRecognitionProps {
     heroTitle?: string;
@@ -50,10 +51,16 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     const resetHiddenRef = useRef<(() => void) | undefined>(undefined);
     const isLoadingRef = useRef<boolean>(false);
 
-    const { submit, isLoading, object } = useObject({
+    const { submit, isLoading, object, error: suggestError } = useObject({
         api: "/api/suggest",
         schema: conversationSuggestionSchema,
     });
+
+    useEffect(() => {
+        if (suggestError) {
+            toast('Failed to generate conversation suggestions');
+        }
+    }, [suggestError]);
 
     // Use custom hook for suggestions management
     const {

@@ -3,6 +3,7 @@ import { getCurrentLocale } from "@/locale/server";
 import { OpenPanelComponent } from '@openpanel/nextjs';
 import './globals.css';
 import { TopProgressBarProvider } from "@/providers/top-progress-provider";
+import { Toaster } from 'react-hot-toast';
 
 // Font setup
 const serif = Fraunces({
@@ -76,6 +77,7 @@ export default async function RootLayout({
                 <body className="antialiased min-h-screen bg-white">
                     <TopProgressBarProvider>
                         {children}
+                        <Toaster />
                     </TopProgressBarProvider>
                 </body>
             </html>
