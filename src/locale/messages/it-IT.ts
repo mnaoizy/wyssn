@@ -43,13 +43,14 @@ export default {
 
     'account': {
         'title': 'Account',
-        'manageSubscription': 'Gestisci il tuo abbonamento e le impostazioni dell\'account',
-        'userInfo': 'Informazioni utente',
+        'manage_subscription': 'Gestisci il tuo abbonamento e le impostazioni dell\'account',
+        'manage_subscription_button': 'Gestisci abbonamento',
+        'user_info': 'Informazioni utente',
         'name': 'Nome',
         'email': 'Email',
         'subscription': 'Abbonamento',
         'loading': 'Caricamento...',
-        'subscriptionSuccess': 'Il tuo abbonamento è stato elaborato con successo.',
-        'subscriptionCanceled': 'Il processo di abbonamento è stato annullato.'
+        'subscription_success': 'Il tuo abbonamento è stato elaborato con successo.',
+        'subscription_canceled': 'Il processo di abbonamento è stato annullato.'
     }
 } as const;

@@ -43,13 +43,14 @@ export default {
 
     'account': {
         'title': 'Обліковий запис',
-        'manageSubscription': 'Керуйте своєю передплатою та налаштуваннями облікового запису',
-        'userInfo': 'Інформація користувача',
+        'manage_subscription': 'Керуйте своєю передплатою та налаштуваннями облікового запису',
+        'manage_subscription_button': 'Керування передплатою',
+        'user_info': 'Інформація користувача',
         'name': 'Ім\'я',
         'email': 'Електронна пошта',
         'subscription': 'Передплата',
         'loading': 'Завантаження...',
-        'subscriptionSuccess': 'Вашу передплату успішно оброблено.',
-        'subscriptionCanceled': 'Процес оформлення передплати було скасовано.'
+        'subscription_success': 'Вашу передплату успішно оброблено.',
+        'subscription_canceled': 'Процес оформлення передплати було скасовано.'
     }
 } as const;

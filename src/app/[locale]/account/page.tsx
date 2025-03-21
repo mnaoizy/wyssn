@@ -89,27 +89,27 @@ export default async function AccountPage({
             <div className="mb-6 flex justify-between items-start">
                 <div>
                     <h1 className="text-3xl font-bold">{t("account.title")}</h1>
-                    <p className="text-muted-foreground mt-1">{t("account.manageSubscription")}</p>
+                    <p className="text-muted-foreground mt-1">{t("account.manage_subscription")}</p>
                 </div>
                 {userSubscription && portalSessionUrl && (
                     <Link
                         href={portalSessionUrl}
                         className={buttonVariants({ variant: "secondary" })}
                     >
-                        Manage Subscription
+                        {t("account.manage_subscription_button")}
                     </Link>
                 )}
             </div>
 
             {showSuccess && (
                 <div className="mb-6 rounded-md bg-green-50 p-4 text-green-700">
-                    <p>{t("account.subscriptionSuccess")}</p>
+                    <p>{t("account.subscription_success")}</p>
                 </div>
             )}
 
             {showCanceled && (
                 <div className="mb-6 rounded-md bg-amber-50 p-4 text-amber-700">
-                    <p>{t("account.subscriptionCanceled")}</p>
+                    <p>{t("account.subscription_canceled")}</p>
                 </div>
             )}
 
@@ -127,7 +127,7 @@ export default async function AccountPage({
 
             <div className="space-y-8">
                 <section>
-                    <h2 className="text-xl font-semibold mb-3">{t("account.userInfo")}</h2>
+                    <h2 className="text-xl font-semibold mb-3">{t("account.user_info")}</h2>
                     <div className="rounded-md border border-gray-200 p-5 bg-white shadow-sm">
                         <div className="mb-3">
                             <div className="font-medium text-sm text-gray-500">{t("account.name")}</div>

@@ -54,13 +54,14 @@ export default {
     // Account page
     'account': {
         'title': '账户',
-        'manageSubscription': '管理您的订阅和账户设置',
-        'userInfo': '用户信息',
+        'manage_subscription': '管理您的订阅和账户设置',
+        'manage_subscription_button': '管理订阅',
+        'user_info': '用户信息',
         'name': '姓名',
         'email': '电子邮箱',
         'subscription': '订阅',
         'loading': '加载中...',
-        'subscriptionSuccess': '您的订阅已成功处理。',
-        'subscriptionCanceled': '您的订阅过程已取消。'
+        'subscription_success': '您的订阅已成功处理。',
+        'subscription_canceled': '您的订阅过程已取消。'
     }
 } as const

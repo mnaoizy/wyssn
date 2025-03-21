@@ -43,13 +43,14 @@ export default {
 
     'account': {
         'title': 'Tài khoản',
-        'manageSubscription': 'Quản lý gói đăng ký và cài đặt tài khoản của bạn',
-        'userInfo': 'Thông tin người dùng',
+        'manage_subscription': 'Quản lý gói đăng ký và cài đặt tài khoản của bạn',
+        'manage_subscription_button': 'Quản lý gói đăng ký',
+        'user_info': 'Thông tin người dùng',
         'name': 'Tên',
         'email': 'Email',
         'subscription': 'Gói đăng ký',
         'loading': 'Đang tải...',
-        'subscriptionSuccess': 'Gói đăng ký của bạn đã được xử lý thành công.',
-        'subscriptionCanceled': 'Quá trình đăng ký gói của bạn đã bị hủy.'
+        'subscription_success': 'Gói đăng ký của bạn đã được xử lý thành công.',
+        'subscription_canceled': 'Quá trình đăng ký gói của bạn đã bị hủy.'
     }
 } as const;

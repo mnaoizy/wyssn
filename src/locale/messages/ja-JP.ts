@@ -54,13 +54,14 @@ export default {
     // Account page
     'account': {
         'title': 'アカウント',
-        'manageSubscription': 'サブスクリプションとアカウント設定の管理',
-        'userInfo': 'ユーザー情報',
+        'manage_subscription': 'サブスクリプションとアカウント設定の管理',
+        'manage_subscription_button': 'サブスクリプションの管理',
+        'user_info': 'ユーザー情報',
         'name': '名前',
         'email': 'メール',
         'subscription': 'サブスクリプション',
         'loading': '読み込み中...',
-        'subscriptionSuccess': 'サブスクリプションが正常に処理されました。',
-        'subscriptionCanceled': 'サブスクリプション処理がキャンセルされました。'
+        'subscription_success': 'サブスクリプションが正常に処理されました。',
+        'subscription_canceled': 'サブスクリプション処理がキャンセルされました。'
     }
 } as const

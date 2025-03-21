@@ -43,13 +43,14 @@ export default {
 
     'account': {
         'title': 'Аккаунт',
-        'manageSubscription': 'Управление подпиской и настройками аккаунта',
-        'userInfo': 'Информация пользователя',
+        'manage_subscription': 'Управление подпиской и настройками аккаунта',
+        'manage_subscription_button': 'Управление подпиской',
+        'user_info': 'Информация пользователя',
         'name': 'Имя',
         'email': 'Эл. почта',
         'subscription': 'Подписка',
         'loading': 'Загрузка...',
-        'subscriptionSuccess': 'Ваша подписка успешно обработана.',
-        'subscriptionCanceled': 'Процесс оформления подписки был отменен.'
+        'subscription_success': 'Ваша подписка успешно обработана.',
+        'subscription_canceled': 'Процесс оформления подписки был отменен.'
     }
 } as const;

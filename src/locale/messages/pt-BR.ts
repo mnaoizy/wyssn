@@ -43,13 +43,14 @@ export default {
 
     'account': {
         'title': 'Conta',
-        'manageSubscription': 'Gerencie sua assinatura e configurações da conta',
-        'userInfo': 'Informações do usuário',
+        'manage_subscription': 'Gerencie sua assinatura e configurações da conta',
+        'manage_subscription_button': 'Gerenciar assinatura',
+        'user_info': 'Informações do usuário',
         'name': 'Nome',
         'email': 'E-mail',
         'subscription': 'Assinatura',
         'loading': 'Carregando...',
-        'subscriptionSuccess': 'Sua assinatura foi processada com sucesso.',
-        'subscriptionCanceled': 'Seu processo de assinatura foi cancelado.'
+        'subscription_success': 'Sua assinatura foi processada com sucesso.',
+        'subscription_canceled': 'Seu processo de assinatura foi cancelado.'
     }
 } as const;

@@ -5,6 +5,7 @@ import { SubscriptionPlanCard } from "@/components/ui/subscription-plan-card";
 import { createCheckoutSession, createCustomerPortalSession } from "@/lib/subscription-service";
 import { Subscription } from "@prisma/client";
 import { useParams } from "next/navigation";
+import { useI18n } from "@/locale/client";
 
 interface PlansProps {
     userSubscription?: Subscription | null;
@@ -53,7 +54,7 @@ function formatCurrency(amount: number | null, currency: string, locale: string)
 export function PlansSection({ userSubscription }: PlansProps) {
     const params = useParams();
     const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale || 'en-US';
-
+    const t = useI18n();
     const [isLoading, setIsLoading] = React.useState(false);
     const [priceDetails, setPriceDetails] = React.useState<PriceDetails>({
         unitAmount: null,
@@ -153,7 +154,7 @@ export function PlansSection({ userSubscription }: PlansProps) {
                     interval={priceDetails.interval}
                     priceLoading={priceDetails.loading}
                     features={PRO_PLAN_FEATURES}
-                    buttonText={isSubscribed ? "Manage Subscription" : "Subscribe"}
+                    buttonText={isSubscribed ? t("account.manage_subscription_button") : "Subscribe"}
                     onSelect={isSubscribed ? handleManageSubscription : handleSubscribe}
                     isPopular={true}
                     isCurrentPlan={isSubscribed}

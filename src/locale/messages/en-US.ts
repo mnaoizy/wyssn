@@ -54,13 +54,14 @@ export default {
     // Account page
     'account': {
         'title': 'Account',
-        'manageSubscription': 'Manage your subscription and account settings',
-        'userInfo': 'User Information',
+        'manage_subscription': 'Manage your subscription and account settings',
+        'manage_subscription_button': 'Manage Subscription',
+        'user_info': 'User Information',
         'name': 'Name',
         'email': 'Email',
         'subscription': 'Subscription',
         'loading': 'Loading...',
-        'subscriptionSuccess': 'Your subscription has been successfully processed.',
-        'subscriptionCanceled': 'Your subscription process was canceled.'
+        'subscription_success': 'Your subscription has been successfully processed.',
+        'subscription_canceled': 'Your subscription process was canceled.',
     }
 } as const

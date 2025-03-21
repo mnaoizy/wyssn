@@ -54,13 +54,14 @@ export default {
     // Account page
     'account': {
         'title': 'Konto',
-        'manageSubscription': 'Verwalten Sie Ihr Abonnement und Kontoeinstellungen',
-        'userInfo': 'Benutzerinformationen',
+        'manage_subscription': 'Verwalten Sie Ihr Abonnement und Kontoeinstellungen',
+        'manage_subscription_button': 'Abonnement verwalten',
+        'user_info': 'Benutzerinformationen',
         'name': 'Name',
         'email': 'E-Mail',
         'subscription': 'Abonnement',
         'loading': 'Wird geladen...',
-        'subscriptionSuccess': 'Ihr Abonnement wurde erfolgreich verarbeitet.',
-        'subscriptionCanceled': 'Ihr Abonnementvorgang wurde abgebrochen.'
+        'subscription_success': 'Ihr Abonnement wurde erfolgreich verarbeitet.',
+        'subscription_canceled': 'Ihr Abonnementvorgang wurde abgebrochen.'
     }
 } as const

@@ -53,13 +53,14 @@ export default {
     // Account page
     'account': {
         'title': 'Compte',
-        'manageSubscription': 'Gérez votre abonnement et les paramètres de votre compte',
-        'userInfo': 'Informations utilisateur',
+        'manage_subscription': 'Gérez votre abonnement et les paramètres de votre compte',
+        'manage_subscription_button': 'Gérer l\'abonnement',
+        'user_info': 'Informations utilisateur',
         'name': 'Nom',
         'email': 'E-mail',
         'subscription': 'Abonnement',
         'loading': 'Chargement...',
-        'subscriptionSuccess': 'Votre abonnement a été traité avec succès.',
-        'subscriptionCanceled': 'Votre processus d\'abonnement a été annulé.'
+        'subscription_success': 'Votre abonnement a été traité avec succès.',
+        'subscription_canceled': 'Votre processus d\'abonnement a été annulé.'
     }
 } as const

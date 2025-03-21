@@ -55,13 +55,14 @@ export default {
     // Account page
     'account': {
         'title': '계정',
-        'manageSubscription': '구독 및 계정 설정 관리',
-        'userInfo': '사용자 정보',
+        'manage_subscription': '구독 및 계정 설정 관리',
+        'manage_subscription_button': '구독 관리',
+        'user_info': '사용자 정보',
         'name': '이름',
         'email': '이메일',
         'subscription': '구독',
         'loading': '로딩 중...',
-        'subscriptionSuccess': '구독이 성공적으로 처리되었습니다.',
-        'subscriptionCanceled': '구독 과정이 취소되었습니다.'
+        'subscription_success': '구독이 성공적으로 처리되었습니다.',
+        'subscription_canceled': '구독 과정이 취소되었습니다.'
     }
 } as const;
