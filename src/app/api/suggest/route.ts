@@ -17,9 +17,8 @@ export async function POST(req: Request) {
     try {
         const { getUser } = getKindeServerSession();
 
-
+        // ユーザー認証
         const user = await getUser();
-
         if (!user) {
             return NextResponse.json(
                 { error: 'Unauthorized', details: 'User not found' },
@@ -27,26 +26,33 @@ export async function POST(req: Request) {
             );
         }
 
-        const dbUser = await db.user.findUniqueOrThrow({
-            where: {
-                kindeId: user.id
-            },
+        // サブスクリプション確認
+        const dbUser = await db.user.findUnique({
+            where: { kindeId: user.id },
             select: {
                 subscriptions: {
-                    select: {
-                        status: true
-                    }
+                    select: { status: true }
                 },
             }
-        })
+        });
 
-        const subscribed = dbUser.subscriptions.some(subscription => subscription.status === 'active' || subscription.status === 'trialing');
+        if (!dbUser) {
+            return NextResponse.json(
+                { error: 'Unauthorized', details: 'User not found in database' },
+                { status: 401 }
+            );
+        }
+
+        const subscribed = dbUser.subscriptions.some(
+            subscription => ['active', 'trialing'].includes(subscription.status)
+        );
 
         if (!subscribed) {
             return NextResponse.json(
                 { error: 'Unauthorized', details: 'You must be subscribed to access this resource' },
                 { status: 401 }
             );
+
         }
 
         // リクエストボディを取得してバリデーション

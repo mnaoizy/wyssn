@@ -79,7 +79,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
             <div className="mt-4">
                 <div className="grid grid-cols-2 gap-2">
                     <Button
-                        variant={isPinned ? "default" : "outline"}
+                        variant={isPinned ? "secondary" : "ghost"}
                         size="icon"
                         disabled={isDisabled}
                         onClick={onTogglePin}
@@ -88,7 +88,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
                         <PinIcon />
                     </Button>
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
                         disabled={isDisabled}
                         onClick={onHide}
