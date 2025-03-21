@@ -32,7 +32,7 @@ export interface SpeechRecognitionProps {
 export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     heroTitle,
     heroDescription,
-    utteranceInterval = 2,
+    utteranceInterval = 1,
     onUtteranceIntervalChange
 }) => {
     // Add client-side only initialization

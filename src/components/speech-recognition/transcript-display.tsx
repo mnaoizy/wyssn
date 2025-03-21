@@ -23,7 +23,7 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         <div className="text-sm text-gray-500">
             <div className="max-h-60 overflow-auto p-3 bg-gray-50 rounded">
                 {hasContent ? (
-                    <div className="whitespace-pre-wrap">
+                    <div className="whitespace-pre-wrap text-xl font-bold">
                         {/* Concatenate finalized utterances with spaces */}
                         <span>
                             {finalUtterances.map(u => u.text).join(' ')}

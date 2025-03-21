@@ -46,18 +46,18 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
     return (
         <div
             className={`bg-white shadow rounded-lg p-4 ${isPinned ? 'border-2 border-blue-200' : 'border border-gray-200'
-                } flex flex-col min-h-42 h-full relative`}
+                } flex flex-col min-h-30 h-full relative`}
         >
             {/* Content Section - Aligned at the top */}
             <div className="flex-grow flex flex-col items-start">
-                <div className="flex justify-between items-start w-full">
+                {/* <div className="flex justify-between items-start w-full">
                     <span className="font-semibold text-gray-900 text-md">
                         {t(`categories.${suggestion.category}` as keyof typeof t)}
                     </span>
                     <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(suggestion.category)}`}>
                         {suggestion.confidenceLevel}%
                     </span>
-                </div>
+                </div> */}
                 <p className="mt-2 text-gray-600 text-left text-sm">{suggestion.content}</p>
                 {
                     suggestion.translation && (
