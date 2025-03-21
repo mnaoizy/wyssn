@@ -1,4 +1,3 @@
-// app/api/webhooks/stripe/route.ts
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "@/lib/prisma-client";

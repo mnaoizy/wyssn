@@ -3,6 +3,7 @@ import { google } from '@ai-sdk/google';
 import { streamObject, DeepPartial, generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from '@/lib/prisma-client';
 
 
 
@@ -14,16 +15,40 @@ export const maxDuration = 60;
 
 export async function POST(req: Request) {
     try {
-        const { isAuthenticated: checkAuthentication } = getKindeServerSession();
+        const { getUser } = getKindeServerSession();
 
-        const isAuthenticated = await checkAuthentication();
 
-        if (!isAuthenticated) {
+        const user = await getUser();
+
+        if (!user) {
             return NextResponse.json(
-                { error: 'Unauthorized', details: 'You must be logged in to access this resource' },
+                { error: 'Unauthorized', details: 'User not found' },
                 { status: 401 }
             );
         }
+
+        const dbUser = await db.user.findUniqueOrThrow({
+            where: {
+                kindeId: user.id
+            },
+            select: {
+                subscriptions: {
+                    select: {
+                        status: true
+                    }
+                },
+            }
+        })
+
+        const subscribed = dbUser.subscriptions.some(subscription => subscription.status === 'active' || subscription.status === 'trialing');
+
+        if (!subscribed) {
+            return NextResponse.json(
+                { error: 'Unauthorized', details: 'You must be subscribed to access this resource' },
+                { status: 401 }
+            );
+        }
+
         // リクエストボディを取得してバリデーション
         const rawBody = await req.json();
         const validationResult = conversationRequestSchema.safeParse(rawBody);

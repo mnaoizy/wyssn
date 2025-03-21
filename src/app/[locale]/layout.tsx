@@ -31,28 +31,37 @@ function LayoutContent({ children, locale }: { children: ReactElement; locale: s
               <LanguageSelector />
               <div className="flex items-center space-x-4 text-sm">
                 <span>{t('nav.about')}</span>
-                <Link href={`/${locale}/changelog`} className="hover:text-neutral-500 transition-colors">{t('nav.changelog')}</Link>
+                <Link
+                  href={`/${locale}/changelog`}
+                  className="hover:text-neutral-500 transition-colors">{t('nav.changelog')}</Link>
                 <div className="space-x-2">
                   {
                     isAuthenticated ? (
                       <>
-                        <Link href={`/${locale}/account`} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <Link
+                          href={`/${locale}/account`}
+                          className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.account')}
                         </Link>
-                        <LogoutLink postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <LogoutLink
+                          postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
+                          className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.signout')}
                         </LogoutLink>
                       </>
                     ) : (
                       <>
-                        <RegisterLink authUrlParams={{
-                          lang: locale
-                        }} lang={locale} postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <RegisterLink
+                          authUrlParams={{ lang: locale }}
+                          lang={locale}
+                          postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
+                          className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.signup')}
                         </RegisterLink>
-                        <LoginLink authUrlParams={{
-                          lang: locale
-                        }} postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <LoginLink
+                          authUrlParams={{ lang: locale }}
+                          postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
+                          className={buttonVariants({ variant: "secondary", size: "sm" })}>
                           {t('nav.signin')}
                         </LoginLink>
                       </>

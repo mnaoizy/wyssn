@@ -35,7 +35,7 @@ export default {
         'related_thoughts': '関連する考え',
         'narrative_continuation': '話の続き',
         'additional_context': '追加の文脈',
-        'personal_perspective': '個人的視'
+        'personal_perspective': '個人的視点',
     },
     // Main
     'main': {
