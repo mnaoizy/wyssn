@@ -233,12 +233,12 @@ export default function Home() {
 
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
-            <div className="w-full max-w-5xl bg-white rounded-lg shadow-md p-4 sm:p-6 relative" ref={containerRef}>
+        <div className="min-h-screen flex flex-col items-center justify-center p-4">
+            <div className="w-full max-w-5xl rounded-lg shadow-md p-4 sm:p-6 bg-gray-50 relative" ref={containerRef}>
                 <h1 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">テキスト オートコンプリート</h1>
 
                 {/* デバッグ用入力エリア */}
-                <div className="mb-4 p-3 sm:p-4 bg-gray-50 rounded-md border border-gray-200">
+                <div className="mb-4 p-3 sm:p-4 bg-white rounded-md border border-gray-200">
                     <h2 className="text-base sm:text-lg font-semibold mb-2 text-gray-800">デバッグ用コントロール</h2>
 
                     {/* 表示テキスト設定 */}
@@ -265,21 +265,6 @@ export default function Home() {
                         />
                     </div>
 
-                    {/* 翻訳表示設定 */}
-                    <div>
-                        <div className="flex items-center">
-                            <input
-                                type="checkbox"
-                                id="showTranslation"
-                                checked={showTranslation}
-                                onChange={toggleTranslation}
-                                className="mr-2 h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor="showTranslation" className="text-sm font-medium text-gray-700">
-                                英語訳を表示
-                            </label>
-                        </div>
-                    </div>
                 </div>
 
                 {/* 新しいシンプルなツールバー */}
@@ -320,7 +305,7 @@ export default function Home() {
                 </div>
 
                 {/* テキスト表示エリア */}
-                <div className="space-y-4 relative font-bold text-xl">
+                <div className="space-y-4 relative font-bold text-xl leading-14">
                     <div
                         ref={textRef}
                         tabIndex={0}
@@ -331,11 +316,12 @@ export default function Home() {
 
                     {/* 選択された候補のリスト */}
                     {selectedTexts.length > 0 && (
-                        <div className="flex flex-row flex-wrap gap-1 absolute top-2 left-2">
+                        <div className="flex flex-row flex-wrap gap-8 absolute top-11 left-2">
                             {selectedTexts.map((selectedText, index) => (
                                 <div
+
                                     key={index}
-                                    className="p-2 backdrop-blur-md z-10 bg-white/90  rounded-md text-xs text-gray-800 max-w-[240px]"
+                                    className="p-[2px] border-[1px] border-gray-500/10 z-10 bg-white rounded-sm text-xs text-gray-800 font-medium"
                                 >
                                     {selectedText}
                                 </div>

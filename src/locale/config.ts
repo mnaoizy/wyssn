@@ -1,4 +1,4 @@
-export const locales = ['en-US', 'fr-FR', 'de-DE', 'es-ES', 'ja-JP', 'zh-CN', 'zh-TW', 'ko-KR', 'pt-BR', 'ru-RU', 'uk-UA', 'it-IT', 'vi-VN'] as const;
+export const locales = ['en-US', 'fr-FR', 'de-DE', 'es-ES', 'ja-JP', 'zh-CN', 'zh-TW', 'ko-KR', 'pt-BR', 'ru-RU', 'uk-UA', 'it-IT', 'vi-VN', 'hi-IN'] as const;
 export type Locale = typeof locales[number];
 export const defaultLocale: Locale = 'en-US';
 
@@ -17,4 +17,5 @@ export const messagesImport = {
     "uk-UA": () => import('./messages/uk-UA'),
     "it-IT": () => import('./messages/it-IT'),
     "vi-VN": () => import('./messages/vi-VN'),
+    "hi-IN": () => import('./messages/hi-IN'),
 } as const;
