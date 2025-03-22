@@ -39,3 +39,120 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 30
+
+      - name: Create test summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              if (fs.existsSync('playwright-report/results.json')) {
+                const results = JSON.parse(fs.readFileSync('playwright-report/results.json', 'utf8'));
+                const summary = {
+                  total: results.stats.total,
+                  passed: results.stats.expected,
+                  failed: results.stats.unexpected,
+                  flaky: results.stats.flaky,
+                  skipped: results.stats.skipped,
+                  duration: results.stats.duration
+                };
+                fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, `
+                ## Playwright Test Summary
+                - Total: ${summary.total}
+                - Passed: ${summary.passed}
+                - Failed: ${summary.failed}
+                - Flaky: ${summary.flaky}
+                - Skipped: ${summary.skipped}
+                - Duration: ${(summary.duration / 1000).toFixed(2)}s
+                
+                [View detailed report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})
+                `);
+              } else {
+                fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, '## Playwright Test Summary\nNo test results found.');
+              }
+            } catch (error) {
+              console.error('Error creating test summary:', error);
+              fs.writeFileSync(process.env.GITHUB_STEP_SUMMARY, '## Playwright Test Summary\nError creating test summary.');
+            }
+
+      - name: Post screenshots to PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Function to recursively find screenshots
+            function findScreenshots(dir) {
+              if (!fs.existsSync(dir)) return [];
+              
+              let results = [];
+              const items = fs.readdirSync(dir);
+              
+              for (const item of items) {
+                const fullPath = path.join(dir, item);
+                const stat = fs.statSync(fullPath);
+                
+                if (stat.isDirectory()) {
+                  results = results.concat(findScreenshots(fullPath));
+                } else if (item.endsWith('.png')) {
+                  results.push(fullPath);
+                }
+              }
+              
+              return results;
+            }
+
+            try {
+              // Find any screenshots taken during tests
+              const screenshots = findScreenshots('test-results');
+              
+              if (screenshots.length === 0) {
+                console.log('No screenshots to post');
+                return;
+              }
+              
+              // Get PR number
+              const prNumber = context.issue.number;
+              
+              // Check for existing comment
+              const { data: comments } = await github.rest.issues.listComments({
+                ...context.repo,
+                issue_number: prNumber
+              });
+              
+              const screenshotComment = comments.find(comment => 
+                comment.user.login === 'github-actions[bot]' && 
+                comment.body.includes('## Test Screenshots')
+              );
+              
+              // Prepare comment content
+              let body = '## Test Screenshots\n\n';
+              body += 'The following screenshots were captured during test execution:\n\n';
+              body += screenshots.map(s => `- **${path.basename(s)}**`).join('\n');
+              body += '\n\n[Download all artifacts](https://github.com/' + 
+                      context.repo.owner + '/' + context.repo.repo + 
+                      '/actions/runs/' + context.runId + '/artifacts)';
+              
+              // Post or update comment
+              if (screenshotComment) {
+                await github.rest.issues.updateComment({
+                  ...context.repo,
+                  comment_id: screenshotComment.id,
+                  body
+                });
+                console.log('Updated existing comment');
+              } else {
+                await github.rest.issues.createComment({
+                  ...context.repo,
+                  issue_number: prNumber,
+                  body
+                });
+                console.log('Created new comment');
+              }
+            } catch (error) {
+              console.error('Error posting screenshots:', error);
+            }
