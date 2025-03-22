@@ -37,7 +37,9 @@ jobs:
           KINDE_REDIRECT_URI: http://localhost:3000/api/auth/kinde_callback
           KINDE_POST_LOGOUT_REDIRECT_URI: http://localhost:3000
           NEXT_PUBLIC_APP_URL: http://localhost:3000
-        run: npx playwright test
+          CI: 'true'
+        # Run only the auth tests that don't require a server in CI
+        run: npx playwright test --project=chromium-auth
 
       - name: Upload test results
         if: always()

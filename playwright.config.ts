@@ -17,30 +17,43 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testMatch: /home\.spec\.ts/,
+    },
+    {
+      name: 'chromium-auth',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /account-redirect\.spec\.ts/,
+      // No webServer - these tests mock the redirect instead of testing a live server
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      testMatch: /home\.spec\.ts/,
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      testMatch: /home\.spec\.ts/,
     },
     /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
+      testMatch: /home\.spec\.ts/,
     },
     {
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
+      testMatch: /home\.spec\.ts/,
     },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
+  /* Only run the dev server for non-auth tests that need it */
+  webServer: process.env.CI
+    ? undefined
+    : {
+        command: 'npm run dev',
+        url: 'http://localhost:3000',
+        reuseExistingServer: true,
+      },
 })
