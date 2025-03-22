@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { ProgressProvider } from "@bprogress/next/app";
-import { ReactNode } from "react";
+import { ProgressProvider } from '@bprogress/next/app'
+import { ReactNode } from 'react'
 
 export const TopProgressBarProvider = ({
-    children,
+  children,
 }: {
-    children: ReactNode;
+  children: ReactNode
 }) => {
-    return (
-        <>
-            {children}
-            <ProgressProvider
-                height="4px"
-                color="#000000"
-                options={{ showSpinner: false }}
-                shallowRouting
-            />
-        </>
-    );
-};
+  return (
+    <>
+      {children}
+      <ProgressProvider
+        height="3px"
+        color="#000000"
+        options={{ showSpinner: false }}
+        shallowRouting
+      />
+    </>
+  )
+}
