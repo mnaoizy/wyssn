@@ -102,7 +102,7 @@ export function MobileNavigationPanel() {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         } shadow-xl flex flex-col p-6 md:hidden`}
       >
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-serif font-semibold uppercase">Wyssn</h2>
           <button
             aria-label="Close menu"
@@ -114,7 +114,7 @@ export function MobileNavigationPanel() {
         </div>
 
         <nav className="flex-1">
-          <ul className="space-y-4">
+          <ul className="space-y-2">
             <li>
               <Link
                 href={`/${locale}`}
