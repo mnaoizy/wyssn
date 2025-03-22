@@ -28,6 +28,15 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
+        env:
+          # Mock required environment variables for testing
+          STRIPE_SECRET_API_KEY: sk_test_mock_key_for_testing
+          KINDE_ISSUER_URL: https://example.kinde.com
+          KINDE_CLIENT_ID: mock_client_id
+          KINDE_CLIENT_SECRET: mock_client_secret
+          KINDE_REDIRECT_URI: http://localhost:3000/api/auth/kinde_callback
+          KINDE_POST_LOGOUT_REDIRECT_URI: http://localhost:3000
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
         run: npx playwright test
 
       - name: Upload test results
