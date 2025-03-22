@@ -151,9 +151,10 @@ jobs:
               let body = '## Test Screenshots\n\n';
               body += 'The following screenshots were captured during test execution:\n\n';
               body += screenshots.map(s => `- **${path.basename(s)}**`).join('\n');
-              body += '\n\n[Download all artifacts](https://github.com/' + 
-                      context.repo.owner + '/' + context.repo.repo + 
-                      '/actions/runs/' + context.runId + '/artifacts)';
+              
+              // Use the workflow run URL instead of a direct download link
+              // This avoids 404 errors and permissions issues
+              body += '\n\n[View test artifacts in GitHub Actions](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})';
               
               // Post or update comment
               if (screenshotComment) {
