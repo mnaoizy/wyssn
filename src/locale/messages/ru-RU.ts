@@ -51,6 +51,55 @@ export default {
         'subscription': 'Подписка',
         'loading': 'Загрузка...',
         'subscription_success': 'Ваша подписка успешно обработана.',
-        'subscription_canceled': 'Процесс оформления подписки был отменен.'
+        'subscription_canceled': 'Процесс оформления подписки был отменен.',
+        'error_no_customer': 'У вас еще нет учетной записи клиента Stripe. Пожалуйста, оформите подписку сначала.',
+        'error_portal_failed': 'Не удалось получить доступ к порталу оплаты. Пожалуйста, попробуйте позже.',
+        'error_generic': 'Произошла ошибка. Пожалуйста, повторите попытку.',
+        'current_usage': 'Текущее использование: {count} / {limit} запросов в этом месяце',
+        'subscription_renewal': 'Ваша подписка {action} {date}',
+        'subscription_renew': 'будет продлена',
+        'subscription_end': 'закончится',
+        'free_plan_status': 'Вы используете бесплатный план'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'Выберите подходящий вам план',
+        'subheading': 'Начните с наших гибких ценовых опций',
+        'free': {
+            'title': 'Бесплатный план',
+            'description': 'Идеально для начала с базовыми функциями',
+            'current_plan': 'Текущий план',
+            'downgrade': 'Понизить'
+        },
+        'pro': {
+            'title': 'Профессиональный план',
+            'description': 'Для индивидуальных пользователей, которым требуется больше возможностей',
+            'subscribe': 'Подписаться'
+        },
+        'enterprise': {
+            'title': 'Корпоративный план',
+            'description': 'Для команд и компаний с индивидуальными требованиями',
+            'contact_sales': 'Связаться с отделом продаж'
+        },
+        'pricing': {
+            'month': 'месяц',
+            'custom_pricing': 'Индивидуально',
+            'pricing': 'цены',
+            'popular': 'Популярный',
+            'current_plan': 'Текущий план'
+        },
+        'features': {
+            'core_features': 'Все основные функции включены',
+            'requests_free_daily': 'Ограничение: 50 запросов в день',
+            'requests_free_monthly': 'Ограничение: 500 запросов в месяц',
+            'standard_support': 'Стандартная поддержка',
+            'requests_pro_daily': 'Ограничение: 500 запросов в день',
+            'requests_pro_monthly': 'Ограничение: 10 000 запросов в месяц',
+            'priority_support': 'Приоритетная поддержка',
+            'custom_limits': 'Индивидуальные лимиты запросов',
+            'team_management': 'Функции управления командой',
+            'dedicated_support': 'Выделенная поддержка',
+            'custom_billing': 'Индивидуальные условия оплаты'
+        }
     }
 } as const;

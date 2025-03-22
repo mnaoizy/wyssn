@@ -62,6 +62,55 @@ export default {
         'subscription': 'サブスクリプション',
         'loading': '読み込み中...',
         'subscription_success': 'サブスクリプションが正常に処理されました。',
-        'subscription_canceled': 'サブスクリプション処理がキャンセルされました。'
+        'subscription_canceled': 'サブスクリプション処理がキャンセルされました。',
+        'error_no_customer': 'Stripeの顧客アカウントをお持ちではありません。まずはサブスクリプションにご登録ください。',
+        'error_portal_failed': '請求ポータルへのアクセスに失敗しました。後ほど再度お試しください。',
+        'error_generic': 'エラーが発生しました。もう一度お試しください。',
+        'current_usage': '現在の使用状況: {count} / {limit} リクエスト（今月）',
+        'subscription_renewal': 'サブスクリプションは{date}に{action}されます',
+        'subscription_renew': '更新',
+        'subscription_end': '終了',
+        'free_plan_status': '現在フリープランをご利用中です'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'あなたに合ったプランを選択',
+        'subheading': '柔軟な料金オプションで始めましょう',
+        'free': {
+            'title': 'フリープラン',
+            'description': '基本機能の利用に最適',
+            'current_plan': '現在のプラン',
+            'downgrade': 'ダウングレード'
+        },
+        'pro': {
+            'title': 'プロプラン',
+            'description': 'より多くの容量が必要な個人向け',
+            'subscribe': '登録する'
+        },
+        'enterprise': {
+            'title': 'エンタープライズプラン',
+            'description': 'カスタムニーズを持つチームやビジネス向け',
+            'contact_sales': '営業に問い合わせる'
+        },
+        'pricing': {
+            'month': '月',
+            'custom_pricing': 'カスタム',
+            'pricing': '価格',
+            'popular': '人気',
+            'current_plan': '現在のプラン'
+        },
+        'features': {
+            'core_features': 'すべての主要機能を含む',
+            'requests_free_daily': '1日50リクエストまで',
+            'requests_free_monthly': '月間500リクエストまで',
+            'standard_support': '標準サポート',
+            'requests_pro_daily': '1日500リクエストまで',
+            'requests_pro_monthly': '月間10,000リクエストまで',
+            'priority_support': '優先サポート',
+            'custom_limits': 'カスタムリクエスト制限',
+            'team_management': 'チーム管理機能',
+            'dedicated_support': '専任サポート',
+            'custom_billing': 'カスタム請求オプション'
+        }
     }
 } as const

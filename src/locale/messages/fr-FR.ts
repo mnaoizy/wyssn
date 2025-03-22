@@ -61,6 +61,55 @@ export default {
         'subscription': 'Abonnement',
         'loading': 'Chargement...',
         'subscription_success': 'Votre abonnement a été traité avec succès.',
-        'subscription_canceled': 'Votre processus d\'abonnement a été annulé.'
+        'subscription_canceled': 'Votre processus d\'abonnement a été annulé.',
+        'error_no_customer': 'Vous n\'avez pas encore de compte client Stripe. Veuillez vous abonner d\'abord.',
+        'error_portal_failed': 'Échec d\'accès au portail de facturation. Veuillez réessayer plus tard.',
+        'error_generic': 'Une erreur s\'est produite. Veuillez réessayer.',
+        'current_usage': 'Utilisation actuelle : {count} / {limit} requêtes ce mois-ci',
+        'subscription_renewal': 'Votre abonnement {action} le {date}',
+        'subscription_renew': 'se renouvellera',
+        'subscription_end': 'se terminera',
+        'free_plan_status': 'Vous utilisez actuellement le forfait Gratuit'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'Choisissez le forfait qui vous convient',
+        'subheading': 'Commencez avec nos options de tarification flexibles',
+        'free': {
+            'title': 'Forfait Gratuit',
+            'description': 'Parfait pour débuter avec les fonctionnalités de base',
+            'current_plan': 'Forfait Actuel',
+            'downgrade': 'Rétrograder'
+        },
+        'pro': {
+            'title': 'Forfait Pro',
+            'description': 'Pour les individus qui ont besoin de plus de capacité',
+            'subscribe': 'S\'abonner'
+        },
+        'enterprise': {
+            'title': 'Forfait Entreprise',
+            'description': 'Pour les équipes et entreprises avec des besoins personnalisés',
+            'contact_sales': 'Contacter les ventes'
+        },
+        'pricing': {
+            'month': 'mois',
+            'custom_pricing': 'Personnalisé',
+            'pricing': 'tarification',
+            'popular': 'Populaire',
+            'current_plan': 'Forfait Actuel'
+        },
+        'features': {
+            'core_features': 'Toutes les fonctionnalités principales incluses',
+            'requests_free_daily': 'Limité à 50 requêtes par jour',
+            'requests_free_monthly': 'Limité à 500 requêtes par mois',
+            'standard_support': 'Support standard',
+            'requests_pro_daily': 'Limité à 500 requêtes par jour',
+            'requests_pro_monthly': 'Limité à 10 000 requêtes par mois',
+            'priority_support': 'Support prioritaire',
+            'custom_limits': 'Limites de requêtes personnalisées',
+            'team_management': 'Fonctionnalités de gestion d\'équipe',
+            'dedicated_support': 'Support dédié',
+            'custom_billing': 'Options de facturation personnalisées'
+        }
     }
 } as const

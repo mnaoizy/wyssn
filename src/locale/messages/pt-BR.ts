@@ -51,6 +51,55 @@ export default {
         'subscription': 'Assinatura',
         'loading': 'Carregando...',
         'subscription_success': 'Sua assinatura foi processada com sucesso.',
-        'subscription_canceled': 'Seu processo de assinatura foi cancelado.'
+        'subscription_canceled': 'Seu processo de assinatura foi cancelado.',
+        'error_no_customer': 'Você ainda não tem uma conta de cliente Stripe. Por favor, assine primeiro.',
+        'error_portal_failed': 'Falha ao acessar o portal de faturamento. Por favor, tente novamente mais tarde.',
+        'error_generic': 'Ocorreu um erro. Por favor, tente novamente.',
+        'current_usage': 'Uso atual: {count} / {limit} solicitações neste mês',
+        'subscription_renewal': 'Sua assinatura será {action} em {date}',
+        'subscription_renew': 'renovada',
+        'subscription_end': 'encerrada',
+        'free_plan_status': 'Você está atualmente no plano Gratuito'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'Escolha o plano ideal para você',
+        'subheading': 'Comece com nossas opções flexíveis de preços',
+        'free': {
+            'title': 'Plano Gratuito',
+            'description': 'Perfeito para começar com recursos básicos',
+            'current_plan': 'Plano Atual',
+            'downgrade': 'Fazer Downgrade'
+        },
+        'pro': {
+            'title': 'Plano Pro',
+            'description': 'Para indivíduos que precisam de mais capacidade',
+            'subscribe': 'Assinar'
+        },
+        'enterprise': {
+            'title': 'Plano Empresarial',
+            'description': 'Para equipes e empresas com necessidades personalizadas',
+            'contact_sales': 'Contatar Vendas'
+        },
+        'pricing': {
+            'month': 'mês',
+            'custom_pricing': 'Personalizado',
+            'pricing': 'preços',
+            'popular': 'Popular',
+            'current_plan': 'Plano Atual'
+        },
+        'features': {
+            'core_features': 'Todos os recursos principais incluídos',
+            'requests_free_daily': 'Limitado a 50 solicitações por dia',
+            'requests_free_monthly': 'Limitado a 500 solicitações por mês',
+            'standard_support': 'Suporte padrão',
+            'requests_pro_daily': 'Limitado a 500 solicitações por dia',
+            'requests_pro_monthly': 'Limitado a 10.000 solicitações por mês',
+            'priority_support': 'Suporte prioritário',
+            'custom_limits': 'Limites de solicitação personalizados',
+            'team_management': 'Recursos de gerenciamento de equipes',
+            'dedicated_support': 'Suporte dedicado',
+            'custom_billing': 'Opções de faturamento personalizadas'
+        }
     }
 } as const;

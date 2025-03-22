@@ -51,6 +51,55 @@ export default {
         'subscription': 'Abbonamento',
         'loading': 'Caricamento...',
         'subscription_success': 'Il tuo abbonamento è stato elaborato con successo.',
-        'subscription_canceled': 'Il processo di abbonamento è stato annullato.'
+        'subscription_canceled': 'Il processo di abbonamento è stato annullato.',
+        'error_no_customer': 'Non hai ancora un account cliente Stripe. Per favore abbonati prima.',
+        'error_portal_failed': 'Impossibile accedere al portale di fatturazione. Riprova più tardi.',
+        'error_generic': 'Si è verificato un errore. Riprova.',
+        'current_usage': 'Utilizzo attuale: {count} / {limit} richieste questo mese',
+        'subscription_renewal': 'Il tuo abbonamento {action} il {date}',
+        'subscription_renew': 'si rinnoverà',
+        'subscription_end': 'terminerà',
+        'free_plan_status': 'Attualmente stai utilizzando il piano gratuito'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'Scegli il piano adatto a te',
+        'subheading': 'Inizia con le nostre opzioni di prezzo flessibili',
+        'free': {
+            'title': 'Piano Gratuito',
+            'description': 'Perfetto per iniziare con le funzionalità di base',
+            'current_plan': 'Piano Attuale',
+            'downgrade': 'Retrocedi'
+        },
+        'pro': {
+            'title': 'Piano Pro',
+            'description': 'Per individui che necessitano di maggiore capacità',
+            'subscribe': 'Abbonati'
+        },
+        'enterprise': {
+            'title': 'Piano Enterprise',
+            'description': 'Per team e aziende con esigenze personalizzate',
+            'contact_sales': 'Contatta Vendite'
+        },
+        'pricing': {
+            'month': 'mese',
+            'custom_pricing': 'Personalizzato',
+            'pricing': 'prezzi',
+            'popular': 'Popolare',
+            'current_plan': 'Piano Attuale'
+        },
+        'features': {
+            'core_features': 'Tutte le funzionalità principali incluse',
+            'requests_free_daily': 'Limitato a 50 richieste al giorno',
+            'requests_free_monthly': 'Limitato a 500 richieste al mese',
+            'standard_support': 'Supporto standard',
+            'requests_pro_daily': 'Limitato a 500 richieste al giorno',
+            'requests_pro_monthly': 'Limitato a 10.000 richieste al mese',
+            'priority_support': 'Supporto prioritario',
+            'custom_limits': 'Limiti di richieste personalizzati',
+            'team_management': 'Funzionalità di gestione del team',
+            'dedicated_support': 'Supporto dedicato',
+            'custom_billing': 'Opzioni di fatturazione personalizzate'
+        }
     }
 } as const;

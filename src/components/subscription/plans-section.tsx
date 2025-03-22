@@ -20,30 +20,7 @@ interface PriceDetails {
     error: boolean;
 }
 
-// Free plan features - limited requests
-const FREE_PLAN_FEATURES = [
-    { title: "All core features included", included: true },
-    { title: "Limited to 50 requests per day", included: true },
-    { title: "Limited to 500 requests per month", included: true },
-    { title: "Standard support", included: true },
-];
-
-// Pro plan features - more requests, same features
-const PRO_PLAN_FEATURES = [
-    { title: "All core features included", included: true },
-    { title: "Limited to 500 requests per day", included: true },
-    { title: "Limited to 10,000 requests per month", included: true },
-    { title: "Priority support", included: true },
-];
-
-// Enterprise plan features - for teams
-const ENTERPRISE_PLAN_FEATURES = [
-    { title: "All core features included", included: true },
-    { title: "Custom request limits", included: true },
-    { title: "Team management features", included: true },
-    { title: "Dedicated support", included: true },
-    { title: "Custom billing options", included: true },
-];
+// Plan features are defined inside the component to use translations
 
 // Default Stripe price ID - this should be provided from an environment variable in a real app
 const STRIPE_PRICE_ID = 'price_1R4hlq03WstOAJXK9oirzXBH';
@@ -151,6 +128,29 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
         });
     };
 
+    // Create feature lists with translations
+    const FREE_PLAN_FEATURES = [
+        { title: t("plans.features.core_features"), included: true },
+        { title: t("plans.features.requests_free_daily"), included: true },
+        { title: t("plans.features.requests_free_monthly"), included: true },
+        { title: t("plans.features.standard_support"), included: true },
+    ];
+
+    const PRO_PLAN_FEATURES = [
+        { title: t("plans.features.core_features"), included: true },
+        { title: t("plans.features.requests_pro_daily"), included: true },
+        { title: t("plans.features.requests_pro_monthly"), included: true },
+        { title: t("plans.features.priority_support"), included: true },
+    ];
+
+    const ENTERPRISE_PLAN_FEATURES = [
+        { title: t("plans.features.core_features"), included: true },
+        { title: t("plans.features.custom_limits"), included: true },
+        { title: t("plans.features.team_management"), included: true },
+        { title: t("plans.features.dedicated_support"), included: true },
+        { title: t("plans.features.custom_billing"), included: true },
+    ];
+
     return (
         <div>
             <div className="text-center mb-6">
@@ -161,7 +161,7 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
                     {t("plans.subheading")}
                 </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-3">
                 {/* Free Plan */}
                 <SubscriptionPlanCard
                     title={t("plans.free.title")}
