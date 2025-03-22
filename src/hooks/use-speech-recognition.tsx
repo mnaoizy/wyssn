@@ -461,7 +461,7 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
                 "relative rounded-full cursor-pointer w-15 h-15 flex items-center justify-center overflow-hidden",
                 disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
             )}
-            aria-label={isListening ? "音声認識を停止" : "音声認識を開始"}
+            aria-label={isListening ? "Stop" : "Start"}
         >
             {/* グラデーション背景 */}
             <div

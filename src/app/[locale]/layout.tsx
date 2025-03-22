@@ -66,7 +66,7 @@ function LayoutContent({
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center justify-end space-x-4 flex-1">
+            <div className="hidden md:flex items-center justify-end space-x-4 flex-1" data-testid="desktop-nav">
               <LanguageSelector />
               <div className="flex items-center space-x-4 text-sm">
                 <span>{t('nav.about')}</span>
@@ -128,7 +128,7 @@ function LayoutContent({
             </div>
 
             {/* Mobile Navigation */}
-            <div className="flex md:hidden items-center space-x-4">
+            <div className="flex md:hidden items-center space-x-4" data-testid="mobile-nav">
               <LanguageSelector />
               <MobileMenuButton />
             </div>
