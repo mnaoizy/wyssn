@@ -104,7 +104,8 @@ function LanguageSelectorInner() {
       onValueChange={handleLocaleChange}
       disabled={isLoading}
     >
-      <SelectTrigger className="w-[130px] flex gap-2">
+      <SelectTrigger className="flex gap-2" aria-label="language-selector"
+      >
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
