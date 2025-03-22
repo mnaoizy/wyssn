@@ -85,7 +85,7 @@ export default async function AccountPage({
     }
 
     return (
-        <div className="container max-w-4xl mx-auto py-10 px-4 sm:px-6">
+        <div className="container max-w-5xl mx-auto py-10 px-4 sm:px-6">
             <div className="mb-6 flex justify-between items-start">
                 <div>
                     <h1 className="text-3xl font-bold">{t("account.title")}</h1>
