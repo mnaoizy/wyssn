@@ -27,7 +27,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       // テスト用のダミー環境変数を設定
-      KINDE_ISSUER_URL: "https://example.kinde.com",
+      KINDE_ISSUER_URL: "http://localhost:3000",
       KINDE_CLIENT_ID: "test_client_id",
       KINDE_CLIENT_SECRET: "test_client_secret",
       KINDE_REDIRECT_URI: "http://localhost:3000/api/auth/kinde_callback",
