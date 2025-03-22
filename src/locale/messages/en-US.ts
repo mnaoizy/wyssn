@@ -63,5 +63,54 @@ export default {
         'loading': 'Loading...',
         'subscription_success': 'Your subscription has been successfully processed.',
         'subscription_canceled': 'Your subscription process was canceled.',
+        'error_no_customer': 'You don\'t have a Stripe customer account yet. Please subscribe first.',
+        'error_portal_failed': 'Failed to access the billing portal. Please try again later.',
+        'error_generic': 'An error occurred. Please try again.',
+        'current_usage': 'Current usage: {count} / {limit} requests this month',
+        'subscription_renewal': 'Your subscription will {action} on {date}',
+        'subscription_renew': 'renew',
+        'subscription_end': 'end',
+        'free_plan_status': 'You\'re currently on the Free plan'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'Choose the plan that\'s right for you',
+        'subheading': 'Get started with our flexible pricing options',
+        'free': {
+            'title': 'Free Plan',
+            'description': 'Perfect for getting started with basic features',
+            'current_plan': 'Current Plan',
+            'downgrade': 'Downgrade'
+        },
+        'pro': {
+            'title': 'Pro Plan',
+            'description': 'For individuals who need more capacity',
+            'subscribe': 'Subscribe'
+        },
+        'enterprise': {
+            'title': 'Enterprise Plan',
+            'description': 'For teams and businesses with custom needs',
+            'contact_sales': 'Contact Sales'
+        },
+        'pricing': {
+            'month': 'month',
+            'custom_pricing': 'Custom',
+            'pricing': 'pricing',
+            'popular': 'Popular',
+            'current_plan': 'Current Plan'
+        },
+        'features': {
+            'core_features': 'All core features included',
+            'requests_free_daily': 'Limited to 50 requests per day',
+            'requests_free_monthly': 'Limited to 500 requests per month',
+            'standard_support': 'Standard support',
+            'requests_pro_daily': 'Limited to 500 requests per day',
+            'requests_pro_monthly': 'Limited to 10,000 requests per month',
+            'priority_support': 'Priority support',
+            'custom_limits': 'Custom request limits',
+            'team_management': 'Team management features',
+            'dedicated_support': 'Dedicated support',
+            'custom_billing': 'Custom billing options'
+        }
     }
 } as const

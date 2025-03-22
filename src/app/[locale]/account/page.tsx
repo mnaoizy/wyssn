@@ -117,10 +117,10 @@ export default async function AccountPage({
                 <div className="mb-6 rounded-md bg-red-50 p-4 text-red-700">
                     <p>
                         {errorType === "no-customer"
-                            ? "You don't have a Stripe customer account yet. Please subscribe first."
+                            ? t("account.error_no_customer")
                             : errorType === "portal-failed"
-                                ? "Failed to access the billing portal. Please try again later."
-                                : "An error occurred. Please try again."}
+                                ? t("account.error_portal_failed")
+                                : t("account.error_generic")}
                     </p>
                 </div>
             )}

@@ -144,32 +144,32 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
     // Get current usage limits based on plan
     const getCurrentUsageText = () => {
         const usageCount = userSubscription?.usageCount || 0;
-        if (isSubscribed) {
-            return `Current usage: ${usageCount} / 10,000 requests this month`;
-        } else {
-            return `Current usage: ${usageCount} / 500 requests this month`;
-        }
+        const limit = isSubscribed ? 10000 : 500;
+        return t("account.current_usage", {
+            count: usageCount,
+            limit: limit
+        });
     };
 
     return (
         <div>
             <div className="text-center mb-6">
                 <h3 className="text-xl font-bold tracking-tight sm:text-2xl">
-                    Choose the plan that&apos;s right for you
+                    {t("plans.heading")}
                 </h3>
                 <p className="mt-2 text-muted-foreground">
-                    Get started with our flexible pricing options
+                    {t("plans.subheading")}
                 </p>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
                 {/* Free Plan */}
                 <SubscriptionPlanCard
-                    title="Free Plan"
-                    description="Perfect for getting started with basic features"
+                    title={t("plans.free.title")}
+                    description={t("plans.free.description")}
                     price="¥0"
-                    interval="month"
+                    interval={t("plans.pricing.month")}
                     features={FREE_PLAN_FEATURES}
-                    buttonText={!isSubscribed ? "Current Plan" : "Downgrade"}
+                    buttonText={!isSubscribed ? t("plans.pricing.current_plan") : t("plans.free.downgrade")}
                     onSelect={isSubscribed ? handleManageSubscription : handleSubscribe}
                     isCurrentPlan={!isSubscribed}
                     disabled={!isSubscribed || isLoading}
@@ -177,13 +177,13 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
 
                 {/* Pro Plan */}
                 <SubscriptionPlanCard
-                    title="Pro Plan"
-                    description="For individuals who need more capacity"
-                    price={priceDetails.loading ? "¥--" : (priceDetails.error ? "¥980" : formattedPrice)}
+                    title={t("plans.pro.title")}
+                    description={t("plans.pro.description")}
+                    price={priceDetails.loading ? "$--" : (priceDetails.error ? "$--" : formattedPrice)}
                     interval={priceDetails.interval}
                     priceLoading={priceDetails.loading}
                     features={PRO_PLAN_FEATURES}
-                    buttonText={isSubscribed ? t("account.manage_subscription_button") : "Subscribe"}
+                    buttonText={isSubscribed ? t("account.manage_subscription_button") : t("plans.pro.subscribe")}
                     onSelect={isSubscribed ? handleManageSubscription : handleSubscribe}
                     isPopular={true}
                     isCurrentPlan={isSubscribed}
@@ -192,12 +192,12 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
 
                 {/* Enterprise Plan */}
                 <SubscriptionPlanCard
-                    title="Enterprise Plan"
-                    description="For teams and businesses with custom needs"
-                    price="Custom"
-                    interval="pricing"
+                    title={t("plans.enterprise.title")}
+                    description={t("plans.enterprise.description")}
+                    price={t("plans.pricing.custom_pricing")}
+                    interval={t("plans.pricing.pricing")}
                     features={ENTERPRISE_PLAN_FEATURES}
-                    buttonText="Contact Sales"
+                    buttonText={t("plans.enterprise.contact_sales")}
                     onSelect={handleOpenContactForm}
                     disabled={isContactFormOpen}
                 />
@@ -207,11 +207,19 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
                     <div className="inline-block rounded-md border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-muted-foreground">
                         {isSubscribed ? (
                             <>
-                                Your subscription will {userSubscription.cancelAtPeriodEnd ? 'end' : 'renew'} on {' '}
-                                {new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]}
+                                {userSubscription.cancelAtPeriodEnd
+                                    ? t("account.subscription_renewal", {
+                                        action: t("account.subscription_end"),
+                                        date: new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]
+                                    })
+                                    : t("account.subscription_renewal", {
+                                        action: t("account.subscription_renew"),
+                                        date: new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]
+                                    })
+                                }
                             </>
                         ) : (
-                            "You're currently on the Free plan"
+                            t("account.free_plan_status")
                         )}
                     </div>
                     <div className="mt-2 text-xs text-muted-foreground">

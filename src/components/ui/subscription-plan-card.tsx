@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { useI18n } from "@/locale/client";
 
 export interface PlanFeature {
     title: string;
@@ -26,7 +27,6 @@ export interface PlanProps {
 export function SubscriptionPlanCard({
     title,
     description,
-
     price,
     interval,
     features,
@@ -37,6 +37,8 @@ export function SubscriptionPlanCard({
     isCurrentPlan = false,
     priceLoading = false,
 }: PlanProps) {
+    // Call hooks at the top level
+    const t = useI18n();
     return (
         <div className={`flex flex-col h-full rounded-lg border p-6 shadow-sm bg-white transition-all hover:shadow-md 
       ${isPopular ? 'border-primary ring-1 ring-primary' : 'border-gray-200'}
@@ -45,7 +47,7 @@ export function SubscriptionPlanCard({
             <div className="h-[28px] mb-2">
                 {isPopular && (
                     <div className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
-                        Popular
+                        {t("plans.pricing.popular")}
                     </div>
                 )}
             </div>
@@ -86,7 +88,7 @@ export function SubscriptionPlanCard({
                     disabled={disabled || isCurrentPlan}
                     variant={isCurrentPlan ? "outline" : isPopular ? "default" : "outline"}
                 >
-                    {isCurrentPlan ? "Current Plan" : buttonText}
+                    {isCurrentPlan ? t("plans.pricing.current_plan") : buttonText}
                 </Button>
             </div>
         </div>
