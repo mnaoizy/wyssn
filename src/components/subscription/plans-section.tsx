@@ -2,13 +2,14 @@
 
 import React, { useEffect } from "react";
 import { SubscriptionPlanCard } from "@/components/ui/subscription-plan-card";
-import { createCheckoutSession, createCustomerPortalSession } from "@/lib/subscription-service";
+import { createCheckoutSession } from "@/lib/subscription-service";
 import { Subscription } from "@prisma/client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useI18n } from "@/locale/client";
 
 interface PlansProps {
-    userSubscription?: Subscription | null;
+    userSubscription?: Subscription & { usageCount?: number } | null;
+    subscriptionManagementUrl: string | null;
 }
 
 interface PriceDetails {
@@ -19,18 +20,29 @@ interface PriceDetails {
     error: boolean;
 }
 
-const PRO_PLAN_FEATURES = [
-    { title: "Unlimited usage", included: true },
-    { title: "Priority support", included: true },
-    { title: "Advanced features", included: true },
-    { title: "Team collaboration", included: true },
+// Free plan features - limited requests
+const FREE_PLAN_FEATURES = [
+    { title: "All core features included", included: true },
+    { title: "Limited to 50 requests per day", included: true },
+    { title: "Limited to 500 requests per month", included: true },
+    { title: "Standard support", included: true },
 ];
 
-const FREE_PLAN_FEATURES = [
-    { title: "Limited usage", included: true },
-    { title: "Basic support", included: true },
-    { title: "Basic features", included: true },
-    { title: "Single user only", included: true },
+// Pro plan features - more requests, same features
+const PRO_PLAN_FEATURES = [
+    { title: "All core features included", included: true },
+    { title: "Limited to 500 requests per day", included: true },
+    { title: "Limited to 10,000 requests per month", included: true },
+    { title: "Priority support", included: true },
+];
+
+// Enterprise plan features - for teams
+const ENTERPRISE_PLAN_FEATURES = [
+    { title: "All core features included", included: true },
+    { title: "Custom request limits", included: true },
+    { title: "Team management features", included: true },
+    { title: "Dedicated support", included: true },
+    { title: "Custom billing options", included: true },
 ];
 
 // Default Stripe price ID - this should be provided from an environment variable in a real app
@@ -51,11 +63,13 @@ function formatCurrency(amount: number | null, currency: string, locale: string)
     }).format(value);
 }
 
-export function PlansSection({ userSubscription }: PlansProps) {
+export function PlansSection({ userSubscription, subscriptionManagementUrl }: PlansProps) {
     const params = useParams();
+    const router = useRouter();
     const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale || 'en-US';
     const t = useI18n();
     const [isLoading, setIsLoading] = React.useState(false);
+    const [isContactFormOpen, setIsContactFormOpen] = React.useState(false);
     const [priceDetails, setPriceDetails] = React.useState<PriceDetails>({
         unitAmount: null,
         currency: 'jpy',
@@ -109,13 +123,15 @@ export function PlansSection({ userSubscription }: PlansProps) {
     };
 
     const handleManageSubscription = async () => {
-        try {
-            setIsLoading(true);
-            await createCustomerPortalSession();
-        } catch (error) {
-            console.error("Failed to create customer portal session:", error);
-            setIsLoading(false);
-        }
+        router.push(subscriptionManagementUrl || '/account');
+    };
+
+    const handleOpenContactForm = () => {
+        // In a real implementation, this would open a contact form or redirect to a contact page
+        setIsContactFormOpen(true);
+        // For now, we'll just simulate opening a contact form with an alert
+        alert("Enterprise plan inquiry: Please contact our sales team at sales@example.com");
+        setIsContactFormOpen(false);
     };
 
     // Format the price with proper currency
@@ -124,6 +140,16 @@ export function PlansSection({ userSubscription }: PlansProps) {
         priceDetails.currency,
         locale
     );
+
+    // Get current usage limits based on plan
+    const getCurrentUsageText = () => {
+        const usageCount = userSubscription?.usageCount || 0;
+        if (isSubscribed) {
+            return `Current usage: ${usageCount} / 10,000 requests this month`;
+        } else {
+            return `Current usage: ${usageCount} / 500 requests this month`;
+        }
+    };
 
     return (
         <div>
@@ -135,21 +161,24 @@ export function PlansSection({ userSubscription }: PlansProps) {
                     Get started with our flexible pricing options
                 </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-3">
+                {/* Free Plan */}
                 <SubscriptionPlanCard
                     title="Free Plan"
                     description="Perfect for getting started with basic features"
                     price="¥0"
                     interval="month"
                     features={FREE_PLAN_FEATURES}
-                    buttonText={!isSubscribed ? "Current Plan" : "Basic Plan"}
-                    onSelect={() => { }}
+                    buttonText={!isSubscribed ? "Current Plan" : "Downgrade"}
+                    onSelect={isSubscribed ? handleManageSubscription : handleSubscribe}
                     isCurrentPlan={!isSubscribed}
-                    disabled={true}
+                    disabled={!isSubscribed || isLoading}
                 />
+
+                {/* Pro Plan */}
                 <SubscriptionPlanCard
                     title="Pro Plan"
-                    description="Everything you need for professional usage"
+                    description="For individuals who need more capacity"
                     price={priceDetails.loading ? "¥--" : (priceDetails.error ? "¥980" : formattedPrice)}
                     interval={priceDetails.interval}
                     priceLoading={priceDetails.loading}
@@ -160,12 +189,33 @@ export function PlansSection({ userSubscription }: PlansProps) {
                     isCurrentPlan={isSubscribed}
                     disabled={isLoading || priceDetails.loading}
                 />
+
+                {/* Enterprise Plan */}
+                <SubscriptionPlanCard
+                    title="Enterprise Plan"
+                    description="For teams and businesses with custom needs"
+                    price="Custom"
+                    interval="pricing"
+                    features={ENTERPRISE_PLAN_FEATURES}
+                    buttonText="Contact Sales"
+                    onSelect={handleOpenContactForm}
+                    disabled={isContactFormOpen}
+                />
             </div>
-            {isSubscribed && userSubscription && (
+            {userSubscription && (
                 <div className="mt-6 text-center">
                     <div className="inline-block rounded-md border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-muted-foreground">
-                        Your subscription will {userSubscription.cancelAtPeriodEnd ? 'end' : 'renew'} on {' '}
-                        {new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]}
+                        {isSubscribed ? (
+                            <>
+                                Your subscription will {userSubscription.cancelAtPeriodEnd ? 'end' : 'renew'} on {' '}
+                                {new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]}
+                            </>
+                        ) : (
+                            "You're currently on the Free plan"
+                        )}
+                    </div>
+                    <div className="mt-2 text-xs text-muted-foreground">
+                        {getCurrentUsageText()}
                     </div>
                 </div>
             )}

@@ -143,7 +143,7 @@ export default async function AccountPage({
                 <section>
                     <h2 className="text-xl font-semibold mb-3">{t("account.subscription")}</h2>
                     <Suspense fallback={<div className="flex justify-center py-8">{t("account.loading")}</div>}>
-                        <PlansSection userSubscription={userSubscription} />
+                        <PlansSection userSubscription={userSubscription} subscriptionManagementUrl={portalSessionUrl} />
                     </Suspense>
                 </section>
             </div>

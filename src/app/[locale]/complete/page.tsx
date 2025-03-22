@@ -6,7 +6,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
     Briefcase,
     Sparkles,
-    IceCream
+    IceCream,
+    WebcamIcon
 } from 'lucide-react';
 
 export default function Home() {
@@ -275,6 +276,15 @@ export default function Home() {
                     >
                         <Briefcase size={16} />
                         <span className="hidden sm:inline">ビジネス</span>
+                    </button>
+
+                    {/* 面接ボタン */}
+                    <button
+                        className="flex items-center gap-1 px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                        aria-label="面接"
+                    >
+                        <WebcamIcon size={16} />
+                        <span className="hidden sm:inline">面接</span>
                     </button>
 
                     {/* 状態表示 */}
