@@ -1,36 +1,41 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     Briefcase,
-    SparklesIcon,
-    DessertIcon
+    Sparkles,
+    IceCream
 } from 'lucide-react';
 
 export default function Home() {
+    // クライアントサイドレンダリングフラグ
+    const [isClient, setIsClient] = useState(false);
+    // 位置が計算されたかどうかのフラグ
+    const [isPositionCalculated, setIsPositionCalculated] = useState(false);
+
     // メインテキスト（表示用）
-    const [text, setText] = useState<string>('これはテキストの例です。オートコンプリート');
+    const [text, setText] = useState<string>('');
     // 選択した候補の履歴
     const [selectedTexts, setSelectedTexts] = useState<string[]>([]);
     // デバッグ用：表示テキスト入力
-    const [debugTextInput, setDebugTextInput] = useState<string>('これはテキストの例です。オートコンプリート');
+    const [debugTextInput, setDebugTextInput] = useState<string>('');
     // デバッグ用：オートコンプリート設定
     const [debugAutoCompleteWord, setDebugAutoCompleteWord] = useState<string>('オートコンプリート');
     // 翻訳表示の切り替え
     const [showTranslation, setShowTranslation] = useState<boolean>(true);
     // コンテキスト設定
-    const [currentContext,] = useState<string>('ビジネス');
+    const [currentContext] = useState<string>('ビジネス');
     // 感情トーン設定
-    const [currentTone,] = useState<string>('フォーマル');
+    const [currentTone] = useState<string>('フォーマル');
 
-    const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
-    const [selectedSuggestion, setSelectedSuggestion] = useState<number>(0);
+    // サジェスト位置の状態
+    const [suggestionsPosition, setSuggestionsPosition] = useState({ top: 200, left: 20, width: 450 });
     const textRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     // ウィンドウサイズの状態
-    const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
+    const [windowWidth, setWindowWidth] = useState<number>(0);
 
     // テキストの最後の単語を取得する関数
     const getLastWord = (text: string): string => {
@@ -65,20 +70,10 @@ export default function Home() {
         return suggestions;
     };
 
-    // デバッグ用テキスト入力処理
-    const handleDebugTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        setDebugTextInput(newValue);
-        setText(newValue);
-    };
-
     // デバッグ用オートコンプリートワード入力処理
     const handleDebugAutoCompleteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         setDebugAutoCompleteWord(newValue);
-        if (newValue.length > 0) {
-            setShowSuggestions(true);
-        }
     };
 
     // 候補の選択処理
@@ -89,8 +84,6 @@ export default function Home() {
 
         // 選択した候補をリストに追加
         setSelectedTexts([...selectedTexts, suggestion.ja]);
-
-        setShowSuggestions(false);
     };
 
     // 翻訳表示の切り替え
@@ -98,89 +91,91 @@ export default function Home() {
         setShowTranslation(!showTranslation);
     };
 
-    // キーボード操作の処理
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        const suggestions = generateSuggestions(getLastWord(text));
-
-        if (showSuggestions && suggestions.length > 0) {
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                setSelectedSuggestion((prev) => (prev + 1) % suggestions.length);
-            }
-            else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                setSelectedSuggestion((prev) => (prev - 1 + suggestions.length) % suggestions.length);
-            }
-            else if (e.key === 'Enter' && showSuggestions) {
-                e.preventDefault();
-                handleSuggestionSelect(suggestions[selectedSuggestion]);
-            }
-            else if (e.key === 'Escape') {
-                e.preventDefault();
-                setShowSuggestions(false);
-            }
-        }
-    };
-
-    // 候補リストのポジショニング
-    const calculateSuggestionsPosition = () => {
-        if (!textRef.current || !containerRef.current) return { top: 0, left: 0, width: 450 };
-
-        const range = document.createRange();
-        range.selectNodeContents(textRef.current);
-        const textRect = range.getBoundingClientRect();
-
-        const lastCharRect = getLastCharRect();
-        const containerRect = containerRef.current.getBoundingClientRect();
-
-        // ウィンドウサイズに応じてサジェスト幅を調整
-        const idealWidth = windowWidth < 640 ? windowWidth - 60 : 450;
-        const maxWidth = Math.min(containerRect.width - 60, idealWidth);
-
-        const left = lastCharRect ? (lastCharRect.left - containerRect.left) : 0;
-        const availableWidth = containerRect.width - 40;
-
-        let adjustedLeft = left;
-        if (left + maxWidth > availableWidth) {
-            adjustedLeft = Math.max(0, availableWidth - maxWidth);
-        }
-
-        return {
-            top: lastCharRect ? (lastCharRect.bottom - containerRect.top) : (textRect.bottom - containerRect.top),
-            left: adjustedLeft,
-            width: maxWidth
-        };
-    };
-
-    // 最後の文字の位置情報を取得する関数
-    const getLastCharRect = (): DOMRect | null => {
+    // 最後の文字の位置情報を取得する関数 - メモ化
+    const getLastCharRect = useCallback((): DOMRect | null => {
         if (!textRef.current || text.length === 0) return null;
 
+        // テキストノードを取得する試み
         const textNode = Array.from(textRef.current.childNodes).find(
             node => node.nodeType === Node.TEXT_NODE
         ) as Text;
 
         if (!textNode) return null;
 
-        const range = document.createRange();
-        range.setStart(textNode, textNode.length - 1);
-        range.setEnd(textNode, textNode.length);
-        return range.getBoundingClientRect();
-    };
+        try {
+            const range = document.createRange();
+            range.setStart(textNode, textNode.length - 1);
+            range.setEnd(textNode, textNode.length);
+            return range.getBoundingClientRect();
+        } catch (e) {
+            console.error('Error getting last char rect:', e);
+            return null;
+        }
+    }, [text]);
 
-    // 候補位置の計算
-    const suggestionsPosition = calculateSuggestionsPosition();
+    // 候補リストのポジショニング計算 - メモ化
+    const calculateSuggestionsPosition = useCallback(() => {
+        if (!textRef.current || !containerRef.current) return { top: 200, left: 20, width: 450 };
+
+        const textRect = textRef.current.getBoundingClientRect();
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const lastCharRect = getLastCharRect();
+
+        // ウィンドウサイズに応じてサジェスト幅を調整
+        const idealWidth = windowWidth < 640 ? windowWidth - 60 : 450;
+        const maxWidth = Math.min(containerRect.width - 40, idealWidth);
+
+        // 位置計算
+        let top = textRect.bottom - containerRect.top + 5;
+        let left = 20; // デフォルト値
+
+        if (lastCharRect) {
+            // 最後の文字の位置が取得できた場合
+            top = lastCharRect.bottom - containerRect.top + 5;
+            left = lastCharRect.right - containerRect.left;
+
+            // 右端からはみ出す場合は調整
+            if (left + maxWidth > containerRect.width - 20) {
+                left = Math.max(20, containerRect.width - maxWidth - 20);
+            }
+        }
+
+        return {
+            top,
+            left,
+            width: maxWidth
+        };
+    }, [windowWidth, getLastCharRect]);
+
+    // 候補位置を更新 - メモ化
+    const updateSuggestionsPosition = useCallback(() => {
+        const newPosition = calculateSuggestionsPosition();
+        setSuggestionsPosition(newPosition);
+
+        // 位置計算完了フラグを設定
+        if (!isPositionCalculated) {
+            setIsPositionCalculated(true);
+        }
+    }, [calculateSuggestionsPosition, isPositionCalculated]);
+
+    // 候補生成
     const suggestions = generateSuggestions(debugAutoCompleteWord || getLastWord(text));
 
-    // オートコンプリート表示の切り替え
-    const toggleSuggestions = () => {
-        setShowSuggestions(!showSuggestions);
-    };
+    // クライアントサイドレンダリングの確認
+    useEffect(() => {
+        setIsClient(true);
+
+        // ウィンドウサイズの初期設定
+        setWindowWidth(window.innerWidth);
+    }, []);
 
     // ウィンドウリサイズ時の処理
     useEffect(() => {
+        if (!isClient) return;
+
         const handleResize = () => {
             setWindowWidth(window.innerWidth);
+            updateSuggestionsPosition();
         };
 
         window.addEventListener('resize', handleResize);
@@ -188,49 +183,33 @@ export default function Home() {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, []);
+    }, [isClient, updateSuggestionsPosition]);
 
-    // useEffectでテキスト更新時やウィンドウサイズ変更時にオートコンプリート位置を更新
+    // 初期レンダリング時とテキスト変更時にポジションを計算
     useEffect(() => {
-        // 位置を計算して更新
-        calculateSuggestionsPosition();
+        if (!isClient) return;
 
-        // テキストの最後の単語に基づいて候補を表示/非表示
-        const lastWord = getLastWord(text);
-        if (debugAutoCompleteWord.length > 0 || lastWord.length >= 2) {
-            setShowSuggestions(true);
-        } else {
-            setShowSuggestions(false);
-        }
-    }, [text, debugAutoCompleteWord, windowWidth]); // ウィンドウ幅も監視
+        // DOMの更新後に位置を計算するために少し遅延させる
+        const timer = setTimeout(() => {
+            updateSuggestionsPosition();
+        }, 10);
 
-    // アニメーションの設定
-    const suggestionVariants = {
-        hidden: {
-            opacity: 0,
-            y: -10,
-            scale: 0.95
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 20
-            }
-        },
-        exit: {
-            opacity: 0,
-            y: -5,
-            scale: 0.9,
-            transition: {
-                duration: 0.15
-            }
-        }
-    };
+        return () => clearTimeout(timer);
+    }, [text, debugAutoCompleteWord, windowWidth, isClient, updateSuggestionsPosition]);
 
+    // 初期レンダリング完了後に位置を計算
+    useEffect(() => {
+        if (!isClient) return;
+
+        // DOMが完全にロードされた後に計算
+        const timer = setTimeout(() => {
+            updateSuggestionsPosition();
+        }, 100);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [isClient, updateSuggestionsPosition]);
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -241,15 +220,18 @@ export default function Home() {
                 <div className="mb-4 p-3 sm:p-4 bg-white rounded-md border border-gray-200">
                     <h2 className="text-base sm:text-lg font-semibold mb-2 text-gray-800">デバッグ用コントロール</h2>
 
-                    {/* 表示テキスト設定 */}
+                    {/* 表示テキスト設定 - テキストエリアに変更 */}
                     <div className="mb-3">
                         <label className="block text-sm font-medium mb-1 text-gray-700">テキスト</label>
-                        <input
-                            type="text"
+                        <textarea
                             value={debugTextInput}
-                            onChange={handleDebugTextChange}
-                            className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white focus:ring-gray-500 focus:border-gray-500"
+                            onChange={(e) => {
+                                setDebugTextInput(e.target.value);
+                                setText(e.target.value);
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm bg-white focus:ring-gray-500 focus:border-gray-500 resize-y"
                             placeholder="表示するテキストを入力..."
+                            rows={2}
                         />
                     </div>
 
@@ -264,33 +246,32 @@ export default function Home() {
                             placeholder="オートコンプリートの基準となる単語..."
                         />
                     </div>
-
                 </div>
 
-                {/* 新しいシンプルなツールバー */}
-                <div className="mb-4 p-2 bg-gray-50 rounded-md border border-gray-200 flex items-center gap-2">
-                    {/* 緊急フレーズボタン */}
+                {/* ツールバー */}
+                <div className="mb-4 p-2 bg-white rounded-md border border-gray-200 flex items-center gap-2">
+                    {/* 再生成ボタン */}
                     <button
                         className="flex items-center gap-1 px-3 py-1 rounded-md text-sm font-medium bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
-                        aria-label="緊急フレーズ"
+                        aria-label="再生成"
                     >
-                        <SparklesIcon size={16} />
+                        <Sparkles size={16} />
                         <span className="hidden sm:inline">再生成</span>
                     </button>
 
-                    {/* 感情トーン表示器 */}
+                    {/* カジュアルボタン */}
                     <button
                         className="flex items-center gap-1 px-3 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-600"
-                        aria-label="感情トーン"
+                        aria-label="カジュアル"
                     >
-                        <DessertIcon size={16} />
+                        <IceCream size={16} />
                         <span className="hidden sm:inline">カジュアル</span>
                     </button>
 
-                    {/* コンテキスト切り替えボタン */}
+                    {/* ビジネスボタン */}
                     <button
                         className="flex items-center gap-1 px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-                        aria-label="コンテキスト切り替え"
+                        aria-label="ビジネス"
                     >
                         <Briefcase size={16} />
                         <span className="hidden sm:inline">ビジネス</span>
@@ -304,94 +285,73 @@ export default function Home() {
                     </div>
                 </div>
 
-                {/* テキスト表示エリア */}
-                <div className="space-y-4 relative font-bold text-xl leading-14">
+                {/* テキスト表示エリア - word-wrapを追加 */}
+                <div className="relative font-bold text-xl leading-relaxed mb-16">
                     <div
                         ref={textRef}
-                        tabIndex={0}
-                        onKeyDown={handleKeyDown}
+                        className="p-3 bg-white rounded-md border border-gray-200 min-h-[60px] break-words whitespace-pre-wrap"
                     >
                         {text}
                     </div>
-
-                    {/* 選択された候補のリスト */}
-                    {selectedTexts.length > 0 && (
-                        <div className="flex flex-row flex-wrap gap-8 absolute top-11 left-2">
-                            {selectedTexts.map((selectedText, index) => (
-                                <div
-
-                                    key={index}
-                                    className="p-[2px] border-[1px] border-gray-500/10 z-10 bg-white rounded-sm text-xs text-gray-800 font-medium"
-                                >
-                                    {selectedText}
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
 
-                {/* オートコンプリート候補 - アニメーション付き */}
-                <AnimatePresence>
-                    {showSuggestions && (
-                        <motion.div
-                            className="absolute z-10 backdrop-blur-lg bg-white/90 border border-gray-200 rounded-md shadow-lg overflow-hidden divide-y divide-gray-300/40"
-                            style={{
-                                top: `${suggestionsPosition.top + 5}px`,
-                                left: `${suggestionsPosition.left}px`,
-                                width: `${suggestionsPosition.width}px`,
-                                maxWidth: windowWidth < 640 ? '95vw' : '450px'
-                            }}
-                            variants={suggestionVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                        >
-                            {/* すべての候補を表示（翻訳付き） */}
-                            {suggestions.map((suggestion, index) => (
-                                <div
-                                    key={index}
-                                    className={`cursor-pointer suggestion-item ${index === selectedSuggestion ? 'bg-gray-300/10' : 'hover:bg-gray-300/10'
-                                        }`}
-                                    onClick={() => handleSuggestionSelect(suggestion)}
-                                >
-                                    {/* 日本語 */}
-                                    <div className="px-2 pt-2 pb-1 text-sm text-gray-800">
-                                        {suggestion.ja}
-                                    </div>
-
-                                    {/* 英語（表示/非表示切り替え可能） */}
-                                    {showTranslation && (
-                                        <div className="px-2 pb-1 text-xs text-gray-500">
-                                            {suggestion.en}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                            {/* スケルトンでの4つ目の候補（常に表示） */}
-                            <div className="cursor-pointer suggestion-item hover:bg-gray-300/10">
-                                <div className="px-2 pt-2 pb-1">
-                                    <Skeleton className="w-full h-5 mb-1 bg-gray-200" />
-                                    <Skeleton className="w-1/4 h-5 mb-1 bg-gray-200" />
+                {/* オートコンプリート候補 - クライアントサイドのみでレンダリング + 位置計算完了後に表示 */}
+                {isClient && isPositionCalculated && (
+                    <motion.div
+                        className="absolute z-10 backdrop-blur-lg bg-white/95 border border-gray-200 rounded-md shadow-lg overflow-hidden divide-y divide-gray-300/40"
+                        style={{
+                            width: suggestionsPosition.width
+                        }}
+                        initial={{ opacity: 0 }}
+                        animate={{
+                            top: suggestionsPosition.top,
+                            left: suggestionsPosition.left,
+                            opacity: 1,
+                            scale: 1,
+                            transition: {
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 25
+                            }
+                        }}
+                    >
+                        {/* すべての候補を表示（翻訳付き） */}
+                        {suggestions.map((suggestion, index) => (
+                            <div
+                                key={index}
+                                className="cursor-pointer suggestion-item hover:bg-gray-200/30"
+                                onClick={() => handleSuggestionSelect(suggestion)}
+                            >
+                                {/* 日本語 */}
+                                <div className="px-2 pt-2 pb-1 text-sm text-gray-800">
+                                    {suggestion.ja}
                                 </div>
 
+                                {/* 英語（表示/非表示切り替え可能） */}
                                 {showTranslation && (
-                                    <div className="px-2 pb-1">
-                                        <Skeleton className="w-5/6 h-3 mb-1 bg-gray-100" />
+                                    <div className="px-2 pb-1 text-xs text-gray-500">
+                                        {suggestion.en}
                                     </div>
                                 )}
                             </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        ))}
+                        {/* スケルトンでの4つ目の候補（常に表示） */}
+                        <div className="cursor-pointer suggestion-item hover:bg-gray-200/30">
+                            <div className="px-2 pt-2 pb-1">
+                                <Skeleton className="w-full h-5 mb-1 bg-gray-200" />
+                                <Skeleton className="w-1/4 h-5 mb-1 bg-gray-200" />
+                            </div>
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                    <button
-                        onClick={toggleSuggestions}
-                        className="px-3 py-1 sm:px-4 sm:py-2 text-sm bg-gray-800 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
-                    >
-                        {showSuggestions ? 'オートコンプリートを隠す' : 'オートコンプリートを表示'}
-                    </button>
+                            {showTranslation && (
+                                <div className="px-2 pb-1">
+                                    <Skeleton className="w-5/6 h-3 mb-1 bg-gray-100" />
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
 
+                <div className="mt-16 flex flex-wrap gap-2">
                     <button
                         onClick={toggleTranslation}
                         className={`px-3 py-1 sm:px-4 sm:py-2 text-sm rounded focus:outline-none focus:ring-2 transition-colors ${showTranslation
@@ -403,16 +363,12 @@ export default function Home() {
                     </button>
                 </div>
 
-                <div className="mt-4 text-xs sm:text-sm text-gray-600">
-                    <p>
-                        上下矢印キーで候補を選択、Enterで確定、Escapeで候補を閉じることができます。
-                    </p>
-                </div>
-
                 {/* デバッグ情報 */}
-                <div className="mt-4 p-2 sm:p-3 bg-gray-50 rounded text-xs text-gray-500 border border-gray-200">
+                <div className="mt-4 p-2 sm:p-3 bg-white rounded text-xs text-gray-500 border border-gray-200">
                     <p>生成された候補数: {suggestions.length} + スケルトン表示</p>
                     <p>現在のコンテキスト: {currentContext} / 現在のトーン: {currentTone}</p>
+                    <p>サジェスト位置: top: {Math.round(suggestionsPosition.top)}px, left: {Math.round(suggestionsPosition.left)}px, width: {Math.round(suggestionsPosition.width)}px</p>
+                    <p>クライアントレンダリング: {isClient ? 'はい' : 'いいえ'} / 位置計算完了: {isPositionCalculated ? 'はい' : 'いいえ'}</p>
                 </div>
             </div>
         </div>
