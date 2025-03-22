@@ -28,6 +28,7 @@ export default defineConfig({
     env: {
       // テスト用のダミー環境変数を設定
       KINDE_ISSUER_URL: "https://auth.wyssn.com",
+      KINDE_SITE_URL: "http://localhost:3000",
       KINDE_CLIENT_ID: "test_client_id",
       KINDE_CLIENT_SECRET: "test_client_secret",
       KINDE_REDIRECT_URI: "http://localhost:3000",
