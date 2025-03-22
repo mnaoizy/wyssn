@@ -38,7 +38,7 @@ export function AddContext() {
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <MorphingPopoverTrigger className="flex h-9 items-center rounded-md border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer">
+      <MorphingPopoverTrigger className="flex h-9 items-center rounded-md border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer shadow-xs">
         <RocketIcon className="size-4 mr-[5px]" />
         <motion.span layoutId={`popover-label-${uniqueId}`} className="text-sm">
           {t('main.add_context')}

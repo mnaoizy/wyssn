@@ -10,25 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Button } from './ui/button'
-
-// Using the same supported locales as in language-selector.tsx
-const SUPPORTED_LOCALES = {
-  'en-US': 'English',
-  'fr-FR': 'Français',
-  'de-DE': 'Deutsch',
-  'es-ES': 'Español',
-  'ja-JP': '日本語',
-  'zh-CN': '简体中文',
-  'zh-TW': '繁體中文',
-  'ko-KR': '한국어',
-  'pt-BR': 'Português',
-  'ru-RU': 'Русский',
-  'uk-UA': 'Українська',
-  'it-IT': 'Italiano',
-  'vi-VN': 'Tiếng Việt',
-  'hi-IN': 'हिन्दी',
-} as const
+import { Button } from '@/components/ui/button'
+import { SUPPORTED_LOCALES } from '@/locale/config'
 
 type Locale = keyof typeof SUPPORTED_LOCALES
 
