@@ -77,19 +77,19 @@ export default {
         'heading': 'あなたに合ったプランを選択',
         'subheading': '柔軟な料金オプションで始めましょう',
         'free': {
-            'title': 'フリープラン',
+            'title': 'Freeプラン',
             'description': '基本機能の利用に最適',
             'current_plan': '現在のプラン',
             'downgrade': 'ダウングレード'
         },
         'pro': {
-            'title': 'プロプラン',
+            'title': 'Proプラン',
             'description': 'より多くの容量が必要な個人向け',
             'subscribe': '登録する'
         },
         'enterprise': {
-            'title': 'エンタープライズプラン',
-            'description': 'カスタムニーズを持つチームやビジネス向け',
+            'title': 'Enterpriseプラン',
+            'description': 'カスタムニーズを持つビジネス向け',
             'contact_sales': '営業に問い合わせる'
         },
         'pricing': {
