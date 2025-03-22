@@ -26,6 +26,12 @@ export default defineConfig({
       // No webServer - these tests mock the redirect instead of testing a live server
     },
     {
+      name: 'ci-tests',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /account-ci\.spec\.ts/,
+      // Completely isolated tests that don't need any server
+    },
+    {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
       testMatch: /home\.spec\.ts/,

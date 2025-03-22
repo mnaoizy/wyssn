@@ -29,7 +29,8 @@ jobs:
 
       - name: Run Playwright tests
         env:
-          # Mock required environment variables for testing
+          # Mock required environment variables for testing, even though
+          # the CI tests don't actually need them
           STRIPE_SECRET_API_KEY: sk_test_mock_key_for_testing
           KINDE_ISSUER_URL: https://example.kinde.com
           KINDE_CLIENT_ID: mock_client_id
@@ -38,8 +39,8 @@ jobs:
           KINDE_POST_LOGOUT_REDIRECT_URI: http://localhost:3000
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           CI: 'true'
-        # Run only the auth tests that don't require a server in CI
-        run: npx playwright test --project=chromium-auth
+        # Run only the CI-specific tests that don't require a server
+        run: npx playwright test --project=ci-tests
 
       - name: Upload test results
         if: always()
