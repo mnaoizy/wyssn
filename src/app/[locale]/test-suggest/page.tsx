@@ -82,13 +82,19 @@ export default function TestSuggestPage() {
             dispatch({ type: 'SET_PREVIOUS_SUGGESTIONS', payload: suggestions });
         }
 
-        // Submit to the suggestion API using the useObject hook
-        await submit({
-            message,
-            context: context || undefined,
-            translationLanguage: translationLanguage || undefined,
-            locale,
-        });
+        try {
+            // Submit to the suggestion API using the useObject hook
+            await submit({
+                message,
+                context: context || undefined,
+                translationLanguage: translationLanguage || undefined,
+                locale,
+            });
+
+            console.log('Suggestion request submitted successfully');
+        } catch (error) {
+            console.error('Error submitting suggestion request:', error);
+        }
     };
 
     // 表示するサジェスト結果の決定
@@ -174,8 +180,21 @@ export default function TestSuggestPage() {
                 <div className="p-4 bg-red-50 text-red-600 rounded-md mb-6">
                     <p className="font-semibold">Error</p>
                     <p>{suggestError.message || 'Failed to fetch suggestions'}</p>
+                    <p className="text-sm mt-2">Details: {JSON.stringify(suggestError)}</p>
                 </div>
             )}
+
+            <div className="mt-4 p-4 bg-gray-50 rounded-md">
+                <p className="font-semibold">Debug Info:</p>
+                <p>Message: {message ? 'Set' : 'Empty'}</p>
+                <p>Context: {context ? 'Set' : 'Empty'}</p>
+                <p>Locale: {locale}</p>
+                <p>Translation: {translationLanguage || 'None'}</p>
+                <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
+                <p>Has Error: {suggestError ? 'Yes' : 'No'}</p>
+                <p>Has Suggestions: {suggestions ? 'Yes' : 'No'}</p>
+                <p>Has Previous Suggestions: {previousSuggestions ? 'Yes' : 'No'}</p>
+            </div>
 
             {displaySuggestions && displaySuggestions.suggestions && (
                 <div className="border rounded-md p-4">

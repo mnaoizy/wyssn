@@ -6,7 +6,7 @@ export const conversationRequestSchema = z.object({
     context: z.string().nullish(),
     translationLanguage: z.string().nullish(),
     locale: z.string().nullish(),
-    detailLevel: z.enum(['brief', 'standard', 'detailed']).optional(), // 追加
+    detailLevel: z.enum(['brief', 'standard', 'detailed']).optional(),
 
 });
 
@@ -16,7 +16,6 @@ export const conversationSuggestionSchema = z.object({
         z.object({
             content: z.string().describe('Content of the suggestion for the user to say next'),
             translation: z.string().optional().describe('Translation of the suggestion'),
-
         }),
     ),
 });
