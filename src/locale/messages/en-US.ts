@@ -3,6 +3,7 @@ export default {
     'nav': {
         'about': 'About',
         'changelog': 'Changelog',
+        'pricing': 'Pricing',
         'signin': 'Sign in',
         'signup': 'Sign up',
         'signout': 'Sign out',
@@ -80,7 +81,8 @@ export default {
             'title': 'Free Plan',
             'description': 'Perfect for getting started with basic features',
             'current_plan': 'Current Plan',
-            'downgrade': 'Downgrade'
+            'downgrade': 'Downgrade',
+            'signup': 'Sign up for Free',
         },
         'pro': {
             'title': 'Pro Plan',

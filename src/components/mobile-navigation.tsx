@@ -118,8 +118,8 @@ export function MobileNavigationPanel() {
               <Link
                 href={`/${locale}`}
                 className={`block py-2 px-4 rounded-md ${pathname === `/${locale}`
-                    ? 'bg-gray-100 font-medium'
-                    : 'hover:bg-gray-50'
+                  ? 'bg-gray-100 font-medium'
+                  : 'hover:bg-gray-50'
                   }`}
               >
                 Home
@@ -137,11 +137,22 @@ export function MobileNavigationPanel() {
               <Link
                 href={`/${locale}/changelog`}
                 className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/changelog`
-                    ? 'bg-gray-100 font-medium'
-                    : 'hover:bg-gray-50'
+                  ? 'bg-gray-100 font-medium'
+                  : 'hover:bg-gray-50'
                   }`}
               >
                 {t('nav.changelog')}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={`/${locale}/pricing`}
+                className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/pricing`
+                  ? 'bg-gray-100 font-medium'
+                  : 'hover:bg-gray-50'
+                  }`}
+              >
+                {t('nav.pricing')}
               </Link>
             </li>
 
@@ -151,8 +162,8 @@ export function MobileNavigationPanel() {
                   <Link
                     href={`/${locale}/account`}
                     className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/account`
-                        ? 'bg-gray-100 font-medium'
-                        : 'hover:bg-gray-50'
+                      ? 'bg-gray-100 font-medium'
+                      : 'hover:bg-gray-50'
                       }`}
                   >
                     {t('nav.account')}

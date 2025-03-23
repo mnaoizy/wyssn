@@ -3,6 +3,7 @@ export default {
     'nav': {
         'about': 'À propos',
         'changelog': 'Nouveautés',
+        'pricing': 'Tarification',
         'signin': 'Se connecter',
         'signup': 'S\'inscrire',
         'signout': 'Se déconnecter',

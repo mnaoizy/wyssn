@@ -22,6 +22,7 @@ export interface PlanProps {
     disabled?: boolean;
     isCurrentPlan?: boolean;
     priceLoading?: boolean;
+    hideButton?: boolean;
 }
 
 export function SubscriptionPlanCard({
@@ -36,6 +37,7 @@ export function SubscriptionPlanCard({
     disabled = false,
     isCurrentPlan = false,
     priceLoading = false,
+    hideButton = false,
 }: PlanProps) {
     // Call hooks at the top level
     const t = useI18n();
@@ -81,16 +83,18 @@ export function SubscriptionPlanCard({
             </ul>
 
             {/* Action button pinned to the bottom */}
-            <div className="mt-auto">
-                <Button
-                    onClick={onSelect}
-                    className="w-full"
-                    disabled={disabled || isCurrentPlan}
-                    variant={isCurrentPlan ? "outline" : isPopular ? "default" : "outline"}
-                >
-                    {isCurrentPlan ? t("plans.pricing.current_plan") : buttonText}
-                </Button>
-            </div>
+            {!hideButton && (
+                <div className="mt-auto">
+                    <Button
+                        onClick={onSelect}
+                        className="w-full"
+                        disabled={disabled || isCurrentPlan}
+                        variant={isCurrentPlan ? "outline" : isPopular ? "default" : "outline"}
+                    >
+                        {isCurrentPlan ? t("plans.pricing.current_plan") : buttonText}
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

@@ -2,6 +2,7 @@ export default {
     'nav': {
         'about': 'О нас',
         'changelog': 'История изменений',
+        'pricing': 'Цены',
         'signin': 'Войти',
         'signup': 'Зарегистрироваться',
         'signout': 'Выйти',

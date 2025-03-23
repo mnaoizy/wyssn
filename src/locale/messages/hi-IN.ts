@@ -3,6 +3,7 @@ export default {
     'nav': {
         'about': 'हमारे बारे में',
         'changelog': 'परिवर्तन सूची',
+        'pricing': 'मूल्य निर्धारण',
         'signin': 'साइन इन करें',
         'signup': 'साइन अप करें',
         'signout': 'साइन आउट करें',

@@ -2,6 +2,7 @@ export default {
     'nav': {
         'about': 'Chi siamo',
         'changelog': 'Registro delle modifiche',
+        'pricing': 'Prezzi',
         'signin': 'Accedi',
         'signup': 'Registrati',
         'signout': 'Esci',

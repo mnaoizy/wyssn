@@ -4,6 +4,7 @@ export default {
   nav: {
     about: 'Giới thiệu',
     changelog: 'Lịch sử thay đổi',
+    pricing: 'Giá cả',
     signin: 'Đăng nhập',
     signup: 'Đăng ký',
     signout: 'Đăng xuất',

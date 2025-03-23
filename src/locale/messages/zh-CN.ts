@@ -4,6 +4,7 @@ export default {
   nav: {
     about: '关于',
     changelog: '更新日志',
+    pricing: '价格',
     signin: '登录',
     signup: '注册',
     signout: '退出',

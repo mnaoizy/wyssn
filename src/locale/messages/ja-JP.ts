@@ -3,6 +3,7 @@ export default {
     'nav': {
         'about': '概要',
         'changelog': '更新情報',
+        'pricing': '価格',
         'signin': 'ログイン',
         'signup': '新規登録',
         'signout': 'ログアウト',

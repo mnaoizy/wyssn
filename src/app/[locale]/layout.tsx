@@ -76,6 +76,16 @@ function LayoutContent({
                 >
                   {t('nav.changelog')}
                 </Link>
+                {
+                  !isAuthenticated && (
+                    <Link
+                      href={`/${locale}/pricing`}
+                      className="hover:text-neutral-500 transition-colors"
+                    >
+                      {t('nav.pricing')}
+                    </Link>
+                  )
+                }
                 <div className="space-x-2">
                   {isAuthenticated ? (
                     <>
@@ -156,6 +166,12 @@ function LayoutContent({
                 className="hover:text-neutral-500 transition-colors"
               >
                 {t('nav.changelog')}
+              </Link>
+              <Link
+                href={`/${locale}/pricing`}
+                className="hover:text-neutral-500 transition-colors"
+              >
+                {t('nav.pricing')}
               </Link>
             </div>
 
