@@ -3,6 +3,8 @@
 import React from 'react'
 import { AddContext } from '@/components/add-context'
 import { AddTranslation } from '@/components/add-translation'
+// import { SnowflakeIcon } from 'lucide-react'
+// import { Button } from '../ui/button'
 // import { Clock } from 'lucide-react';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -58,9 +60,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 </div> */}
         <div className="flex flex-row items-center gap-2">
           <AddContext />
+          {/* <Button variant="outline">
+            <SnowflakeIcon />アイスブレイク
+          </Button> */}
           <AddTranslation
             onTranslationLanguageSelect={
-              onTranslationLanguageSelect || (() => {})
+              onTranslationLanguageSelect || (() => { })
             }
           />
         </div>

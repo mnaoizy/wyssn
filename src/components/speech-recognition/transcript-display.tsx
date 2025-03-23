@@ -20,34 +20,29 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
     const hasContent = finalUtterances.length > 0 || interimText;
 
     return (
-        <div className="text-sm text-gray-500">
-            <div className="max-h-60 overflow-auto p-3 bg-gray-50 rounded">
-                {hasContent ? (
-                    <div className="whitespace-pre-wrap text-xl font-bold">
-                        {/* Concatenate finalized utterances with spaces */}
-                        <span>
-                            {finalUtterances.map(u => u.text).join(' ')}
+        <div className="whitespace-normal text-xl font-bold min-h-[2em] text-left">
+            {hasContent ? (
+                <div className="break-all md:break-words flex flex-wrap gap-1">
+                    {finalUtterances.map((utterance) => (
+                        <span
+                            key={utterance.id}
+                            className="inline-block"
+                        >
+                            {utterance.text}
                         </span>
+                    ))}
 
-                        {/* Display the latest interim utterance with a pulse effect */}
-                        {interimText && (
-                            <span className="ml-1 text-gray-400 animate-pulse">
-                                {interimText}
-                            </span>
-                        )}
-
-                        {finalUtterances.length === 0 && !interimText && (
-                            <span className="text-gray-400">
-                                {t("main.prompt_speak")}
-                            </span>
-                        )}
-                    </div>
-                ) : (
-                    <div className="text-center">
-                        {t("main.prompt_speak")}
-                    </div>
-                )}
-            </div>
+                    {interimText && (
+                        <span className="text-gray-400">
+                            {interimText}
+                        </span>
+                    )}
+                </div>
+            ) : (
+                <span className="text-gray-400">
+                    {t("main.prompt_speak")}
+                </span>
+            )}
         </div>
     );
 };

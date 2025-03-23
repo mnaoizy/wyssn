@@ -141,6 +141,7 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
         { title: t("plans.features.requests_pro_daily"), included: true },
         { title: t("plans.features.requests_pro_monthly"), included: true },
         { title: t("plans.features.priority_support"), included: true },
+        { title: "Better model (llama-3.1-8b-instant)", included: true },
     ];
 
     const ENTERPRISE_PLAN_FEATURES = [

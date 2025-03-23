@@ -5,6 +5,9 @@ export const conversationRequestSchema = z.object({
     message: z.string(),
     context: z.string().nullish(),
     translationLanguage: z.string().nullish(),
+    locale: z.string().nullish(),
+    detailLevel: z.enum(['brief', 'standard', 'detailed']).optional(), // 追加
+
 });
 
 // レスポンススキーマ（すでに持っているものを再利用）
