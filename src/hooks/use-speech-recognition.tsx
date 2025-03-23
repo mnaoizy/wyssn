@@ -458,7 +458,7 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
             variant="ghost"
             disabled={disabled}
             className={cn(
-                "relative rounded-full cursor-pointer w-15 h-15 flex items-center justify-center overflow-hidden",
+                "relative rounded-full cursor-pointer size-12 md:size-15 flex items-center justify-center overflow-hidden",
                 disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-105"
             )}
             aria-label={isListening ? "Stop" : "Start"}
@@ -485,9 +485,9 @@ export const MicButton = ({ isListening, onStart, onStop, disabled }: MicButtonP
 
             {/* アイコン */}
             {isListening ? (
-                <MicOffIcon className="relative z-10 size-6 text-white" />
+                <MicOffIcon className="relative z-10 size-5 md:size-6 text-white" />
             ) : (
-                <MicIcon className="relative z-10 size-6 text-gray-700" />
+                <MicIcon className="relative z-10 size-5 md:size-6 text-gray-700" />
             )}
         </Button>
     );

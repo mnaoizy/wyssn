@@ -45,7 +45,7 @@ export function AddContext() {
         </motion.span>
       </MorphingPopoverTrigger>
       <MorphingPopoverContent className="rounded-md border border-zinc-950/10 bg-white p-0 shadow-[0_9px_9px_0px_rgba(0,0,0,0.01),_0_2px_5px_0px_rgba(0,0,0,0.06)] dark:bg-zinc-700">
-        <div className="w-full max-w-[500px] md:w-[500px]">
+        <div className="w-full md:w-[640px]">
           <form className="flex h-full flex-col" onSubmit={handleSubmit}>
             <div className="relative h-[300px]">
               <motion.span

@@ -224,7 +224,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     <main className="flex-grow flex flex-col">
       {/* Hero Section */}
       <section className="flex-grow flex justify-center items-start py-8 sm:py-10 md:py-12 lg:py-16">
-        <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center">
+        <div className="w-full max-w-5xl mx-auto px-2 sm:px-3 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center min-w-sm">
           {/* Add wrapper container with fixed height */}
           {heroTitle && heroDescription && (
             <div
@@ -294,17 +294,17 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
             <div className="mt-6">
               {(suggestionsWithId.length > 0 ||
                 suggestionsState.pinnedSuggestions?.length > 0) && (
-                <div className="flex flex-row justify-between items-center mb-2 sm:mb-3 lg:mb-4 ">
-                  <h2 className="font-serif text-md sm:text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 leading-tight tracking-tight text-left">
-                    Conversation Suggestions
-                  </h2>
-                  {isLoading && (
-                    <div className="animate-pulse">
-                      Generating conversation suggestions...
-                    </div>
-                  )}
-                </div>
-              )}
+                  <div className="flex flex-row justify-between items-center mb-2 sm:mb-3 lg:mb-4 ">
+                    <h2 className="font-serif text-md sm:text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 leading-tight tracking-tight text-left">
+                      Conversation Suggestions
+                    </h2>
+                    {isLoading && (
+                      <div className="animate-pulse">
+                        Generating conversation suggestions...
+                      </div>
+                    )}
+                  </div>
+                )}
               <SuggestionsGrid
                 suggestionsWithId={suggestionsWithId}
                 suggestionsState={suggestionsState}

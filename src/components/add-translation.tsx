@@ -67,11 +67,11 @@ export function AddTranslation({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="size-7"
             onClick={handleRemoveTranslation}
             aria-label="Remove translation"
           >
-            <XIcon className="h-4 w-4" />
+            <XIcon className="size-4" />
           </Button>
         )}
       </div>
