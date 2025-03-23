@@ -81,7 +81,8 @@ export default {
             'title': 'Kostenloser Plan',
             'description': 'Perfekt für den Einstieg mit grundlegenden Funktionen',
             'current_plan': 'Aktueller Plan',
-            'downgrade': 'Downgrade'
+            'downgrade': 'Downgrade',
+            'signup_free': 'Kostenlos registrieren'
         },
         'pro': {
             'title': 'Pro-Plan',

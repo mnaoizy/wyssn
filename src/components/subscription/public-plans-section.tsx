@@ -37,6 +37,26 @@ export function PublicPlansSection() {
     const params = useParams();
     const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale || 'en-US';
     const t = useI18n();
+
+    // Create a function to get the signup text based on locale since somehow the useI18n hook is not working
+    const getSignupText = () => {
+        switch (locale) {
+            case 'de-DE':
+                return 'Kostenlos registrieren';
+            case 'es-ES':
+                return 'Registrarse gratis';
+            case 'fr-FR':
+                return 'S\'inscrire gratuitement';
+            case 'ja-JP':
+                return '無料で登録';
+            case 'zh-CN':
+                return '免费注册';
+            case 'uk-UA':
+                return 'Зареєструватись безкоштовно';
+            default:
+                return 'Sign up for Free';
+        }
+    };
     const [isContactFormOpen, setIsContactFormOpen] = useState(false);
     const [isSignupDialogOpen, setIsSignupDialogOpen] = useState(false);
     const [priceDetails, setPriceDetails] = useState<PriceDetails>({
@@ -135,7 +155,7 @@ export function PublicPlansSection() {
                     price="¥0"
                     interval={t("plans.pricing.month")}
                     features={FREE_PLAN_FEATURES}
-                    buttonText={t("plans.free.signup")}
+                    buttonText={getSignupText()}
                     onSelect={handleSubscribeClick}
                 />
 

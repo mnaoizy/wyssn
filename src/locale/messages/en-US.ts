@@ -82,7 +82,7 @@ export default {
             'description': 'Perfect for getting started with basic features',
             'current_plan': 'Current Plan',
             'downgrade': 'Downgrade',
-            'signup': 'Sign up for Free',
+            'signup_free': 'Sign up for Free'
         },
         'pro': {
             'title': 'Pro Plan',
@@ -113,6 +113,8 @@ export default {
             'team_management': 'Team management features',
             'dedicated_support': 'Dedicated support',
             'custom_billing': 'Custom billing options'
-        }
+        },
+        'signup_free': 'Sign up for Free'
+
     }
 } as const

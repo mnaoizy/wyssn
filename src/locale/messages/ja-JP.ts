@@ -81,7 +81,8 @@ export default {
             'title': 'Freeプラン',
             'description': '基本機能の利用に最適',
             'current_plan': '現在のプラン',
-            'downgrade': 'ダウングレード'
+            'downgrade': 'ダウングレード',
+            'signup_free': '無料で登録'
         },
         'pro': {
             'title': 'Proプラン',

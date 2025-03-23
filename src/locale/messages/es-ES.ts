@@ -81,7 +81,8 @@ export default {
             'title': 'Plan Gratuito',
             'description': 'Perfecto para comenzar con funciones básicas',
             'current_plan': 'Plan Actual',
-            'downgrade': 'Degradar'
+            'downgrade': 'Degradar',
+            'signup_free': 'Registrarse gratis'
         },
         'pro': {
             'title': 'Plan Pro',

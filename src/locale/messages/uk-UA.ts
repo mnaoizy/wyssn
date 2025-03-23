@@ -52,6 +52,56 @@ export default {
         'subscription': 'Передплата',
         'loading': 'Завантаження...',
         'subscription_success': 'Вашу передплату успішно оброблено.',
-        'subscription_canceled': 'Процес оформлення передплати було скасовано.'
+        'subscription_canceled': 'Процес оформлення передплати було скасовано.',
+        'error_no_customer': 'Ви ще не маєте облікового запису клієнта Stripe. Будь ласка, спочатку оформіть передплату.',
+        'error_portal_failed': 'Не вдалося отримати доступ до порталу оплати. Спробуйте пізніше.',
+        'error_generic': 'Сталася помилка. Спробуйте ще раз.',
+        'current_usage': 'Поточне використання: {count} / {limit} запитів цього місяця',
+        'subscription_renewal': 'Ваша передплата {action} {date}',
+        'subscription_renew': 'оновиться',
+        'subscription_end': 'закінчиться',
+        'free_plan_status': 'Зараз ви користуєтесь безкоштовним планом'
+    },
+    // Subscription plans
+    'plans': {
+        'heading': 'Оберіть план, який вам підходить',
+        'subheading': 'Почніть з наших гнучких варіантів ціноутворення',
+        'free': {
+            'title': 'Безкоштовний план',
+            'description': 'Ідеально для початку роботи з базовими функціями',
+            'current_plan': 'Поточний план',
+            'downgrade': 'Понизити план',
+            'signup_free': 'Зареєструватись безкоштовно'
+        },
+        'pro': {
+            'title': 'Професійний план',
+            'description': 'Для осіб, яким потрібно більше можливостей',
+            'subscribe': 'Підписатися'
+        },
+        'enterprise': {
+            'title': 'Корпоративний план',
+            'description': 'Для команд та підприємств з індивідуальними потребами',
+            'contact_sales': 'Зв\'язатися з відділом продажів'
+        },
+        'pricing': {
+            'month': 'місяць',
+            'custom_pricing': 'Індивідуальне',
+            'pricing': 'ціноутворення',
+            'popular': 'Популярний',
+            'current_plan': 'Поточний план'
+        },
+        'features': {
+            'core_features': 'Усі основні функції включено',
+            'requests_free_daily': 'Обмежено до 50 запитів на день',
+            'requests_free_monthly': 'Обмежено до 500 запитів на місяць',
+            'standard_support': 'Стандартна підтримка',
+            'requests_pro_daily': 'Обмежено до 500 запитів на день',
+            'requests_pro_monthly': 'Обмежено до 10 000 запитів на місяць',
+            'priority_support': 'Пріоритетна підтримка',
+            'custom_limits': 'Індивідуальні ліміти запитів',
+            'team_management': 'Функції управління командою',
+            'dedicated_support': 'Виділена підтримка',
+            'custom_billing': 'Індивідуальні параметри оплати'
+        }
     }
 } as const;

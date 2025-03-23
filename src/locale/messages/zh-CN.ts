@@ -84,6 +84,7 @@ export default {
       description: '适合开始使用基本功能',
       current_plan: '当前计划',
       downgrade: '降级',
+      signup_free: '免费注册',
     },
     pro: {
       title: '专业计划',

@@ -80,7 +80,8 @@ export default {
             'title': 'Forfait Gratuit',
             'description': 'Parfait pour débuter avec les fonctionnalités de base',
             'current_plan': 'Forfait Actuel',
-            'downgrade': 'Rétrograder'
+            'downgrade': 'Rétrograder',
+            'signup_free': 'S\'inscrire gratuitement'
         },
         'pro': {
             'title': 'Forfait Pro',
