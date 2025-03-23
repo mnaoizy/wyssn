@@ -294,7 +294,7 @@ export async function POST(req: Request) {
         // 検証済みのデータからユーザー入力を取得
         const userInput = body.message;
         const number = 2;
-        const translationLanguage = body.translationLanguage || 'ja-JP';
+        const translationLanguage = body.translationLanguage;
         const needsTranslation: boolean = !!(translationLanguage && translationLanguage !== '');
         const context = body.context || '';
 
