@@ -7,7 +7,6 @@ import { useCurrentLocale } from '@/locale/client'
 import { experimental_useObject as useObject } from '@ai-sdk/react'
 import { cn } from '@/lib/utils'
 import { conversationSuggestionSchema } from '@/types/shared-types'
-import { SuggestionsGrid } from '@/components/suggestions/suggestions-grid'
 import { useSuggestions } from '@/hooks/use-suggestions'
 import { ClientSuggestion } from '@/types/suggestions'
 import { Spinner } from '@/components/spinner'
@@ -78,10 +77,8 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
 
   // Use custom hook for suggestions management
   const {
-    suggestionsState,
     suggestionsWithId,
     dispatch,
-    checkIsPinned,
     resetHidden,
   } = useSuggestions(
     object?.suggestions?.filter(
@@ -275,10 +272,22 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               {/* Recognition Status */}
               <RecognitionStatus error={error} isSupported={isSupported} />
 
-              {/* Transcript Display */}
+              {/* Transcript Display with Autocomplete */}
               <TranscriptDisplay
                 finalUtterances={finalUtterances}
                 interimText={interimText}
+                suggestionsWithId={suggestionsWithId}
+                isLoading={isLoading}
+                onSuggestionSelect={(suggestion) => {
+                  console.log('Selected suggestion:', suggestion);
+                  // Handle suggestion selection - e.g. pin the suggestion or trigger an action
+                  if (suggestion && suggestion.id) {
+                    dispatch({
+                      type: 'TOGGLE_PIN',
+                      suggestion: suggestion
+                    });
+                  }
+                }}
               />
             </div>
           ) : (
@@ -287,30 +296,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
             </div>
           )}
 
-          <div className="mt-8">
-            <div className="mt-6">
-              {(suggestionsWithId.length > 0 ||
-                suggestionsState.pinnedSuggestions?.length > 0) && (
-                  <div className="flex flex-row justify-between items-center mb-2 sm:mb-3 lg:mb-4 ">
-                    <h2 className="font-serif text-md sm:text-lg md:text-xl lg:text-2xl font-semibold text-neutral-900 leading-tight tracking-tight text-left">
-                      Conversation Suggestions
-                    </h2>
-                    {isLoading && (
-                      <div className="animate-pulse">
-                        Generating conversation suggestions...
-                      </div>
-                    )}
-                  </div>
-                )}
-              <SuggestionsGrid
-                suggestionsWithId={suggestionsWithId}
-                suggestionsState={suggestionsState}
-                dispatch={dispatch}
-                checkIsPinned={checkIsPinned}
-                isLoading={isLoading}
-              />
-            </div>
-          </div>
+
         </div>
       </section>
     </main>
