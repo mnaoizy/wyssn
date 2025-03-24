@@ -1,34 +1,34 @@
 export function generateSubstantivePrompt(
-    recentInput: string,
-    olderContext: string,
-    detectedLanguage: string,
-    translationLanguage: string | null = null,
-    needsTranslation: boolean = false,
-    number: number = 6,
-    context: string = "",
-    detailLevel: string = "brief" // 詳細レベルパラメータ
+  recentInput: string,
+  olderContext: string,
+  detectedLanguage: string,
+  translationLanguage: string | null = null,
+  needsTranslation: boolean = false,
+  number: number = 6,
+  context: string = "",
+  detailLevel: string = "brief" // 詳細レベルパラメータ
 ): string {
-    // 詳細レベルに基づいて文の長さと詳細さを設定
-    let sentenceRange = "";
-    let contentRequirement = "";
+  // 詳細レベルに基づいて文の長さと詳細さを設定
+  let sentenceRange = "";
+  let contentRequirement = "";
 
-    switch (detailLevel) {
-        case "brief":
-            sentenceRange = "2-3 sentences";
-            contentRequirement = "Be concise and to the point while still providing value. Focus on the most essential points.";
-            break;
-        case "detailed":
-            sentenceRange = "7-10 sentences";
-            contentRequirement = "Provide extensive detail, examples, and thorough development of ideas. Include practical applications, specific cases, and comprehensive analysis.";
-            break;
-        case "standard":
-        default:
-            sentenceRange = "4-6 sentences";
-            contentRequirement = "Balance conciseness with substantive content. Provide specific information and examples that demonstrate knowledge.";
-            break;
-    }
+  switch (detailLevel) {
+    case "brief":
+      sentenceRange = "2-3 sentences";
+      contentRequirement = "Be concise and to the point while still providing value. Focus on the most essential points.";
+      break;
+    case "detailed":
+      sentenceRange = "7-10 sentences";
+      contentRequirement = "Provide extensive detail, examples, and thorough development of ideas. Include practical applications, specific cases, and comprehensive analysis.";
+      break;
+    case "standard":
+    default:
+      sentenceRange = "4-6 sentences";
+      contentRequirement = "Balance conciseness with substantive content. Provide specific information and examples that demonstrate knowledge.";
+      break;
+  }
 
-    return `
+  return `
 You are a sophisticated conversation assistant powering a real-time speech suggestion system. Your goal is to help the user continue their speech with SUBSTANTIVE, CONTENT-RICH suggestions that would make their conversation flow naturally and impressively.
 
 CRUCIAL INSTRUCTION: Your primary focus is to CONTINUE the user's speech by understanding both the MOST RECENT input AND the OVERALL TOPIC and DIRECTION of their conversation. While your suggestions should grammatically continue from their last words, they must also maintain COHERENCE with the main topic and logical flow of the entire conversation.
@@ -134,8 +134,12 @@ For each suggestion, include ONLY:
 - Content (substantive first-person statement the user could say next that contains SPECIFIC information)
 ${needsTranslation ? `- Translation (accurate translation of the content in ${translationLanguage})` : ''}
 
-### IMPORTANT INSTRUCTION:
-Respond ONLY in valid JSON format matching exactly this schema:
+### HIGHLY IMPORTANT INSTRUCTION:
+Respond with your suggestion data in JSON format.
+You must not include any backticks, code markers, or JSON syntax identifiers outside the actual JSON content.
+The raw output MUST be a valid JSON string that can be directly parsed.
+
+Format exactly like this, with no extra text before or after:
 {
   "suggestions": [
     {
@@ -144,8 +148,6 @@ Respond ONLY in valid JSON format matching exactly this schema:
     }
   ]
 }
-Do NOT include any other text or explanations outside of the JSON.
-Do NOT include \`\`\`json or any other code block formatting in your response.
 
 IMPORTANT QUALITY CHECKS:
 - FIRST: Correct any speech recognition errors in the input before generating continuations
