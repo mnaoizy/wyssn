@@ -159,8 +159,21 @@ function LayoutContent({
             </span>
 
             <div className="flex gap-4 sm:gap-8 text-xs sm:text-sm text-neutral-400 order-3 md:order-none">
-              <span className="cursor-default">{t('footer.privacy')}</span>
-              <span className="cursor-default">{t('footer.terms')}</span>
+              <Link
+                href={`/${locale}/privacy`}
+                className="hover:text-neutral-500 transition-colors"
+              >
+                {t('footer.privacy')}
+              </Link>
+
+              {
+                locale === "ja-JP" && <Link
+                  href={`/${locale}/commercial`}
+                  className="hover:text-neutral-500 transition-colors"
+                >
+                  特定商取引法に基づく表記
+                </Link>
+              }
               <span className="cursor-default">{t('footer.contact')}</span>
               <Link
                 href={`/${locale}/changelog`}
