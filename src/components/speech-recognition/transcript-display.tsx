@@ -6,7 +6,7 @@ import { Utterance } from '@/hooks/use-speech-recognition';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ClientSuggestion } from '@/types/suggestions';
-import { SparklesIcon, MicIcon } from 'lucide-react';
+import { SparklesIcon } from 'lucide-react';
 
 interface TranscriptDisplayProps {
     finalUtterances: Utterance[];
@@ -213,12 +213,6 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
                                     style={shimmerStyle}
                                 >
                                     {' '}{interimText}
-                                </span>
-                                <span className="ml-1 inline-flex items-center">
-                                    <MicIcon className="h-4 w-4 text-gray-500 animate-pulse" />
-                                    <span className="ml-1 text-xs text-gray-500">
-                                        ({interimText.length})
-                                    </span>
                                 </span>
                             </span>
                         )}

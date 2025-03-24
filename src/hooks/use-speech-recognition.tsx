@@ -310,7 +310,7 @@ export const useSpeechRecognition = (
                                     lang: currentLang
                                 });
                             } else {
-                                interimText += transcriptText;
+                                interimText += ' ' + transcriptText;
                                 // Add interim utterance with language info
                                 if (mergedOptions.interimResults) {
                                     newUtterances.push({
