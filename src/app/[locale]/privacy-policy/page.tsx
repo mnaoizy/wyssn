@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 async function getPrivacyPolicyContent() {
     try {
-        const filePath = path.join(process.cwd(), 'PRIVACY_POLICY.md');
+        const filePath = path.join(process.cwd(), "docs", "privacy-policy", 'ja-JP.md');
         const fileContent = await fs.readFile(filePath, 'utf8');
         return fileContent;
     } catch (error) {

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 async function getCommericalLawContent() {
     try {
-        const filePath = path.join(process.cwd(), 'COMMERCIAL_LAW.md');
+        const filePath = path.join(process.cwd(), "docs", "commercial-law", 'ja-JP.md');
         const fileContent = await fs.readFile(filePath, 'utf8');
         return fileContent;
     } catch (error) {
