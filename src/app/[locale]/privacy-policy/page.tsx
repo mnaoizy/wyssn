@@ -24,16 +24,10 @@ export default async function PrivacyPolicyPage() {
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="mb-8">
-                <h1 className="text-3xl font-serif font-bold tracking-tight mb-2">
-                    プライバシーポリシー
-                </h1>
-
-            </div>
-
             <div className="prose prose-slate max-w-none">
                 <ReactMarkdown
                     components={{
+                        h1: ({ ...props }) => <h1 className="text-2xl font-bold mt-8 mb-4 pb-2 border-b border-gray-200" {...props} />,
                         h2: ({ ...props }) => <h2 className="text-xl font-bold mt-8 mb-4 pb-2 border-b border-gray-200" {...props} />,
                         h3: ({ ...props }) => <h3 className="text-lg font-semibold mt-6 mb-3" {...props} />,
                         ul: ({ ...props }) => <ul className="list-disc pl-6 mb-4" {...props} />,

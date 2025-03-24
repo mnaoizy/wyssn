@@ -4,23 +4,23 @@ import { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 
 export const metadata: Metadata = {
-    title: '特定商取引法に基づく表記 | Wyssn',
-    description: '特定商取引法に基づく表記',
+    title: 'Terms | Wyssn',
+    description: 'Terms of service',
 };
 
-async function getCommericalLawContent() {
+async function getTermsContent() {
     try {
-        const filePath = path.join(process.cwd(), 'COMMERCIAL_LAW.md');
+        const filePath = path.join(process.cwd(), 'TERMS.md');
         const fileContent = await fs.readFile(filePath, 'utf8');
         return fileContent;
     } catch (error) {
-        console.error('Error reading commerical law file:', error);
-        return '# CommercialLaw\n\nNo commercial law content found.';
+        console.error('Error reading terms file:', error);
+        return '# Changelog\n\nNo terms content found.';
     }
 }
 
-export default async function CommercialLawPage() {
-    const commercialLawContent = await getCommericalLawContent();
+export default async function TermsPage() {
+    const termsContent = await getTermsContent();
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -39,7 +39,7 @@ export default async function CommercialLawPage() {
                         a: ({ ...props }) => <a className="text-blue-600 hover:underline" {...props} />,
                         blockquote: ({ ...props }) => <blockquote className="pl-4 italic border-l-4 border-gray-200 text-gray-700 mb-4" {...props} />
                     }}>
-                    {commercialLawContent}
+                    {termsContent}
                 </ReactMarkdown>
             </div>
         </div>

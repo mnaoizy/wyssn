@@ -165,6 +165,12 @@ function LayoutContent({
               >
                 {t('footer.privacy')}
               </Link>
+              <Link
+                href={`/${locale}/terms`}
+                className="hover:text-neutral-500 transition-colors"
+              >
+                {t('footer.terms')}
+              </Link>
 
               {
                 locale === "ja-JP" && <Link
