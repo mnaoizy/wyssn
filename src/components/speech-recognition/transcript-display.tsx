@@ -48,6 +48,8 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const transcriptRef = useRef<HTMLDivElement>(null);
     const utteranceRefs = useRef<Record<string, HTMLSpanElement | null>>({});
+    // Add a ref to track the last transcript content for position recalculation
+    const lastContentRef = useRef<string>('');
 
     // Function to get the last utterance element
     const getLastUtteranceRect = useCallback((): DOMRect | null => {
@@ -61,6 +63,8 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         return lastElementRef.getBoundingClientRect();
     }, [finalUtterances]);
 
+    // No longer needed function removed
+
     // Calculate position for suggestions dropdown
     const calculateSuggestionsPosition = useCallback((): SuggestionsPosition => {
         if (!transcriptRef.current || !containerRef.current) {
@@ -72,21 +76,23 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         const lastUtteranceRect = getLastUtteranceRect();
 
         // Calculate ideal width based on container
-        const idealWidth = window.innerWidth < 640 ? window.innerWidth - 60 : 450;
-        const maxWidth = Math.min(containerRect.width - 40, idealWidth);
+        const idealWidth = window.innerWidth < 640 ? window.innerWidth - 30 : 450;
+        const maxWidth = Math.min(containerRect.width - 20, idealWidth);
 
         // Default positioning
         let top = transcriptRect.bottom - containerRect.top + 5;
-        let left = 20;
+        let left = 10; // Default to left margin if no utterance
 
         if (lastUtteranceRect) {
             // Position based on last utterance
             top = lastUtteranceRect.bottom - containerRect.top + 5;
+
+            // Always position just after the last character
             left = lastUtteranceRect.right - containerRect.left;
 
-            // Adjust if extending beyond right edge
-            if (left + maxWidth > containerRect.width - 20) {
-                left = Math.max(20, containerRect.width - maxWidth - 20);
+            // Only adjust if extending beyond right edge
+            if (left + maxWidth > containerRect.width - 10) {
+                left = Math.max(10, containerRect.width - maxWidth - 10);
             }
         }
 
@@ -96,6 +102,19 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
             width: maxWidth
         };
     }, [getLastUtteranceRect]);
+
+    // Force position recalculation
+    const forceRecalculate = useCallback(() => {
+        if (!state.isClient) return;
+
+        const newPosition = calculateSuggestionsPosition();
+        setState(prevState => ({
+            ...prevState,
+            suggestionsPosition: newPosition,
+            isPositionCalculated: true
+        }));
+
+    }, [state.isClient, calculateSuggestionsPosition]);
 
     // Update position on client side
     const updateSuggestionsPosition = useCallback(() => {
@@ -112,6 +131,8 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
     const setUtteranceRef = (el: HTMLSpanElement | null, id: string) => {
         if (el) {
             utteranceRefs.current[id] = el;
+            // Force recalculation after ref is set
+            setTimeout(forceRecalculate, 0);
         }
     };
 
@@ -129,6 +150,27 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
             isClient: true
         }));
     }, []);
+
+    // Track content changes to detect line breaks
+    useEffect(() => {
+        if (!state.isClient) return;
+
+        // Get the current content
+        const currentContent = finalUtterances.map(u => u.text).join(' ');
+
+        // Check if the content has changed
+        if (currentContent !== lastContentRef.current) {
+            // Content changed, update the reference
+            lastContentRef.current = currentContent;
+
+            // Delay to ensure DOM is updated
+            const timer = setTimeout(() => {
+                updateSuggestionsPosition();
+            }, 10);
+
+            return () => clearTimeout(timer);
+        }
+    }, [finalUtterances, state.isClient, updateSuggestionsPosition]);
 
     // Update position when content changes
     useEffect(() => {
@@ -170,6 +212,23 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         textShadow: '0 0 1px rgba(0, 0, 0, 0.2)'
     };
 
+    // Additional effect to detect mutations that might change layout
+    useEffect(() => {
+        if (!transcriptRef.current || !state.isClient) return;
+
+        const observer = new MutationObserver(() => {
+            updateSuggestionsPosition();
+        });
+
+        observer.observe(transcriptRef.current, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+
+        return () => observer.disconnect();
+    }, [transcriptRef, state.isClient, updateSuggestionsPosition]);
+
     return (
         <>
             {/* CSS for shimmer animation */}
@@ -201,7 +260,7 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
                                     wordBreak: 'break-all'
                                 }}
                             >
-                                {utterance.text}
+                                {utterance.text}{' '}
                             </span>
                         ))}
 
@@ -218,17 +277,18 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
                         )}
                     </div>
                 ) : (
-                    <span className="text-gray-400">
+                    <div className="text-gray-400 flex items-center justify-center pt-8 pb-14 z-20 relative">
                         {t("main.prompt_speak")}
-                    </span>
+                    </div>
                 )}
 
-                {/* Autocomplete suggestions - Always shown */}
-                {state.isClient && state.isPositionCalculated && (
+                {/* Autocomplete suggestions - Only shown when there's content */}
+                {state.isClient && state.isPositionCalculated && hasContent && (
                     <motion.div
                         className="absolute z-10 backdrop-blur-lg bg-white/95 border border-gray-200 rounded-md shadow-lg overflow-hidden divide-y divide-gray-300/40"
                         style={{
-                            width: state.suggestionsPosition.width
+                            width: state.suggestionsPosition.width,
+                            maxWidth: "calc(100% - 20px)"
                         }}
                         initial={{ opacity: 0 }}
                         animate={{
