@@ -245,7 +245,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
           )}
 
           {mounted ? (
-            <div className="w-full max-w-full p-4 border rounded-lg shadow-sm mb-8">
+            <div className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8">
               {/* Control Panel */}
               <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <ControlPanel

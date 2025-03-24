@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePersistentState } from '@/hooks/use-persistent-state'
 import { useI18n } from '@/locale/client'
 import { LanguagesIcon, XIcon } from 'lucide-react'
 import {
@@ -22,14 +23,15 @@ interface AddTranslationProps {
 export function AddTranslation({
   onTranslationLanguageSelect,
 }: AddTranslationProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState<Locale | null>(null)
+  const [selectedLanguage, setSelectedLanguage] = usePersistentState<Locale | null>("wyssn-translation-language", null)
   const [showRemoveButton, setShowRemoveButton] = useState(false)
   const t = useI18n()
 
-  // Update remove button visibility when language changes
+  // Notify parent of persisted language on component mount and when language changes
   useEffect(() => {
     setShowRemoveButton(!!selectedLanguage)
-  }, [selectedLanguage])
+    onTranslationLanguageSelect(selectedLanguage)
+  }, [selectedLanguage, onTranslationLanguageSelect])
 
   const handleLanguageChange = (language: Locale) => {
     setSelectedLanguage(language)
