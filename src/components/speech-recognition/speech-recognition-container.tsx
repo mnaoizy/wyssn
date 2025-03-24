@@ -17,6 +17,7 @@ import { RecognitionStatus } from './recognition-status'
 import { TranscriptDisplay } from './transcript-display'
 import { ControlPanel } from './control-panel'
 import toast from 'react-hot-toast'
+import { Locale } from '@/locale/config'
 
 export interface SpeechRecognitionProps {
   heroTitle?: string
@@ -53,7 +54,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
 
   // References for submission functionality
   const submitRef = useRef<
-    | ((data: { message: string; translationLanguage?: string | null }) => void)
+    | ((data: { message: string; translationLanguage?: string | null, locale: Locale }) => void)
     | undefined
   >(undefined)
   const resetHiddenRef = useRef<(() => void) | undefined>(undefined)
@@ -163,6 +164,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               submitRef.current({
                 message: finalText,
                 translationLanguage: translationLanguage,
+                locale: currentLocale,
               })
 
               // Reset the counter after submission
@@ -172,12 +174,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
         }
       }
     }
-  }, [
-    contextUtterances,
-    utteranceInterval,
-    localUtteranceInterval,
-    onUtteranceIntervalChange,
-  ])
+  }, [contextUtterances, utteranceInterval, localUtteranceInterval, onUtteranceIntervalChange, translationLanguage, currentLocale])
 
   // Update interim transcription
   useEffect(() => {

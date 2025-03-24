@@ -157,7 +157,7 @@ const initialState: SpeechRecognitionState = {
     interimTranscript: '',
     error: null,
     utterances: [],
-    currentLanguage: 'ja-JP'
+    currentLanguage: 'en-US'
 };
 
 // Generate a unique ID for each utterance
@@ -197,7 +197,7 @@ function speechRecognitionReducer(state: SpeechRecognitionState, action: SpeechR
 
             return {
                 ...state,
-                transcript: (finalText || '') + (interimText ? ' ' + interimText : ''),
+                // transcript: (finalText || '') + (interimText ? ' ' + interimText : ''),
                 finalTranscript: finalText,
                 interimTranscript: interimText,
                 utterances: updatedUtterances
@@ -298,7 +298,7 @@ export const useSpeechRecognition = (
 
                         if (transcriptText) {
                             if (result.isFinal) {
-                                finalText += (finalText ? ' ' : '') + transcriptText;
+                                finalText += (finalText ? '' : '') + transcriptText;
 
                                 // Add final utterance with language info
                                 newUtterances.push({
@@ -311,7 +311,6 @@ export const useSpeechRecognition = (
                                 });
                             } else {
                                 interimText += transcriptText;
-
                                 // Add interim utterance with language info
                                 if (mergedOptions.interimResults) {
                                     newUtterances.push({
