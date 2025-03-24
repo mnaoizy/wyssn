@@ -18,7 +18,7 @@ Masakazu Naoi
 
 ## メールアドレス
 
-support@wyssn.com
+naoi@langrics.com
 
 ## サービスの内容
 
