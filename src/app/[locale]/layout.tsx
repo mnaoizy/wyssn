@@ -160,7 +160,7 @@ function LayoutContent({
 
             <div className="flex gap-4 sm:gap-8 text-xs sm:text-sm text-neutral-400 order-3 md:order-none">
               <Link
-                href={`/${locale}/privacy`}
+                href={`/${locale}/privacy-policy`}
                 className="hover:text-neutral-500 transition-colors"
               >
                 {t('footer.privacy')}
