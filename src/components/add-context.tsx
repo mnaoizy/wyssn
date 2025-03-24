@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '@/locale/client'
 import { Button } from './ui/button'
 import { RocketIcon } from 'lucide-react'
@@ -16,11 +16,16 @@ import { useAddContext } from '@/contexts/add-context-provider'
 export function AddContext() {
   const [note, setNote] = useState('')
   const [isOpen, setIsOpen] = useState(false)
-  const { setContextValue } = useAddContext()
+  const { contextValue, setContextValue } = useAddContext()
   const t = useI18n()
 
+  useEffect(() => {
+    if (contextValue) {
+      setNote(contextValue)
+    }
+  }, [contextValue])
+
   const closeDialog = () => {
-    setNote('')
     setIsOpen(false)
   }
 
@@ -61,7 +66,7 @@ export function AddContext() {
               <Textarea
                 className="h-full w-full resize-none bg-transparent px-3 py-2 text-sm outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
                 autoFocus
-                onChange={(e) => setNote(e.target.value)}
+                onChange={(e) => setContextValue(e.target.value)}
                 value={note}
                 placeholder=""
                 // Mobile zoom prevention

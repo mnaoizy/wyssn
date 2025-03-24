@@ -14,7 +14,7 @@ const groq = createGroq({
 })
 
 // Function-calling用に明示的に定義
-const model = groq('llama-3.1-8b-instant');
+const model = groq('mistral-saba-24b');
 // 生成中の部分的なデータ型
 export type PartialConversationSuggestion = DeepPartial<typeof conversationSuggestionSchema>
 
