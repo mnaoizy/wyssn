@@ -50,9 +50,46 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
     const utteranceRefs = useRef<Record<string, HTMLSpanElement | null>>({});
     // Add a ref to track the last transcript content for position recalculation
     const lastContentRef = useRef<string>('');
+    // Last utterance ID reference to detect changes
+    const lastUtteranceIdRef = useRef<string | null>(null);
+
+    // Function to get the position of the last character in a text node
+    const getLastCharacterPosition = useCallback((element: HTMLElement): { top: number, left: number, right: number } | null => {
+        if (!element || !element.textContent) return null;
+
+        // ブラウザの Range API を使用して最後の文字の位置を取得
+        const range = document.createRange();
+        const textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+
+        if (!textNode || !textNode.textContent) return null;
+
+        try {
+            // テキストノードの最後の文字を選択
+            range.setStart(textNode, Math.max(0, textNode.textContent.length - 1));
+            range.setEnd(textNode, textNode.textContent.length);
+
+            // 選択範囲の境界位置を取得
+            const rect = range.getBoundingClientRect();
+
+            return {
+                top: rect.top,
+                left: rect.left,
+                right: rect.right
+            };
+        } catch (e) {
+            console.error('Error getting last character position:', e);
+            // エラーが発生した場合は要素全体の位置を返す
+            const rect = element.getBoundingClientRect();
+            return {
+                top: rect.top,
+                left: rect.left,
+                right: rect.right
+            };
+        }
+    }, []);
 
     // Function to get the last utterance element
-    const getLastUtteranceRect = useCallback((): DOMRect | null => {
+    const getLastUtteranceRect = useCallback((): { top: number, left: number, right: number, bottom: number } | null => {
         if (finalUtterances.length === 0) return null;
 
         const lastUtterance = finalUtterances[finalUtterances.length - 1];
@@ -60,12 +97,28 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
 
         if (!lastElementRef) return null;
 
+        // 現在の最後のutteranceのIDを記録
+        lastUtteranceIdRef.current = lastUtterance.id;
+
+        // 最後の文字の位置を取得
+        const charPosition = getLastCharacterPosition(lastElementRef);
+
+        if (charPosition) {
+            // 最後の文字の位置情報を要素の位置情報と組み合わせる
+            const elementRect = lastElementRef.getBoundingClientRect();
+            return {
+                top: charPosition.top,
+                left: charPosition.left,
+                right: charPosition.right,
+                bottom: elementRect.bottom
+            };
+        }
+
+        // 文字位置の取得に失敗した場合は要素の位置を返す
         return lastElementRef.getBoundingClientRect();
-    }, [finalUtterances]);
+    }, [finalUtterances, getLastCharacterPosition]);
 
-    // No longer needed function removed
-
-    // Calculate position for suggestions dropdown
+    // Calculate position for suggestions dropdown with character-level precision
     const calculateSuggestionsPosition = useCallback((): SuggestionsPosition => {
         if (!transcriptRef.current || !containerRef.current) {
             return { top: 0, left: 0, width: 450 };
@@ -84,11 +137,22 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         let left = 10; // Default to left margin if no utterance
 
         if (lastUtteranceRect) {
-            // Position based on last utterance
+            // Position based on last character of last utterance
             top = lastUtteranceRect.bottom - containerRect.top + 5;
 
-            // Always position just after the last character
+            // 通常のケース: 最後の文字の後に配置
             left = lastUtteranceRect.right - containerRect.left;
+
+            // 改行検出: 最後の文字が行の先頭付近にある場合
+            const isNearLeftEdge = lastUtteranceRect.left - containerRect.left <= 15;
+
+            // 文字のY位置がコンテナの右端に近い場合も改行とみなす
+            // const isNearRightEdge = lastUtteranceRect.right >= containerRect.right - 20;
+
+            if (isNearLeftEdge) {
+                // 行の先頭にある場合は左マージンを使用
+                left = 10;
+            }
 
             // Only adjust if extending beyond right edge
             if (left + maxWidth > containerRect.width - 10) {
@@ -103,7 +167,7 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         };
     }, [getLastUtteranceRect]);
 
-    // Force position recalculation
+    // Force position recalculation immediately
     const forceRecalculate = useCallback(() => {
         if (!state.isClient) return;
 
@@ -118,13 +182,15 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
 
     // Update position on client side
     const updateSuggestionsPosition = useCallback(() => {
-        const newPosition = calculateSuggestionsPosition();
-
-        setState(prevState => ({
-            ...prevState,
-            suggestionsPosition: newPosition,
-            isPositionCalculated: true
-        }));
+        // 即時に計算して更新する
+        requestAnimationFrame(() => {
+            const newPosition = calculateSuggestionsPosition();
+            setState(prevState => ({
+                ...prevState,
+                suggestionsPosition: newPosition,
+                isPositionCalculated: true
+            }));
+        });
     }, [calculateSuggestionsPosition]);
 
     // Set ref for utterance elements
@@ -132,7 +198,7 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         if (el) {
             utteranceRefs.current[id] = el;
             // Force recalculation after ref is set
-            setTimeout(forceRecalculate, 0);
+            requestAnimationFrame(forceRecalculate);
         }
     };
 
@@ -151,11 +217,11 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         }));
     }, []);
 
-    // Track content changes to detect line breaks
+    // Track content changes to detect line breaks (interimTextを無視)
     useEffect(() => {
         if (!state.isClient) return;
 
-        // Get the current content
+        // Get the current content (interimTextを除外)
         const currentContent = finalUtterances.map(u => u.text).join(' ');
 
         // Check if the content has changed
@@ -163,26 +229,10 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
             // Content changed, update the reference
             lastContentRef.current = currentContent;
 
-            // Delay to ensure DOM is updated
-            const timer = setTimeout(() => {
-                updateSuggestionsPosition();
-            }, 10);
-
-            return () => clearTimeout(timer);
+            // Immediately update position (no delay)
+            requestAnimationFrame(updateSuggestionsPosition);
         }
     }, [finalUtterances, state.isClient, updateSuggestionsPosition]);
-
-    // Update position when content changes
-    useEffect(() => {
-        if (!state.isClient) return;
-
-        // Delay to ensure DOM is updated
-        const timer = setTimeout(() => {
-            updateSuggestionsPosition();
-        }, 10);
-
-        return () => clearTimeout(timer);
-    }, [finalUtterances, interimText, state.isClient, updateSuggestionsPosition]);
 
     // Handle window resize
     useEffect(() => {
@@ -198,6 +248,20 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
             window.removeEventListener('resize', handleResize);
         };
     }, [state.isClient, updateSuggestionsPosition]);
+
+    // レイアウト変更を検出するためのResizeObserver
+    useEffect(() => {
+        if (!transcriptRef.current || !state.isClient) return;
+
+        const resizeObserver = new ResizeObserver(() => {
+            // レイアウト変更時には即時に位置を再計算
+            requestAnimationFrame(updateSuggestionsPosition);
+        });
+
+        resizeObserver.observe(transcriptRef.current);
+
+        return () => resizeObserver.disconnect();
+    }, [transcriptRef, state.isClient, updateSuggestionsPosition]);
 
     // CSS for shimmer effect - monochrome style
     const shimmerStyle = {
@@ -217,13 +281,15 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
         if (!transcriptRef.current || !state.isClient) return;
 
         const observer = new MutationObserver(() => {
-            updateSuggestionsPosition();
+            // DOM変更時には即時に位置を再計算
+            requestAnimationFrame(updateSuggestionsPosition);
         });
 
         observer.observe(transcriptRef.current, {
             childList: true,
             subtree: true,
-            characterData: true
+            characterData: true,
+            attributes: true
         });
 
         return () => observer.disconnect();
