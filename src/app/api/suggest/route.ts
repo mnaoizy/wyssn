@@ -5,15 +5,15 @@ import { defaultLocale, locales, Locale } from '@/locale/config';
 import { NextResponse } from 'next/server';
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from '@/lib/prisma-client';
+import { AISDKExporter } from 'langsmith/vercel';
 
 const groq = createGroq({
     apiKey: process.env.GROQ_API_KEY,
 
 })
 
-
 // Function-calling用に明示的に定義
-const model = groq('mistral-saba-24b');
+const model = groq('llama-3.1-8b-instant');
 // 生成中の部分的なデータ型
 export type PartialConversationSuggestion = DeepPartial<typeof conversationSuggestionSchema>
 
@@ -330,12 +330,13 @@ export async function POST(req: Request) {
             context
         );
 
-        // 改良版プロンプトを使用してサジェストを生成
+        // サジェストを生成
         const result = await streamObject({
             model,
             prompt: prompt,
             schema: conversationSuggestionSchema,
-            mode: 'json'
+            mode: 'json',
+            experimental_telemetry: AISDKExporter.getSettings()
         });
 
         return result.toTextStreamResponse();
