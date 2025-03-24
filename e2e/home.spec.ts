@@ -16,9 +16,7 @@ test.describe('Homepage', () => {
     await expect(heroTitle).toBeVisible()
 
     // Verify speech recognition container is present
-    const speechContainer = page.locator(
-      '.w-full.max-w-full.p-4.border.rounded-lg'
-    )
+    const speechContainer = page.locator('[data-testid=speech-recognition-container]')
     await expect(speechContainer).toBeVisible()
 
     // Take a screenshot of the page for visual reference
