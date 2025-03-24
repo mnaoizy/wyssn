@@ -13,7 +13,7 @@ const groq = createGroq({
 
 
 // Function-calling用に明示的に定義
-const model = groq('llama-3.1-8b-instant');
+const model = groq('mistral-saba-24b');
 // 生成中の部分的なデータ型
 export type PartialConversationSuggestion = DeepPartial<typeof conversationSuggestionSchema>
 
@@ -120,7 +120,7 @@ function generateSubstantivePrompt(
     needsTranslation: boolean = false,
     number: number = 6,
     context: string = "",
-    detailLevel: string = "standard" // 詳細レベルパラメータを追加
+    detailLevel: string = "brief" // 詳細レベルパラメータを追加
 ): string {
     // 詳細レベルに基づいて文の長さと詳細さを設定
     let sentenceRange = "";
@@ -214,6 +214,7 @@ Respond ONLY in valid JSON format matching exactly this schema:
   ]
 }
 Do NOT include any other text or explanations outside of the JSON.
+Do NOT include \`\`\`json or any other code block formatting in your response.
 
 IMPORTANT QUALITY CHECKS:
 - Each suggestion MUST begin as a GRAMMATICAL CONTINUATION of the user's last words
@@ -223,6 +224,7 @@ IMPORTANT QUALITY CHECKS:
 - When a topic is mentioned, offer specific aspects or dimensions to discuss
 - Strike a balance: knowledgeable but not expert-level technical
 - Make sure suggestions sound natural in conversation (as if spoken)
+- Do NOT start with the same word or phrase in user input
 - Ensure each suggestion has meaningful differences from others
 - NO QUESTIONS! Suggestions must be statements the user could read aloud
 ${needsTranslation ? `- The translation must accurately convey the same meaning as the original suggestion` : ''}
@@ -230,7 +232,7 @@ ${needsTranslation ? `- The translation must accurately convey the same meaning 
 - Ensure sentences within a suggestion flow logically from one to the next
 - Double-check that the suggestion truly reads as if it were completing the user's thought mid-sentence
 
-Provide EXACTLY ${number} suggestions with ONLY the content and ${needsTranslation ? 'translation' : ''} fields - no other fields.
+Provide EXACTLY ${number} completely different suggestions with ONLY the content and ${needsTranslation ? 'translation' : ''} fields - no other fields.
 
 Remember to provide ALL responses in the SAME LANGUAGE as the user's input (${detectedLanguage}) ${needsTranslation ? `with translations in ${translationLanguage}` : ''}.
 `;

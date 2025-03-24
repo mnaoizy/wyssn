@@ -92,7 +92,7 @@ function LayoutContent({
                       <Link
                         href={`/${locale}/account`}
                         className={buttonVariants({
-                          variant: 'secondary',
+                          variant: 'default',
                           size: 'sm',
                         })}
                       >
@@ -101,7 +101,7 @@ function LayoutContent({
                       <LogoutLink
                         postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
                         className={buttonVariants({
-                          variant: 'secondary',
+                          variant: 'outline',
                           size: 'sm',
                         })}
                       >
