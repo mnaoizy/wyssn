@@ -331,16 +331,9 @@ export const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({
                         ))}
 
                         {/* Interim text with shimmer effect and speaking indicator */}
-                        {isSpeaking && (
-                            <span className="relative inline-flex items-center">
-                                <span
-                                    className="whitespace-normal font-medium"
-                                    style={shimmerStyle}
-                                >
-                                    {' '}{interimText}
-                                </span>
-                            </span>
-                        )}
+                        {isSpeaking && interimText.split('').map((char, index) => (
+                            <span key={`interim-${index}`} style={shimmerStyle}>{char}</span>
+                        ))}
                     </div>
                 ) : (
                     <div className="text-gray-400 flex items-center justify-center pt-8 pb-14 z-20 relative">

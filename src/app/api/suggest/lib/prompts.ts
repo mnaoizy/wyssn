@@ -166,7 +166,7 @@ ${needsTranslation ? `- The translation must accurately convey the same meaning 
 - Ensure suggestions advance the OVERALL CONVERSATION in a logical way
 - CHECK for and eliminate redundant explanations or phrasal repetitions
 
-Provide EXACTLY ${number} completely different suggestions with ONLY the content and ${needsTranslation ? 'translation' : ''} fields - no other fields.
+Provide EXACTLY ${number} completely DIFFERENT suggestions with ONLY the content and ${needsTranslation ? 'translation' : ''} fields - no other fields.
 
 Remember to provide ALL responses in the SAME LANGUAGE as the user's input (${detectedLanguage}) ${needsTranslation ? `with translations in ${translationLanguage}` : ''}.
 `;
