@@ -215,7 +215,6 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   // Helper function to handle translation language changes
   const handleTranslationLanguageSelect = (language: string | null) => {
     setTranslationLanguage(language)
-    console.log(`Translation language set to: ${language || 'none'}`)
   }
 
   return (
