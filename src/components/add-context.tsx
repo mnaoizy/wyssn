@@ -1,81 +1,85 @@
 'use client'
 
-import { motion } from 'motion/react'
-import { useId, useState } from 'react'
-import {
-  MorphingPopover,
-  MorphingPopoverContent,
-  MorphingPopoverTrigger,
-} from './motion-primitives/morphing-popover'
+import { useState } from 'react'
 import { useI18n } from '@/locale/client'
 import { Button } from './ui/button'
 import { RocketIcon } from 'lucide-react'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogTitle,
+} from './ui/dialog'
+import { CustomDialogContent } from './ui/custom-dialog'
+import { Textarea } from './ui/textarea'
+import { useAddContext } from '@/contexts/add-context-provider'
 
 export function AddContext() {
-  const uniqueId = useId()
   const [note, setNote] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+  const { setContextValue } = useAddContext()
   const t = useI18n()
 
-  const closeMenu = () => {
+  const closeDialog = () => {
     setNote('')
     setIsOpen(false)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // ここで送信処理を行う
-    closeMenu()
+    // Add context value to /suggest request
+    if (note.trim()) {
+      setContextValue(note.trim())
+      console.log('Context added for suggest requests:', note.trim())
+    }
+    closeDialog()
   }
 
   return (
-    <MorphingPopover
-      transition={{
-        type: 'spring',
-        bounce: 0.05,
-        duration: 0.3,
-      }}
-      open={isOpen}
-      onOpenChange={setIsOpen}
-    >
-      <MorphingPopoverTrigger className="flex h-9 items-center rounded-md border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer shadow-xs">
-        <RocketIcon className="size-4 mr-[5px]" />
-        <motion.span layoutId={`popover-label-${uniqueId}`} className="text-sm">
-          {t('main.add_context')}
-        </motion.span>
-      </MorphingPopoverTrigger>
-      <MorphingPopoverContent className="rounded-md border border-zinc-950/10 bg-white p-0 shadow-[0_9px_9px_0px_rgba(0,0,0,0.01),_0_2px_5px_0px_rgba(0,0,0,0.06)] dark:bg-zinc-700">
-        <div className="w-full md:w-[640px]">
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          className="flex h-9 items-center rounded-md border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer shadow-xs"
+        >
+          <RocketIcon className="size-4 mr-[5px]" />
+          <span className="text-sm">{t('main.add_context')}</span>
+        </Button>
+      </DialogTrigger>
+      <CustomDialogContent className="p-0 sm:max-w-[640px]">
+        <DialogTitle className="sr-only">{t('main.add_context')}</DialogTitle>
+        <div className="w-full">
           <form className="flex h-full flex-col" onSubmit={handleSubmit}>
             <div className="relative h-[300px]">
-              <motion.span
-                layoutId={`popover-label-${uniqueId}`}
-                aria-hidden="true"
-                style={{
-                  opacity: note ? 0 : 1,
-                }}
-                className="absolute top-3 left-4 text-sm text-zinc-500 select-none dark:text-zinc-400"
-              >
-                {t('main.add_context')}
-              </motion.span>
-              <textarea
-                className="h-full w-full resize-none rounded-md bg-transparent px-4 py-3 text-sm outline-hidden"
+              {!note && (
+                <span
+                  aria-hidden="true"
+                  className="absolute top-3 left-4 text-sm text-zinc-500 select-none dark:text-zinc-400 z-10 pointer-events-none"
+                >
+                  {t('main.add_context')}
+                </span>
+              )}
+              <Textarea
+                className="h-full w-full resize-none bg-transparent px-3 py-2 text-sm outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
                 autoFocus
                 onChange={(e) => setNote(e.target.value)}
                 value={note}
                 placeholder=""
-                // モバイルでズームしないように以下の設定を追加
-                style={{ fontSize: '16px' }}
+                // Mobile zoom prevention
+                style={{
+                  fontSize: '16px',
+                  overflowWrap: 'break-word',
+                  wordWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
               />
             </div>
             <div
-              key="close"
               className="flex justify-between py-1 px-1 border-t border-zinc-200 dark:border-zinc-600"
             >
               <Button
                 variant="ghost"
-                onClick={closeMenu}
-                aria-label="Close popover"
+                onClick={closeDialog}
+                aria-label="Close dialog"
                 type="button"
               >
                 Cancel
@@ -91,7 +95,7 @@ export function AddContext() {
             </div>
           </form>
         </div>
-      </MorphingPopoverContent>
-    </MorphingPopover>
+      </CustomDialogContent>
+    </Dialog>
   )
 }

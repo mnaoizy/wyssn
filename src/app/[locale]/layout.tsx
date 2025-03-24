@@ -2,6 +2,7 @@
 
 import { I18nProviderClient, useI18n } from '@/locale/client'
 import { AuthProvider } from '@/providers/auth-provider'
+import { AddContextProvider } from '@/contexts/add-context-provider'
 import { ReactElement, use } from 'react'
 import { LanguageSelector } from '@/components/language-selector'
 import { Menu } from 'lucide-react'
@@ -197,7 +198,9 @@ export default function Layout({
   return (
     <I18nProviderClient locale={locale}>
       <AuthProvider>
-        <LayoutContent locale={locale}>{children}</LayoutContent>
+        <AddContextProvider>
+          <LayoutContent locale={locale}>{children}</LayoutContent>
+        </AddContextProvider>
       </AuthProvider>
     </I18nProviderClient>
   )

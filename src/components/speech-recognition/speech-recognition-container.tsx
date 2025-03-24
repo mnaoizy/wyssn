@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSpeechRecognition, MicButton } from '@/hooks/use-speech-recognition'
 import { useUtterances } from '@/contexts/utterance-context'
+import { useAddContext } from '@/contexts/add-context-provider'
 import { useCurrentLocale } from '@/locale/client'
 import { experimental_useObject as useObject } from '@ai-sdk/react'
 import { cn } from '@/lib/utils'
@@ -48,12 +49,14 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   const [translationLanguage, setTranslationLanguage] = useState<string | null>(
     null
   )
+  // Get context value from our context provider
+  const { contextValue } = useAddContext()
   // 発話カウンター
   const utteranceCounterRef = useRef<number>(0)
 
   // References for submission functionality
   const submitRef = useRef<
-    | ((data: { message: string; translationLanguage?: string | null, locale: Locale }) => void)
+    | ((data: { message: string; translationLanguage?: string | null, locale: Locale, context?: string }) => void)
     | undefined
   >(undefined)
   const resetHiddenRef = useRef<(() => void) | undefined>(undefined)
@@ -162,6 +165,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                 message: finalText,
                 translationLanguage: translationLanguage,
                 locale: currentLocale,
+                context: contextValue || undefined,
               })
 
               // Reset the counter after submission
@@ -171,7 +175,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
         }
       }
     }
-  }, [contextUtterances, utteranceInterval, localUtteranceInterval, onUtteranceIntervalChange, translationLanguage, currentLocale])
+  }, [contextUtterances, utteranceInterval, localUtteranceInterval, onUtteranceIntervalChange, translationLanguage, currentLocale, contextValue])
 
   // Update interim transcription
   useEffect(() => {
