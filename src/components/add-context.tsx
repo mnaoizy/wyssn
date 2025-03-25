@@ -82,7 +82,7 @@ export function AddContext() {
                 }}
               />
             </div>
-            <div className="flex justify-end py-1 px-1 border-t gap-1 border-zinc-200 dark:border-zinc-600">
+            <div className="flex justify-end py-1 px-1 border-t gap-1 border-gray-200 dark:border-gray-600 bg-gray-50">
               <Button
                 variant="outline"
                 size="sm"
