@@ -63,6 +63,10 @@ const metadataByLocale = {
     title: 'गोपनीयता नीति | Wyssn',
     description: 'गोपनीयता नीति',
   },
+  'th-TH': {
+    title: 'นโยบายความเป็นส่วนตัว | Wyssn',
+    description: 'นโยบายความเป็นส่วนตัว',
+  },
 }
 
 export async function generateMetadata(): Promise<Metadata> {

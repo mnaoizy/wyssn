@@ -63,6 +63,10 @@ const metadataByLocale = {
     title: 'सेवा की शर्तें | Wyssn',
     description: 'उपयोग की शर्तें',
   },
+  'th-TH': {
+    title: 'ข้อตกลงการให้บริการ | Wyssn',
+    description: 'ข้อกำหนดการให้บริการ',
+  },
 }
 
 export async function generateMetadata(): Promise<Metadata> {

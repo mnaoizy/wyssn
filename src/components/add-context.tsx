@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '@/locale/client'
 import { Button } from './ui/button'
-import { RocketIcon } from 'lucide-react'
+import { LayersIcon } from 'lucide-react'
 import { Dialog, DialogTrigger, DialogTitle } from './ui/dialog'
 import { CustomDialogContent } from './ui/custom-dialog'
 import { Textarea } from './ui/textarea'
@@ -48,7 +48,7 @@ export function AddContext() {
           variant="outline"
           className="flex h-9 items-center rounded-md border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer shadow-xs"
         >
-          <RocketIcon className="size-4" />
+          <LayersIcon className="size-4" />
           <span className="text-sm">{t('main.add_context')}</span>
         </Button>
       </DialogTrigger>

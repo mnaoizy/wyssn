@@ -53,6 +53,8 @@ export function PublicPlansSection() {
                 return '免费注册';
             case 'uk-UA':
                 return 'Зареєструватись безкоштовно';
+            case 'th-TH':
+                return 'ลงทะเบียนฟรี';
             default:
                 return 'Sign up for Free';
         }

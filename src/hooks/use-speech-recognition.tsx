@@ -6,29 +6,6 @@ import { Locale } from '@/locale/config';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-// export const SUPPORTED_LANGUAGES = {
-//     'en-US': '英語（アメリカ）',
-//     'zh-CN': '中国語（簡体 / 普通話）',
-//     'zh-TW': '中国語（繁体 / 台湾華語）',
-//     'zh-HK': '広東語（香港）',
-//     'es-ES': 'スペイン語（スペイン）',
-//     'fr-FR': 'フランス語（フランス）',
-//     'de-DE': 'ドイツ語',
-//     'pt-PT': 'ポルトガル語（ポルトガル）',
-//     'pt-BR': 'ポルトガル語（ブラジル）',
-//     'ru-RU': 'ロシア語',
-//     'ja-JP': '日本語',
-//     'ko-KR': '韓国語',
-//     'it-IT': 'イタリア語',
-//     'ar-SA': 'アラビア語（サウジアラビア）',
-//     'hi-IN': 'ヒンディー語（インド）',
-//     'bn-IN': 'ベンガル語（インド）',
-//     'tr-TR': 'トルコ語',
-//     'id-ID': 'インドネシア語',
-//     'th-TH': 'タイ語',
-//     'vi-VN': 'ベトナム語'
-// } as const;
-
 export type LanguageCode = Locale;
 
 // Utterance type

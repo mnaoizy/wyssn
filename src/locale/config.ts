@@ -13,6 +13,7 @@ export const locales = [
   'it-IT',
   'vi-VN',
   'hi-IN',
+  'th-TH',
 ] as const
 export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = 'en-US'
@@ -33,6 +34,7 @@ export const messagesImport = {
   'it-IT': () => import('./messages/it-IT'),
   'vi-VN': () => import('./messages/vi-VN'),
   'hi-IN': () => import('./messages/hi-IN'),
+  'th-TH': () => import('./messages/th-TH'),
 } as const
 
 export const SUPPORTED_LOCALES = {
@@ -50,4 +52,5 @@ export const SUPPORTED_LOCALES = {
   'it-IT': 'Italiano',
   'vi-VN': 'Tiếng Việt',
   'hi-IN': 'हिन्दी',
+  'th-TH': 'ไทย',
 } as const
