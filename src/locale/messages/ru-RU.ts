@@ -39,6 +39,7 @@ export default {
     suggestion_heading: 'Продолжайте разговор с помощью',
     prompt_speak: 'Нажмите на микрофон и начните говорить',
     add_context: 'Добавить контекст',
+    cancel: 'Отмена',
   },
   changelog: {
     title: 'История изменений',

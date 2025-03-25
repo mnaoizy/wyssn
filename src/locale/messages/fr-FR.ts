@@ -46,6 +46,7 @@ export default {
     suggestion_heading: 'Vous pouvez poursuivre la conversation ainsi',
     prompt_speak: 'Appuyez ou cliquez sur le microphone et commencez à parler',
     add_context: 'Ajouter du contexte',
+    cancel: 'Annuler',
   },
 
   // Changelog page

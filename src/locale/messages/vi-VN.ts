@@ -48,6 +48,7 @@ export default {
     suggestion_heading: 'Tiếp tục cuộc trò chuyện với',
     prompt_speak: 'Nhấn hoặc bấm vào micro và bắt đầu nói',
     add_context: 'Thêm bối cảnh',
+    cancel: 'Hủy',
   },
 
   // Changelog page

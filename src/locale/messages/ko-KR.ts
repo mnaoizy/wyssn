@@ -48,6 +48,7 @@ export default {
     suggestion_heading: '다음과 같이 이어서 말해보세요',
     prompt_speak: '마이크 버튼을 탭하거나 클릭해서 말해보세요',
     add_context: '맥락 추가하기',
+    cancel: '취소',
   },
 
   // Changelog page

@@ -47,6 +47,7 @@ export default {
     suggestion_heading: 'Mantén la conversación con',
     prompt_speak: 'Toca o haz clic en el micrófono y comienza a hablar',
     add_context: 'Añadir contexto',
+    cancel: 'Cancelar',
   },
 
   // Changelog page

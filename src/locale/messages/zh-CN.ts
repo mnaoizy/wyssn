@@ -48,6 +48,7 @@ export default {
     suggestion_heading: '保持对话持续进行',
     prompt_speak: '点击麦克风并开始讲话',
     add_context: '添加上下文',
+    cancel: '取消',
   },
 
   // Changelog page

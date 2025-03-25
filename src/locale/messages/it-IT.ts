@@ -39,6 +39,7 @@ export default {
     suggestion_heading: 'Mantieni viva la conversazione con',
     prompt_speak: 'Tocca o clicca sul microfono e inizia a parlare',
     add_context: 'Aggiungi contesto',
+    cancel: 'Annulla',
   },
   changelog: {
     title: 'Registro delle modifiche',
