@@ -1,106 +1,110 @@
 export default {
-    'nav': {
-        'about': 'Sobre',
-        'changelog': 'Registro de alterações',
-        'pricing': 'Preços',
-        'signin': 'Entrar',
-        'signup': 'Cadastrar-se',
-        'signout': 'Sair',
-        'account': 'Conta'
-    },
-    'hero': {
-        'title': 'What You Should Say Next',
-        'description': 'Seu companheiro de conversa com IA generativa que ajuda a manter diálogos significativos com sugestões contextuais.',
-        'email_placeholder': 'Digite seu e-mail',
-        'waitlist': 'Entre na lista de espera para acesso antecipado'
-    },
-    'footer': {
-        'privacy': 'Privacidade',
-        'terms': 'Termos',
-        'contact': 'Contato',
-        'copyright': '© 2025 WYSSN. Todos os direitos reservados.'
-    },
-    'categories': {
-        'deeper_reflection': 'Reflexão mais profunda',
-        'additional_details': 'Detalhes adicionais',
-        'question_expansion': 'Expansão de perguntas',
-        'related_topics': 'Tópicos relacionados',
-        'personal_opinion': 'Opinião pessoal',
-        'related_thoughts': 'Pensamentos relacionados',
-        'narrative_continuation': 'Continuação da narrativa',
-        'additional_context': 'Contexto adicional',
-        'personal_perspective': 'Perspectiva pessoal'
-    },
-    'main': {
-        'translation': 'Tradução',
-        'suggestion_heading': 'Mantenha a conversa fluindo com',
-        'prompt_speak': 'Toque ou clique no microfone e comece a falar',
-        'add_context': 'Adicionar contexto'
-    },
-    'changelog': {
-        'title': 'Registro de alterações',
-        'description': 'Acompanhe todas as atualizações e mudanças no aplicativo Wyssn'
-    },
+  nav: {
+    about: 'Sobre',
+    changelog: 'Registro de alterações',
+    pricing: 'Preços',
+    signin: 'Entrar',
+    signup: 'Cadastrar-se',
+    signout: 'Sair',
+    account: 'Conta',
+  },
+  hero: {
+    title: 'What You Should Say Next',
+    description:
+      'Seu companheiro de conversa com IA generativa que ajuda a manter diálogos significativos com sugestões contextuais.',
+    email_placeholder: 'Digite seu e-mail',
+    waitlist: 'Entre na lista de espera para acesso antecipado',
+  },
+  footer: {
+    privacy: 'Privacidade',
+    terms: 'Termos',
+    contact: 'Contato',
+    copyright: '© 2025 Langrics Todos os direitos reservados.',
+  },
+  categories: {
+    deeper_reflection: 'Reflexão mais profunda',
+    additional_details: 'Detalhes adicionais',
+    question_expansion: 'Expansão de perguntas',
+    related_topics: 'Tópicos relacionados',
+    personal_opinion: 'Opinião pessoal',
+    related_thoughts: 'Pensamentos relacionados',
+    narrative_continuation: 'Continuação da narrativa',
+    additional_context: 'Contexto adicional',
+    personal_perspective: 'Perspectiva pessoal',
+  },
+  main: {
+    translation: 'Tradução',
+    suggestion_heading: 'Mantenha a conversa fluindo com',
+    prompt_speak: 'Toque ou clique no microfone e comece a falar',
+    add_context: 'Adicionar contexto',
+  },
+  changelog: {
+    title: 'Registro de alterações',
+    description:
+      'Acompanhe todas as atualizações e mudanças no aplicativo Wyssn',
+  },
 
-    'account': {
-        'title': 'Conta',
-        'manage_subscription': 'Gerencie sua assinatura e configurações da conta',
-        'manage_subscription_button': 'Gerenciar assinatura',
-        'user_info': 'Informações do usuário',
-        'name': 'Nome',
-        'email': 'E-mail',
-        'subscription': 'Assinatura',
-        'loading': 'Carregando...',
-        'subscription_success': 'Sua assinatura foi processada com sucesso.',
-        'subscription_canceled': 'Seu processo de assinatura foi cancelado.',
-        'error_no_customer': 'Você ainda não tem uma conta de cliente Stripe. Por favor, assine primeiro.',
-        'error_portal_failed': 'Falha ao acessar o portal de faturamento. Por favor, tente novamente mais tarde.',
-        'error_generic': 'Ocorreu um erro. Por favor, tente novamente.',
-        'current_usage': 'Uso atual: {count} / {limit} solicitações neste mês',
-        'subscription_renewal': 'Sua assinatura será {action} em {date}',
-        'subscription_renew': 'renovada',
-        'subscription_end': 'encerrada',
-        'free_plan_status': 'Você está atualmente no plano Gratuito'
+  account: {
+    title: 'Conta',
+    manage_subscription: 'Gerencie sua assinatura e configurações da conta',
+    manage_subscription_button: 'Gerenciar assinatura',
+    user_info: 'Informações do usuário',
+    name: 'Nome',
+    email: 'E-mail',
+    subscription: 'Assinatura',
+    loading: 'Carregando...',
+    subscription_success: 'Sua assinatura foi processada com sucesso.',
+    subscription_canceled: 'Seu processo de assinatura foi cancelado.',
+    error_no_customer:
+      'Você ainda não tem uma conta de cliente Stripe. Por favor, assine primeiro.',
+    error_portal_failed:
+      'Falha ao acessar o portal de faturamento. Por favor, tente novamente mais tarde.',
+    error_generic: 'Ocorreu um erro. Por favor, tente novamente.',
+    current_usage: 'Uso atual: {count} / {limit} solicitações neste mês',
+    subscription_renewal: 'Sua assinatura será {action} em {date}',
+    subscription_renew: 'renovada',
+    subscription_end: 'encerrada',
+    free_plan_status: 'Você está atualmente no plano Gratuito',
+  },
+  // Subscription plans
+  plans: {
+    heading: 'Escolha o plano ideal para você',
+    subheading: 'Comece com nossas opções flexíveis de preços',
+    free: {
+      title: 'Plano Gratuito',
+      description: 'Perfeito para começar com recursos básicos',
+      current_plan: 'Plano Atual',
+      downgrade: 'Fazer Downgrade',
     },
-    // Subscription plans
-    'plans': {
-        'heading': 'Escolha o plano ideal para você',
-        'subheading': 'Comece com nossas opções flexíveis de preços',
-        'free': {
-            'title': 'Plano Gratuito',
-            'description': 'Perfeito para começar com recursos básicos',
-            'current_plan': 'Plano Atual',
-            'downgrade': 'Fazer Downgrade'
-        },
-        'pro': {
-            'title': 'Plano Pro',
-            'description': 'Para indivíduos que precisam de mais capacidade',
-            'subscribe': 'Assinar'
-        },
-        'enterprise': {
-            'title': 'Plano Empresarial',
-            'description': 'Para equipes e empresas com necessidades personalizadas',
-            'contact_sales': 'Contatar Vendas'
-        },
-        'pricing': {
-            'month': 'mês',
-            'custom_pricing': 'Personalizado',
-            'pricing': 'preços',
-            'popular': 'Popular',
-            'current_plan': 'Plano Atual'
-        },
-        'features': {
-            'core_features': 'Todos os recursos principais incluídos',
-            'requests_free_daily': 'Limitado a 50 solicitações por dia',
-            'requests_free_monthly': 'Limitado a 500 solicitações por mês',
-            'standard_support': 'Suporte padrão',
-            'requests_pro_daily': 'Limitado a 500 solicitações por dia',
-            'requests_pro_monthly': 'Limitado a 10.000 solicitações por mês',
-            'priority_support': 'Suporte prioritário',
-            'custom_limits': 'Limites de solicitação personalizados',
-            'team_management': 'Recursos de gerenciamento de equipes',
-            'dedicated_support': 'Suporte dedicado',
-            'custom_billing': 'Opções de faturamento personalizadas'
-        }
-    }
-} as const;
+    pro: {
+      title: 'Plano Pro',
+      description: 'Para indivíduos que precisam de mais capacidade',
+      subscribe: 'Assinar',
+    },
+    enterprise: {
+      title: 'Plano Empresarial',
+      description: 'Para equipes e empresas com necessidades personalizadas',
+      contact_sales: 'Contatar Vendas',
+    },
+    pricing: {
+      month: 'mês',
+      custom_pricing: 'Personalizado',
+      pricing: 'preços',
+      popular: 'Popular',
+      current_plan: 'Plano Atual',
+    },
+    features: {
+      core_features: 'Todos os recursos principais incluídos',
+      requests_free_daily: 'Limitado a 50 solicitações por dia',
+      requests_free_monthly: 'Limitado a 500 solicitações por mês',
+      standard_support: 'Suporte padrão',
+      requests_pro_daily: 'Limitado a 500 solicitações por dia',
+      requests_pro_monthly: 'Limitado a 10.000 solicitações por mês',
+      priority_support: 'Suporte prioritário',
+      custom_limits: 'Limites de solicitação personalizados',
+      team_management: 'Recursos de gerenciamento de equipes',
+      dedicated_support: 'Suporte dedicado',
+      custom_billing: 'Opções de faturamento personalizadas',
+    },
+  },
+} as const

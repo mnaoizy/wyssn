@@ -25,7 +25,7 @@ export default {
     privacy: 'Chính sách riêng tư',
     terms: 'Điều khoản',
     contact: 'Liên hệ',
-    copyright: '© 2025 WYSSN. Bảo lưu mọi quyền.',
+    copyright: '© 2025 Langrics Bảo lưu mọi quyền.',
   },
 
   // Suggestion categories

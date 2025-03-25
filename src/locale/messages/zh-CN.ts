@@ -25,7 +25,7 @@ export default {
     privacy: '隐私政策',
     terms: '使用条款',
     contact: '联系我们',
-    copyright: '© 2025 WYSSN. 保留所有权利。',
+    copyright: '© 2025 Langrics 保留所有权利。',
   },
 
   // Suggestion categories

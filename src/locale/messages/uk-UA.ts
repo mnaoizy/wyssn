@@ -1,107 +1,112 @@
 export default {
-    'nav': {
-        'about': 'Про нас',
-        'changelog': 'Журнал змін',
-        'pricing': 'Ціни',
-        'signin': 'Увійти',
-        'signup': 'Зареєструватися',
-        'signout': 'Вийти',
-        'account': 'Обліковий запис'
-    },
-    'hero': {
-        'title': 'What You Should Say Next',
-        'description': 'Ваш помічник у розмові на базі LLM, який допоможе підтримувати змістовний діалог із доречними підказками.',
-        'email_placeholder': 'Введіть вашу електронну пошту',
-        'waitlist': 'Приєднуйтесь до списку очікування для раннього доступу'
-    },
-    'footer': {
-        'privacy': 'Конфіденційність',
-        'terms': 'Умови',
-        'contact': 'Контакти',
-        'copyright': '© 2025 WYSSN. Всі права захищено.'
-    },
-    'categories': {
-        'deeper_reflection': 'Глибше осмислення',
-        'additional_details': 'Додаткові деталі',
-        'question_expansion': 'Розширення питання',
-        'related_topics': 'Схожі теми',
-        'personal_opinion': 'Особиста думка',
-        'related_thoughts': 'Схожі думки',
-        'narrative_continuation': 'Продовження розповіді',
-        'additional_context': 'Додатковий контекст',
-        'personal_perspective': 'Особиста точка зору'
-    },
-    'main': {
-        'translation': 'Переклад',
-        'suggestion_heading': 'Продовжуйте розмову з',
-        'prompt_speak': 'Натисніть або клацніть мікрофон і починайте говорити',
-        'add_context': 'Додати контекст'
-    },
-    'changelog': {
-        'title': 'Журнал змін',
-        'description': 'Відстежуйте всі оновлення та зміни в застосунку Wyssn'
-    },
+  nav: {
+    about: 'Про нас',
+    changelog: 'Журнал змін',
+    pricing: 'Ціни',
+    signin: 'Увійти',
+    signup: 'Зареєструватися',
+    signout: 'Вийти',
+    account: 'Обліковий запис',
+  },
+  hero: {
+    title: 'What You Should Say Next',
+    description:
+      'Ваш помічник у розмові на базі LLM, який допоможе підтримувати змістовний діалог із доречними підказками.',
+    email_placeholder: 'Введіть вашу електронну пошту',
+    waitlist: 'Приєднуйтесь до списку очікування для раннього доступу',
+  },
+  footer: {
+    privacy: 'Конфіденційність',
+    terms: 'Умови',
+    contact: 'Контакти',
+    copyright: '© 2025 Langrics Всі права захищено.',
+  },
+  categories: {
+    deeper_reflection: 'Глибше осмислення',
+    additional_details: 'Додаткові деталі',
+    question_expansion: 'Розширення питання',
+    related_topics: 'Схожі теми',
+    personal_opinion: 'Особиста думка',
+    related_thoughts: 'Схожі думки',
+    narrative_continuation: 'Продовження розповіді',
+    additional_context: 'Додатковий контекст',
+    personal_perspective: 'Особиста точка зору',
+  },
+  main: {
+    translation: 'Переклад',
+    suggestion_heading: 'Продовжуйте розмову з',
+    prompt_speak: 'Натисніть або клацніть мікрофон і починайте говорити',
+    add_context: 'Додати контекст',
+  },
+  changelog: {
+    title: 'Журнал змін',
+    description: 'Відстежуйте всі оновлення та зміни в застосунку Wyssn',
+  },
 
-    'account': {
-        'title': 'Обліковий запис',
-        'manage_subscription': 'Керуйте своєю передплатою та налаштуваннями облікового запису',
-        'manage_subscription_button': 'Керування передплатою',
-        'user_info': 'Інформація користувача',
-        'name': 'Ім\'я',
-        'email': 'Електронна пошта',
-        'subscription': 'Передплата',
-        'loading': 'Завантаження...',
-        'subscription_success': 'Вашу передплату успішно оброблено.',
-        'subscription_canceled': 'Процес оформлення передплати було скасовано.',
-        'error_no_customer': 'Ви ще не маєте облікового запису клієнта Stripe. Будь ласка, спочатку оформіть передплату.',
-        'error_portal_failed': 'Не вдалося отримати доступ до порталу оплати. Спробуйте пізніше.',
-        'error_generic': 'Сталася помилка. Спробуйте ще раз.',
-        'current_usage': 'Поточне використання: {count} / {limit} запитів цього місяця',
-        'subscription_renewal': 'Ваша передплата {action} {date}',
-        'subscription_renew': 'оновиться',
-        'subscription_end': 'закінчиться',
-        'free_plan_status': 'Зараз ви користуєтесь безкоштовним планом'
+  account: {
+    title: 'Обліковий запис',
+    manage_subscription:
+      'Керуйте своєю передплатою та налаштуваннями облікового запису',
+    manage_subscription_button: 'Керування передплатою',
+    user_info: 'Інформація користувача',
+    name: "Ім'я",
+    email: 'Електронна пошта',
+    subscription: 'Передплата',
+    loading: 'Завантаження...',
+    subscription_success: 'Вашу передплату успішно оброблено.',
+    subscription_canceled: 'Процес оформлення передплати було скасовано.',
+    error_no_customer:
+      'Ви ще не маєте облікового запису клієнта Stripe. Будь ласка, спочатку оформіть передплату.',
+    error_portal_failed:
+      'Не вдалося отримати доступ до порталу оплати. Спробуйте пізніше.',
+    error_generic: 'Сталася помилка. Спробуйте ще раз.',
+    current_usage:
+      'Поточне використання: {count} / {limit} запитів цього місяця',
+    subscription_renewal: 'Ваша передплата {action} {date}',
+    subscription_renew: 'оновиться',
+    subscription_end: 'закінчиться',
+    free_plan_status: 'Зараз ви користуєтесь безкоштовним планом',
+  },
+  // Subscription plans
+  plans: {
+    heading: 'Оберіть план, який вам підходить',
+    subheading: 'Почніть з наших гнучких варіантів ціноутворення',
+    free: {
+      title: 'Безкоштовний план',
+      description: 'Ідеально для початку роботи з базовими функціями',
+      current_plan: 'Поточний план',
+      downgrade: 'Понизити план',
+      signup_free: 'Зареєструватись безкоштовно',
     },
-    // Subscription plans
-    'plans': {
-        'heading': 'Оберіть план, який вам підходить',
-        'subheading': 'Почніть з наших гнучких варіантів ціноутворення',
-        'free': {
-            'title': 'Безкоштовний план',
-            'description': 'Ідеально для початку роботи з базовими функціями',
-            'current_plan': 'Поточний план',
-            'downgrade': 'Понизити план',
-            'signup_free': 'Зареєструватись безкоштовно'
-        },
-        'pro': {
-            'title': 'Професійний план',
-            'description': 'Для осіб, яким потрібно більше можливостей',
-            'subscribe': 'Підписатися'
-        },
-        'enterprise': {
-            'title': 'Корпоративний план',
-            'description': 'Для команд та підприємств з індивідуальними потребами',
-            'contact_sales': 'Зв\'язатися з відділом продажів'
-        },
-        'pricing': {
-            'month': 'місяць',
-            'custom_pricing': 'Індивідуальне',
-            'pricing': 'ціноутворення',
-            'popular': 'Популярний',
-            'current_plan': 'Поточний план'
-        },
-        'features': {
-            'core_features': 'Усі основні функції включено',
-            'requests_free_daily': 'Обмежено до 50 запитів на день',
-            'requests_free_monthly': 'Обмежено до 500 запитів на місяць',
-            'standard_support': 'Стандартна підтримка',
-            'requests_pro_daily': 'Обмежено до 500 запитів на день',
-            'requests_pro_monthly': 'Обмежено до 10 000 запитів на місяць',
-            'priority_support': 'Пріоритетна підтримка',
-            'custom_limits': 'Індивідуальні ліміти запитів',
-            'team_management': 'Функції управління командою',
-            'dedicated_support': 'Виділена підтримка',
-            'custom_billing': 'Індивідуальні параметри оплати'
-        }
-    }
-} as const;
+    pro: {
+      title: 'Професійний план',
+      description: 'Для осіб, яким потрібно більше можливостей',
+      subscribe: 'Підписатися',
+    },
+    enterprise: {
+      title: 'Корпоративний план',
+      description: 'Для команд та підприємств з індивідуальними потребами',
+      contact_sales: "Зв'язатися з відділом продажів",
+    },
+    pricing: {
+      month: 'місяць',
+      custom_pricing: 'Індивідуальне',
+      pricing: 'ціноутворення',
+      popular: 'Популярний',
+      current_plan: 'Поточний план',
+    },
+    features: {
+      core_features: 'Усі основні функції включено',
+      requests_free_daily: 'Обмежено до 50 запитів на день',
+      requests_free_monthly: 'Обмежено до 500 запитів на місяць',
+      standard_support: 'Стандартна підтримка',
+      requests_pro_daily: 'Обмежено до 500 запитів на день',
+      requests_pro_monthly: 'Обмежено до 10 000 запитів на місяць',
+      priority_support: 'Пріоритетна підтримка',
+      custom_limits: 'Індивідуальні ліміти запитів',
+      team_management: 'Функції управління командою',
+      dedicated_support: 'Виділена підтримка',
+      custom_billing: 'Індивідуальні параметри оплати',
+    },
+  },
+} as const
