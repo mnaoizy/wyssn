@@ -21,8 +21,8 @@ type MobileNavigationContextType = {
 // Create context for mobile navigation state
 const MobileNavigationContext = createContext<MobileNavigationContextType>({
   isOpen: false,
-  toggleMenu: () => { },
-  closeMenu: () => { },
+  toggleMenu: () => {},
+  closeMenu: () => {},
 })
 
 // Hook to access the mobile navigation context
@@ -98,8 +98,9 @@ export function MobileNavigationPanel() {
 
       {/* Mobile menu panel */}
       <div
-        className={`fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
-          } shadow-xl flex flex-col p-6 md:hidden`}
+        className={`fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white z-50 transform transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        } shadow-xl flex flex-col p-6 md:hidden`}
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-serif font-semibold uppercase">Wyssn</h2>
@@ -117,29 +118,31 @@ export function MobileNavigationPanel() {
             <li>
               <Link
                 href={`/${locale}`}
-                className={`block py-2 px-4 rounded-md ${pathname === `/${locale}`
-                  ? 'bg-gray-100 font-medium'
-                  : 'hover:bg-gray-50'
-                  }`}
+                className={`block py-2 px-4 rounded-md ${
+                  pathname === `/${locale}`
+                    ? 'bg-gray-100 font-medium'
+                    : 'hover:bg-gray-50'
+                }`}
               >
                 Home
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="#"
                 className="block py-2 px-4 rounded-md hover:bg-gray-50"
               >
                 {t('nav.about')}
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 href={`/${locale}/changelog`}
-                className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/changelog`
-                  ? 'bg-gray-100 font-medium'
-                  : 'hover:bg-gray-50'
-                  }`}
+                className={`block py-2 px-4 rounded-md ${
+                  pathname === `/${locale}/changelog`
+                    ? 'bg-gray-100 font-medium'
+                    : 'hover:bg-gray-50'
+                }`}
               >
                 {t('nav.changelog')}
               </Link>
@@ -147,10 +150,11 @@ export function MobileNavigationPanel() {
             <li>
               <Link
                 href={`/${locale}/pricing`}
-                className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/pricing`
-                  ? 'bg-gray-100 font-medium'
-                  : 'hover:bg-gray-50'
-                  }`}
+                className={`block py-2 px-4 rounded-md ${
+                  pathname === `/${locale}/pricing`
+                    ? 'bg-gray-100 font-medium'
+                    : 'hover:bg-gray-50'
+                }`}
               >
                 {t('nav.pricing')}
               </Link>
@@ -161,10 +165,11 @@ export function MobileNavigationPanel() {
                 <li>
                   <Link
                     href={`/${locale}/account`}
-                    className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/account`
-                      ? 'bg-gray-100 font-medium'
-                      : 'hover:bg-gray-50'
-                      }`}
+                    className={`block py-2 px-4 rounded-md ${
+                      pathname === `/${locale}/account`
+                        ? 'bg-gray-100 font-medium'
+                        : 'hover:bg-gray-50'
+                    }`}
                   >
                     {t('nav.account')}
                   </Link>

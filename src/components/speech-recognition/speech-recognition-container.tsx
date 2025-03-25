@@ -18,6 +18,7 @@ import { TranscriptDisplay } from './transcript-display'
 import { ControlPanel } from './control-panel'
 import toast from 'react-hot-toast'
 import { Locale } from '@/locale/config'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 export interface SpeechRecognitionProps {
   heroTitle?: string
@@ -54,9 +55,16 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   // 発話カウンター
   const utteranceCounterRef = useRef<number>(0)
 
+  const { isAuthenticated } = useKindeBrowserClient()
+
   // References for submission functionality
   const submitRef = useRef<
-    | ((data: { message: string; translationLanguage?: string | null, locale: Locale, context?: string }) => void)
+    | ((data: {
+        message: string
+        translationLanguage?: string | null
+        locale: Locale
+        context?: string
+      }) => void)
     | undefined
   >(undefined)
   const resetHiddenRef = useRef<(() => void) | undefined>(undefined)
@@ -79,11 +87,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   }, [suggestError])
 
   // Use custom hook for suggestions management
-  const {
-    suggestionsWithId,
-    dispatch,
-    resetHidden,
-  } = useSuggestions(
+  const { suggestionsWithId, dispatch, resetHidden } = useSuggestions(
     object?.suggestions?.filter(
       (suggestion): suggestion is ClientSuggestion => !!suggestion
     ) || []
@@ -175,7 +179,15 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
         }
       }
     }
-  }, [contextUtterances, utteranceInterval, localUtteranceInterval, onUtteranceIntervalChange, translationLanguage, currentLocale, contextValue])
+  }, [
+    contextUtterances,
+    utteranceInterval,
+    localUtteranceInterval,
+    onUtteranceIntervalChange,
+    translationLanguage,
+    currentLocale,
+    contextValue,
+  ])
 
   // Update interim transcription
   useEffect(() => {
@@ -217,6 +229,14 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     setTranslationLanguage(language)
   }
 
+  const handleStartListening = () => {
+    if (isAuthenticated) {
+      startListening()
+    } else {
+      toast.error('You need to sign in to use this.')
+    }
+  }
+
   return (
     <main className="flex-grow flex flex-col">
       {/* Hero Section */}
@@ -248,7 +268,10 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
           )}
 
           {mounted ? (
-            <div className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8" data-testid="speech-recognition-container">
+            <div
+              className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8"
+              data-testid="speech-recognition-container"
+            >
               {/* Control Panel */}
               <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <ControlPanel
@@ -265,7 +288,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                 {mounted && (
                   <MicButton
                     isListening={isListening}
-                    onStart={startListening}
+                    onStart={handleStartListening}
                     onStop={stopListening}
                     disabled={!isSupported}
                   />
@@ -282,13 +305,13 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                 suggestionsWithId={suggestionsWithId}
                 isLoading={isLoading}
                 onSuggestionSelect={(suggestion) => {
-                  console.log('Selected suggestion:', suggestion);
+                  console.log('Selected suggestion:', suggestion)
                   // Handle suggestion selection - e.g. pin the suggestion or trigger an action
                   if (suggestion && suggestion.id) {
                     dispatch({
                       type: 'TOGGLE_PIN',
-                      suggestion: suggestion
-                    });
+                      suggestion: suggestion,
+                    })
                   }
                 }}
               />
@@ -298,8 +321,6 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               <Spinner />
             </div>
           )}
-
-
         </div>
       </section>
     </main>

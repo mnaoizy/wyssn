@@ -67,26 +67,27 @@ function LayoutContent({
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center justify-end space-x-4 flex-1" data-testid="desktop-nav">
+            <div
+              className="hidden md:flex items-center justify-end space-x-4 flex-1"
+              data-testid="desktop-nav"
+            >
               <LanguageSelector />
               <div className="flex items-center space-x-4 text-sm">
-                <span>{t('nav.about')}</span>
+                {/* <span>{t('nav.about')}</span> */}
                 <Link
                   href={`/${locale}/changelog`}
                   className="hover:text-neutral-500 transition-colors"
                 >
                   {t('nav.changelog')}
                 </Link>
-                {
-                  !isAuthenticated && (
-                    <Link
-                      href={`/${locale}/pricing`}
-                      className="hover:text-neutral-500 transition-colors"
-                    >
-                      {t('nav.pricing')}
-                    </Link>
-                  )
-                }
+                {!isAuthenticated && (
+                  <Link
+                    href={`/${locale}/pricing`}
+                    className="hover:text-neutral-500 transition-colors"
+                  >
+                    {t('nav.pricing')}
+                  </Link>
+                )}
                 <div className="space-x-2">
                   {isAuthenticated ? (
                     <>
@@ -139,7 +140,10 @@ function LayoutContent({
             </div>
 
             {/* Mobile Navigation */}
-            <div className="flex md:hidden items-center space-x-4" data-testid="mobile-nav">
+            <div
+              className="flex md:hidden items-center space-x-4"
+              data-testid="mobile-nav"
+            >
               <LanguageSelector />
               <MobileMenuButton />
             </div>
@@ -172,14 +176,14 @@ function LayoutContent({
                 {t('footer.terms')}
               </Link>
 
-              {
-                locale === "ja-JP" && <Link
+              {locale === 'ja-JP' && (
+                <Link
                   href={`/${locale}/commercial`}
                   className="hover:text-neutral-500 transition-colors"
                 >
                   特定商取引法に基づく表記
                 </Link>
-              }
+              )}
               <span className="cursor-default">{t('footer.contact')}</span>
               <Link
                 href={`/${locale}/changelog`}
