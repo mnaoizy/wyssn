@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '@/locale/client'
 import { Button } from './ui/button'
 import { LayersIcon } from 'lucide-react'
@@ -14,6 +14,7 @@ export function AddContext() {
   const [isOpen, setIsOpen] = useState(false)
   const { contextValue, setContextValue } = useAddContext()
   const t = useI18n()
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (contextValue) {
@@ -21,13 +22,31 @@ export function AddContext() {
     }
   }, [contextValue])
 
+  // ダイアログが開いたときにフォーカスと選択範囲を設定
+  useEffect(() => {
+    if (isOpen) {
+      // DOM更新とアニメーション完了後に実行するため少し遅延
+      const timerId = setTimeout(() => {
+        if (textareaRef.current) {
+          // 確実にレンダリング後にフォーカス
+          textareaRef.current.focus()
+
+          // カーソルを最後に移動（値の長さを取得）
+          const length = textareaRef.current.value.length
+          textareaRef.current.setSelectionRange(length, length)
+        }
+      }, 150)
+
+      return () => clearTimeout(timerId)
+    }
+  }, [isOpen])
+
   const closeDialog = () => {
     setIsOpen(false)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Add context value to /suggest request
     if (note.trim()) {
       setContextValue(note.trim())
       console.log('Context added for suggest requests:', note.trim())
@@ -52,7 +71,13 @@ export function AddContext() {
           <span className="text-sm">{t('main.add_context')}</span>
         </Button>
       </DialogTrigger>
-      <CustomDialogContent className="p-0 sm:max-w-[640px]">
+      <CustomDialogContent
+        className="p-0 sm:max-w-[640px]"
+        onOpenAutoFocus={(e) => {
+          // デフォルトの自動フォーカス動作を防ぐ
+          e.preventDefault()
+        }}
+      >
         <DialogTitle className="sr-only">{t('main.add_context')}</DialogTitle>
         <div className="w-full">
           <form className="flex h-full flex-col" onSubmit={handleSubmit}>
@@ -66,19 +91,22 @@ export function AddContext() {
                 </span>
               )}
               <Textarea
+                ref={textareaRef}
                 className="h-full w-full resize-none bg-transparent px-3 py-2 text-sm outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
-                autoFocus
                 onChange={handleChange}
                 value={note}
                 placeholder=""
-                // Mobile zoom prevention and IME style fixes
+                // autoFocusを追加
+                autoFocus
+                // カーソル表示のための追加スタイル
                 style={{
                   fontSize: '16px',
                   overflowWrap: 'break-word',
                   wordWrap: 'break-word',
                   wordBreak: 'break-word',
-                  WebkitTextFillColor: 'currentcolor', // 日本語入力時の表示改善
-                  imeMode: 'active', // IMEモードを明示的に設定
+                  WebkitTextFillColor: 'currentcolor',
+                  imeMode: 'active',
+                  caretColor: 'auto', // カーソル色を明示的に設定
                 }}
               />
             </div>

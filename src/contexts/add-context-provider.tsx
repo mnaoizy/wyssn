@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode, useState } from 'react';
+import { usePersistentState } from '@/hooks/use-persistent-state';
+import React, { createContext, useContext, ReactNode } from 'react';
 
 type AddContextType = {
     contextValue: string;
@@ -13,7 +14,7 @@ export const AddContextProvider: React.FC<{
     children: ReactNode;
     initialContext?: string;
 }> = ({ children, initialContext = '' }) => {
-    const [contextValue, setContextValue] = useState<string>(initialContext);
+    const [contextValue, setContextValue] = usePersistentState<string>(initialContext, "") ;
 
     return (
         <AddContextContext.Provider value={{ contextValue, setContextValue }}>
