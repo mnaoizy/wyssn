@@ -13,8 +13,7 @@ export default {
   },
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Ваш собеседник на базе LLM, помогающий поддерживать содержательные диалоги с уместными подсказками.',
+    description: 'Больше никаких затруднений в общении.',
     email_placeholder: 'Введите ваш email',
     waitlist: 'Присоединяйтесь к списку ожидания для раннего доступа',
   },

@@ -16,8 +16,7 @@ export default {
   // Hero section
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Ihr KI-gesteuerter Gesprächsbegleiter, der Ihnen hilft, bedeutungsvolle Dialoge mit kontextuell passenden Vorschlägen zu führen.',
+    description: 'Nie wieder sprachlos sein.',
     email_placeholder: 'E-Mail-Adresse eingeben',
     waitlist: 'Tragen Sie sich in unsere Warteliste für frühen Zugang ein',
   },

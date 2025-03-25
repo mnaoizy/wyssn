@@ -13,8 +13,7 @@ export default {
   },
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Seu companheiro de conversa com IA generativa que ajuda a manter diálogos significativos com sugestões contextuais.',
+    description: 'Nunca mais fique sem palavras.',
     email_placeholder: 'Digite seu e-mail',
     waitlist: 'Entre na lista de espera para acesso antecipado',
   },

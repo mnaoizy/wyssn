@@ -16,7 +16,7 @@ export default {
   // Hero section
   hero: {
     title: 'What You Should Say Next',
-    description: '떠오르는 말을 자연스럽게 표현할 수 있도록 도와드립니다.',
+    description: '더 이상 말문이 막히지 않습니다.',
     email_placeholder: '이메일 주소',
     waitlist: '사전 신청하기',
   },

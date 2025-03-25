@@ -17,8 +17,7 @@ export default {
   // Hero section
   hero: {
     title: 'What You Should Say Next',
-    description:
-      '您的LLM驅動的對話夥伴，通過提供適當的上下文建議幫助您保持有意義的對話。',
+    description: '心有所想，言有所出。',
     email_placeholder: '輸入您的電子郵件',
     waitlist: '加入我們的等候名單以獲取早期訪問權限',
   },

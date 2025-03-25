@@ -13,8 +13,7 @@ export default {
   },
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Il tuo compagno di conversazione alimentato da LLM che ti aiuta a mantenere dialoghi significativi con suggerimenti contestuali appropriati.',
+    description: 'Mai più senza parole."',
     email_placeholder: 'Inserisci la tua email',
     waitlist: 'Unisciti alla lista d’attesa per l’accesso anticipato',
   },

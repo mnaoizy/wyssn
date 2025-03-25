@@ -17,8 +17,7 @@ export default {
   // Hero section
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Người bạn đồng hành trong cuộc trò chuyện được hỗ trợ bởi LLM giúp bạn duy trì đối thoại ý nghĩa với các gợi ý phù hợp theo ngữ cảnh.',
+    description: 'Không bao giờ lúng túng với lời nói.',
     email_placeholder: 'Nhập email của bạn',
     waitlist: 'Tham gia danh sách chờ để nhận quyền truy cập sớm',
   },

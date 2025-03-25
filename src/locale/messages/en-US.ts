@@ -16,8 +16,7 @@ export default {
   // Hero section
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Your LLM powered conversation companion that helps you maintain meaningful dialogues with contextually appropriate suggestions.',
+    description: 'Never be at a loss for words.',
     email_placeholder: 'Enter your email',
     waitlist: 'Join our waitlist for early access',
   },

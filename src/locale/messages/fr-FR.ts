@@ -16,8 +16,7 @@ export default {
   // Hero section
   hero: {
     title: 'What You Should Say Next',
-    description:
-      'Votre compagnon de conversation alimenté par LLM qui vous aide à maintenir des dialogues significatifs avec des suggestions contextuellement appropriées.',
+    description: 'Les mots justes, au moment parfait.',
     email_placeholder: 'Entrez votre email',
     waitlist: "Rejoignez notre liste d'attente pour un accès anticipé",
   },
