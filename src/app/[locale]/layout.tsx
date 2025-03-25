@@ -3,7 +3,7 @@
 import { I18nProviderClient, useI18n } from '@/locale/client'
 import { AuthProvider } from '@/providers/auth-provider'
 import { AddContextProvider } from '@/contexts/add-context-provider'
-import { ReactElement, use } from 'react'
+import { ReactElement, use, useEffect } from 'react'
 import { LanguageSelector } from '@/components/language-selector'
 import { Menu } from 'lucide-react'
 import {
@@ -18,6 +18,8 @@ import {
   useMobileNavigation,
   MobileNavigationPanel,
 } from '@/components/mobile-navigation'
+import { useSearchParams } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 // Mobile menu button component
 function MobileMenuButton() {
@@ -44,6 +46,24 @@ function LayoutContent({
 }) {
   const t = useI18n()
   const { isAuthenticated } = useKindeBrowserClient()
+
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('signout') === 'true') {
+      toast.success(t('nav.signout_success'), {
+        duration: 2000,
+      })
+    } else if (searchParams.get('signin') === 'true') {
+      toast.success(t('nav.signin_success'), {
+        duration: 2000,
+      })
+    } else if (searchParams.get('register') === 'true') {
+      toast.success(t('nav.register_success'), {
+        duration: 2000,
+      })
+    }
+  }, [searchParams, t])
 
   return (
     <div className="font-sans flex flex-col min-h-screen">
@@ -101,7 +121,7 @@ function LayoutContent({
                         {t('nav.account')}
                       </Link>
                       <LogoutLink
-                        postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
+                        postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?signout=true`}
                         className={buttonVariants({
                           variant: 'outline',
                           size: 'sm',
@@ -115,7 +135,7 @@ function LayoutContent({
                       <RegisterLink
                         authUrlParams={{ lang: locale }}
                         lang={locale}
-                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
+                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?register=true`}
                         className={buttonVariants({
                           variant: 'default',
                           size: 'sm',
@@ -125,7 +145,7 @@ function LayoutContent({
                       </RegisterLink>
                       <LoginLink
                         authUrlParams={{ lang: locale }}
-                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}`}
+                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?signin=true`}
                         className={buttonVariants({
                           variant: 'outline',
                           size: 'sm',

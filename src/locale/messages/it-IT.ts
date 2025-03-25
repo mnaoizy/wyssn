@@ -7,6 +7,9 @@ export default {
     signup: 'Registrati',
     signout: 'Esci',
     account: 'Account',
+    signin_success: 'Accesso effettuato.',
+    signout_success: 'Disconnessione effettuata.',
+    register_success: 'Registrazione effettuata.',
   },
   hero: {
     title: 'What You Should Say Next',

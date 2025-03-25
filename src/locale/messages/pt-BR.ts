@@ -7,6 +7,9 @@ export default {
     signup: 'Cadastrar-se',
     signout: 'Sair',
     account: 'Conta',
+    signin_success: 'Entrou com sucesso.',
+    signout_success: 'Saiu com sucesso.',
+    register_success: 'Registrado com sucesso.',
   },
   hero: {
     title: 'What You Should Say Next',

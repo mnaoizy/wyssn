@@ -8,6 +8,9 @@ export default {
     signup: "S'inscrire",
     signout: 'Se déconnecter',
     account: 'Compte',
+    signin_success: 'Connexion réussie.',
+    signout_success: 'Déconnexion réussie.',
+    register_success: 'Inscription réussie.',
   },
 
   // Hero section

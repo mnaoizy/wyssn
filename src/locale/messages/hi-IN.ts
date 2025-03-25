@@ -8,6 +8,9 @@ export default {
     signup: 'साइन अप करें',
     signout: 'साइन आउट करें',
     account: 'खाता',
+    signin_success: 'साइन इन किया गया।',
+    signout_success: 'साइन आउट किया गया।',
+    register_success: 'रजिस्टर किया गया।',
   },
 
   // Hero section

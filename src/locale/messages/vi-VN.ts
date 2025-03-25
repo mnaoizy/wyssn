@@ -9,6 +9,9 @@ export default {
     signup: 'Đăng ký',
     signout: 'Đăng xuất',
     account: 'Tài khoản',
+    signin_success: 'Đăng nhập thành công.',
+    signout_success: 'Đăng xuất thành công.',
+    register_success: 'Đăng ký thành công.',
   },
 
   // Hero section

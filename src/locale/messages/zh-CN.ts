@@ -9,6 +9,9 @@ export default {
     signup: '注册',
     signout: '退出',
     account: '账户',
+    signin_success: '登录成功。',
+    signout_success: '成功退出。',
+    register_success: '注册成功。',
   },
 
   // Hero section

@@ -8,6 +8,9 @@ export default {
     signup: 'Sign up',
     signout: 'Sign out',
     account: 'Account',
+    signin_success: 'You have been signed in.',
+    signout_success: 'You have been signed out.',
+    register_success: 'You have been registered.',
   },
 
   // Hero section

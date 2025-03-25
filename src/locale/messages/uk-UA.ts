@@ -7,6 +7,9 @@ export default {
     signup: 'Зареєструватися',
     signout: 'Вийти',
     account: 'Обліковий запис',
+    signin_success: 'Успішно увійшли.',
+    signout_success: 'Успішно вийшли.',
+    register_success: 'Успішно зареєстровано.',
   },
   hero: {
     title: 'What You Should Say Next',

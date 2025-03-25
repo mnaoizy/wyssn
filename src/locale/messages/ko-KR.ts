@@ -8,6 +8,9 @@ export default {
     signup: '회원가입',
     signout: '로그아웃',
     account: '계정',
+    signin_success: '로그인 되었습니다.',
+    signout_success: '로그아웃 되었습니다.',
+    register_success: '등록되었습니다.',
   },
 
   // Hero section

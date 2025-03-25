@@ -9,6 +9,9 @@ export default {
     signup: '註冊',
     signout: '登出',
     account: '帳戶',
+    signin_success: '登入成功。',
+    signout_success: '成功登出。',
+    register_success: '註冊成功。',
   },
 
   // Hero section

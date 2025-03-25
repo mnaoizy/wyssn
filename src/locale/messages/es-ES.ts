@@ -8,6 +8,9 @@ export default {
     signup: 'Registrarse',
     signout: 'Cerrar sesión',
     account: 'Cuenta',
+    signin_success: 'Inicio de sesión exitoso.',
+    signout_success: 'Cierre de sesión exitoso.',
+    register_success: 'Registro exitoso.',
   },
 
   // Hero section

@@ -7,6 +7,9 @@ export default {
     signup: 'Зарегистрироваться',
     signout: 'Выйти',
     account: 'Аккаунт',
+    signin_success: 'Вход выполнен.',
+    signout_success: 'Выход выполнен.',
+    register_success: 'Зарегистрировано.',
   },
   hero: {
     title: 'What You Should Say Next',
