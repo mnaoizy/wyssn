@@ -18,7 +18,7 @@ import {
   useMobileNavigation,
   MobileNavigationPanel,
 } from '@/components/mobile-navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 // Mobile menu button component
@@ -47,6 +47,8 @@ function LayoutContent({
   const t = useI18n()
   const { isAuthenticated } = useKindeBrowserClient()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
   const toastShownRef = useRef(false)
 
   useEffect(() => {
@@ -55,35 +57,38 @@ function LayoutContent({
     const signin = searchParams.get('signin')
     const register = searchParams.get('register')
 
-    // 既にトーストが表示されている場合は処理をスキップ
-    if (toastShownRef.current) return
+    // いずれかのパラメータが存在する場合
+    const hasAuthParams =
+      signout === 'true' || signin === 'true' || register === 'true'
 
-    // トーストを表示
-    if (signout === 'true') {
-      toast.success(t('nav.signout_success'), {
-        duration: 2000,
-        id: 'signout-toast', // 一意のIDを指定して重複を防止
-      })
-      toastShownRef.current = true
-    } else if (signin === 'true') {
-      toast.success(t('nav.signin_success'), {
-        duration: 2000,
-        id: 'signin-toast', // 一意のIDを指定して重複を防止
-      })
-      toastShownRef.current = true
-    } else if (register === 'true') {
-      toast.success(t('nav.register_success'), {
-        duration: 2000,
-        id: 'register-toast', // 一意のIDを指定して重複を防止
-      })
-      toastShownRef.current = true
-    }
+    if (hasAuthParams && !toastShownRef.current) {
+      // トーストを表示
+      if (signout === 'true') {
+        toast.success(t('nav.signout_success'), {
+          duration: 2000,
+          id: 'signout-toast',
+        })
+      } else if (signin === 'true') {
+        toast.success(t('nav.signin_success'), {
+          duration: 2000,
+          id: 'signin-toast',
+        })
+      } else if (register === 'true') {
+        toast.success(t('nav.register_success'), {
+          duration: 2000,
+          id: 'register-toast',
+        })
+      }
 
-    // クリーンアップ関数 - コンポーネントがアンマウントされたときにrefをリセット
-    return () => {
-      toastShownRef.current = false
+      // トースト表示済みフラグを設定
+      toastShownRef.current = true
+
+      // URLからパラメータを削除（履歴を書き換え）
+      // 現在のURLから認証関連パラメータを削除した新しいURLを作成
+      const newUrl = pathname
+      router.replace(newUrl, { scroll: false })
     }
-  }, [searchParams, t])
+  }, [searchParams, t, pathname, router])
 
   return (
     <div className="font-sans flex flex-col min-h-screen">
