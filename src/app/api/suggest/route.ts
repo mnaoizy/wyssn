@@ -2,7 +2,7 @@ import { ConversationRequest, conversationRequestSchema, conversationSuggestionS
 import { createGroq } from '@ai-sdk/groq';
 import { streamObject, DeepPartial } from 'ai';
 import { defaultLocale, locales, Locale } from '@/locale/config';
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from '@/lib/prisma-client';
 import { AISDKExporter } from 'langsmith/vercel';
@@ -128,6 +128,7 @@ export async function POST(req: Request) {
         const dbUser = await db.user.findUnique({
             where: { kindeId: user.id },
             select: {
+                id: true,
                 subscriptions: {
                     select: { status: true }
                 },
@@ -211,7 +212,27 @@ export async function POST(req: Request) {
             experimental_telemetry: AISDKExporter.getSettings()
         });
 
-        return result.toTextStreamResponse();
+        const response = result.toTextStreamResponse();
+
+        // Schedule usage tracking to run after response is sent
+        after(async () => {
+            try {
+                await db.apiUsage.create({
+                    data: {
+                        userId: dbUser.id,
+                        locale: body.locale || defaultLocale,
+                        translationLanguage: body.translationLanguage,
+                        inputLength: body.message.length,
+                        recentInputLength: extractRecentInput(body.message).recentInput.length,
+                        contextLength: body.context?.length
+                    }
+                });
+            } catch (error) {
+                console.error('Error tracking API usage:', error);
+            }
+        });
+
+        return response;
     } catch (error) {
         console.error('Error processing request:', error);
         return new Response(JSON.stringify({ error: 'Failed to process request' }), {

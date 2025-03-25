@@ -18,6 +18,7 @@ model User {
   updatedAt        DateTime  @updatedAt @map("updated_at")
 
   subscriptions Subscription[]
+  ApiUsage      ApiUsage[]
 
   @@map("users")
 }
@@ -61,4 +62,21 @@ model Waitlist {
   status     String    @default("waiting") // waiting / invited / joined など
 
   @@map("waitlists")
+}
+
+model ApiUsage {
+  id                  String   @id @default(cuid())
+  userId              String   @map("user_id")
+  createdAt           DateTime @default(now()) @map("created_at")
+  locale              String
+  translationLanguage String?  @map("translation_language")
+  inputLength         Int      @map("input_length")
+  recentInputLength   Int      @map("recent_input_length")
+  contextLength       Int?     @map("context_length")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("api_usage")
 }
