@@ -13,7 +13,7 @@ export default {
   },
   hero: {
     title: 'What You Should Say Next',
-    description: 'Mai più senza parole."',
+    description: 'Mai più senza parole.',
     email_placeholder: 'Inserisci la tua email',
     waitlist: 'Unisciti alla lista d’attesa per l’accesso anticipato',
   },
