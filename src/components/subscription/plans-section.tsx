@@ -72,7 +72,7 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
                 setPriceDetails({
                     unitAmount: data.unitAmount,
                     currency: data.currency,
-                    interval: data.recurring?.interval || 'month',
+                    interval: t("plans.pricing.month"),
                     loading: false,
                     error: false
                 });
