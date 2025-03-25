@@ -3,7 +3,7 @@
 import { I18nProviderClient, useI18n } from '@/locale/client'
 import { AuthProvider } from '@/providers/auth-provider'
 import { AddContextProvider } from '@/contexts/add-context-provider'
-import { ReactElement, use, useEffect } from 'react'
+import { ReactElement, use, useEffect, useRef } from 'react'
 import { LanguageSelector } from '@/components/language-selector'
 import { Menu } from 'lucide-react'
 import {
@@ -46,22 +46,42 @@ function LayoutContent({
 }) {
   const t = useI18n()
   const { isAuthenticated } = useKindeBrowserClient()
-
   const searchParams = useSearchParams()
+  const toastShownRef = useRef(false)
 
   useEffect(() => {
-    if (searchParams.get('signout') === 'true') {
+    // URLパラメータの取得
+    const signout = searchParams.get('signout')
+    const signin = searchParams.get('signin')
+    const register = searchParams.get('register')
+
+    // 既にトーストが表示されている場合は処理をスキップ
+    if (toastShownRef.current) return
+
+    // トーストを表示
+    if (signout === 'true') {
       toast.success(t('nav.signout_success'), {
         duration: 2000,
+        id: 'signout-toast', // 一意のIDを指定して重複を防止
       })
-    } else if (searchParams.get('signin') === 'true') {
+      toastShownRef.current = true
+    } else if (signin === 'true') {
       toast.success(t('nav.signin_success'), {
         duration: 2000,
+        id: 'signin-toast', // 一意のIDを指定して重複を防止
       })
-    } else if (searchParams.get('register') === 'true') {
+      toastShownRef.current = true
+    } else if (register === 'true') {
       toast.success(t('nav.register_success'), {
         duration: 2000,
+        id: 'register-toast', // 一意のIDを指定して重複を防止
       })
+      toastShownRef.current = true
+    }
+
+    // クリーンアップ関数 - コンポーネントがアンマウントされたときにrefをリセット
+    return () => {
+      toastShownRef.current = false
     }
   }, [searchParams, t])
 
@@ -121,7 +141,7 @@ function LayoutContent({
                         {t('nav.account')}
                       </Link>
                       <LogoutLink
-                        postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?signout=true`}
+                        postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/?signout=true`}
                         className={buttonVariants({
                           variant: 'outline',
                           size: 'sm',
@@ -135,7 +155,7 @@ function LayoutContent({
                       <RegisterLink
                         authUrlParams={{ lang: locale }}
                         lang={locale}
-                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?register=true`}
+                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/?register=true`}
                         className={buttonVariants({
                           variant: 'default',
                           size: 'sm',
@@ -145,7 +165,7 @@ function LayoutContent({
                       </RegisterLink>
                       <LoginLink
                         authUrlParams={{ lang: locale }}
-                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?signin=true`}
+                        postLoginRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/?signin=true`}
                         className={buttonVariants({
                           variant: 'outline',
                           size: 'sm',
