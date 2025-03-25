@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/prisma-client';
-import { checkAdminPermission } from '../users/route';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+
+async function checkAdminPermission() {
+    const { getPermission } = getKindeServerSession();
+    const hasAdminPermission = await getPermission("admin");
+    if (!hasAdminPermission?.isGranted) {
+        throw new Error("Admin permission required");
+    }
+}
 
 export async function GET(request: Request) {
     try {
