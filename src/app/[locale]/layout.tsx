@@ -148,7 +148,7 @@ function LayoutContent({
                         {t('nav.account')}
                       </Link>
                       <LogoutLink
-                        postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/?signout=true`}
+                        postLogoutRedirectURL={`${process.env.NEXT_PUBLIC_APP_URL}/${locale}/?signout=true`}
                         className={buttonVariants({
                           variant: 'outline',
                           size: 'sm',
