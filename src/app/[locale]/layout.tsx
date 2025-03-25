@@ -20,6 +20,7 @@ import {
 } from '@/components/mobile-navigation'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { AdminLink } from '@/components/admin-link'
 
 // Mobile menu button component
 function MobileMenuButton() {
@@ -119,6 +120,7 @@ function LayoutContent({
               <LanguageSelector />
               <div className="flex items-center space-x-4 text-sm">
                 {/* <span>{t('nav.about')}</span> */}
+                <AdminLink />
                 <Link
                   href={`/${locale}/changelog`}
                   className="hover:text-neutral-500 transition-colors"
