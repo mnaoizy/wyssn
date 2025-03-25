@@ -120,6 +120,5 @@ export default {
       dedicated_support: 'Dedicated support',
       custom_billing: 'Custom billing options',
     },
-    signup_free: 'Sign up for Free',
   },
 } as const
