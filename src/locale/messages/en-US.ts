@@ -47,6 +47,7 @@ export default {
     suggestion_heading: 'Keep the conversation going with',
     prompt_speak: 'Tap or click the microphone and start speaking',
     add_context: 'Add context',
+    cancel: 'Cancel',
   },
 
   // Changelog page

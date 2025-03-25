@@ -4,11 +4,7 @@ import { useEffect, useState } from 'react'
 import { useI18n } from '@/locale/client'
 import { Button } from './ui/button'
 import { RocketIcon } from 'lucide-react'
-import {
-  Dialog,
-  DialogTrigger,
-  DialogTitle,
-} from './ui/dialog'
+import { Dialog, DialogTrigger, DialogTitle } from './ui/dialog'
 import { CustomDialogContent } from './ui/custom-dialog'
 import { Textarea } from './ui/textarea'
 import { useAddContext } from '@/contexts/add-context-provider'
@@ -39,6 +35,12 @@ export function AddContext() {
     closeDialog()
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value
+    setNote(newValue)
+    setContextValue(newValue)
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -66,36 +68,38 @@ export function AddContext() {
               <Textarea
                 className="h-full w-full resize-none bg-transparent px-3 py-2 text-sm outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
                 autoFocus
-                onChange={(e) => setContextValue(e.target.value)}
+                onChange={handleChange}
                 value={note}
                 placeholder=""
-                // Mobile zoom prevention
+                // Mobile zoom prevention and IME style fixes
                 style={{
                   fontSize: '16px',
                   overflowWrap: 'break-word',
                   wordWrap: 'break-word',
-                  wordBreak: 'break-word'
+                  wordBreak: 'break-word',
+                  WebkitTextFillColor: 'currentcolor', // 日本語入力時の表示改善
+                  imeMode: 'active', // IMEモードを明示的に設定
                 }}
               />
             </div>
-            <div
-              className="flex justify-between py-1 px-1 border-t border-zinc-200 dark:border-zinc-600"
-            >
+            <div className="flex justify-end py-1 px-1 border-t gap-1 border-zinc-200 dark:border-zinc-600">
               <Button
-                variant="ghost"
+                variant="outline"
+                size="sm"
                 onClick={closeDialog}
                 aria-label="Close dialog"
                 type="button"
               >
-                Cancel
+                {t('main.cancel')}
               </Button>
               <Button
                 type="submit"
-                variant="secondary"
+                size="sm"
+                variant="default"
                 aria-label="Submit note"
                 disabled={!note.trim()}
               >
-                Submit
+                {t('main.add_context')}
               </Button>
             </div>
           </form>
