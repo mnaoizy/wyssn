@@ -49,6 +49,7 @@ export default {
     prompt_speak: '點擊麥克風並開始講話',
     add_context: '添加上下文',
     cancel: '取消',
+    clear: '清除',
   },
 
   // Changelog page

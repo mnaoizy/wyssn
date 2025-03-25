@@ -45,6 +45,11 @@ export function AddContext() {
     setIsOpen(false)
   }
 
+  const handleClear = () => {
+    setNote('')
+    setContextValue('')
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (note.trim()) {
@@ -119,6 +124,16 @@ export function AddContext() {
                 type="button"
               >
                 {t('main.cancel')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!note.trim()}
+                onClick={handleClear}
+                aria-label="Clear note"
+                type="button"
+              >
+                {t('main.clear')}
               </Button>
               <Button
                 type="submit"

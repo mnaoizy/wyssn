@@ -48,6 +48,7 @@ export default {
     prompt_speak: 'マイクボタンをタップまたはクリックして話してください',
     add_context: '文脈を追加',
     cancel: 'キャンセル',
+    clear: 'クリア',
   },
 
   // Changelog page

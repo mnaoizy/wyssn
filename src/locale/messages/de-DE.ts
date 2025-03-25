@@ -49,6 +49,7 @@ export default {
       'Tippen oder klicken Sie auf das Mikrofon und beginnen Sie zu sprechen',
     add_context: 'Kontext hinzufügen',
     cancel: 'Abbrechen',
+    clear: 'Löschen',
   },
 
   // Changelog page

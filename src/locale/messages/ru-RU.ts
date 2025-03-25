@@ -40,6 +40,7 @@ export default {
     prompt_speak: 'Нажмите на микрофон и начните говорить',
     add_context: 'Добавить контекст',
     cancel: 'Отмена',
+    clear: 'Очистить',
   },
   changelog: {
     title: 'История изменений',

@@ -49,6 +49,7 @@ export default {
     prompt_speak: 'माइक्रोफ़ोन पर टैप या क्लिक करें और बोलना शुरू करें',
     add_context: 'संदर्भ जोड़ें',
     cancel: 'रद्द करें',
+    clear: 'साफ करें',
   },
 
   // Changelog page

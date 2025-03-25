@@ -48,6 +48,7 @@ export default {
     prompt_speak: 'Tap or click the microphone and start speaking',
     add_context: 'Add context',
     cancel: 'Cancel',
+    clear: 'Clear',
   },
 
   // Changelog page

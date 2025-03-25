@@ -49,6 +49,7 @@ export default {
     prompt_speak: 'Nhấn hoặc bấm vào micro và bắt đầu nói',
     add_context: 'Thêm bối cảnh',
     cancel: 'Hủy',
+    clear: 'Xóa',
   },
 
   // Changelog page

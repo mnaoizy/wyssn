@@ -48,6 +48,7 @@ export default {
     prompt_speak: 'แตะหรือคลิกที่ไมโครโฟนและเริ่มพูด',
     add_context: 'เพิ่มบริบท',
     cancel: 'ยกเลิก',
+    clear: 'ล้าง',
   },
 
   // Changelog page

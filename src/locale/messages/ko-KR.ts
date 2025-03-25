@@ -49,6 +49,7 @@ export default {
     prompt_speak: '마이크 버튼을 탭하거나 클릭해서 말해보세요',
     add_context: '맥락 추가하기',
     cancel: '취소',
+    clear: '지우기',
   },
 
   // Changelog page
