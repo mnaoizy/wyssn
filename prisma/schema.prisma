@@ -18,7 +18,7 @@ model User {
   updatedAt        DateTime  @updatedAt @map("updated_at")
 
   subscriptions Subscription[]
-  ApiUsage      ApiUsage[]
+  apiUsage      ApiUsage[]
 
   @@map("users")
 }

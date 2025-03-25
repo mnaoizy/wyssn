@@ -11,11 +11,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-interface UserWithSubscriptions extends User {
+interface UserWithSubscriptionsUsage extends User {
     subscriptions: {
         status: string;
         currentPeriodEnd: Date;
     }[];
+    apiUsageCount: number;
 }
 
 interface UsageStats {
@@ -40,7 +41,7 @@ interface UsageStats {
 
 export default function AdminPage() {
     const { isLoading, isAuthenticated, getPermission } = useKindeBrowserClient();
-    const [users, setUsers] = useState<UserWithSubscriptions[]>([]);
+    const [users, setUsers] = useState<UserWithSubscriptionsUsage[]>([]);
     const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedLocale, setSelectedLocale] = useState<string>("all");
@@ -112,7 +113,7 @@ export default function AdminPage() {
         );
     }
 
-    const getSubscriptionStatus = (user: UserWithSubscriptions) => {
+    const getSubscriptionStatus = (user: UserWithSubscriptionsUsage) => {
         if (!user.subscriptions?.length) return "None";
         const activeSub = user.subscriptions.find(sub =>
             ["active", "trialing"].includes(sub.status)
@@ -268,6 +269,7 @@ export default function AdminPage() {
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscription</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
                                     </tr>
@@ -277,6 +279,7 @@ export default function AdminPage() {
                                         <tr key={user.id}>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.apiUsageCount}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {getSubscriptionStatus(user)}
                                             </td>

@@ -16,7 +16,12 @@ export async function GET() {
 
         const users = await prisma.user.findMany({
             include: {
-                subscriptions: true
+                subscriptions: true,
+                _count: {
+                    select: {
+                        apiUsage: true
+                    }
+                }
             },
             where: {
                 deletedAt: null
@@ -25,7 +30,13 @@ export async function GET() {
                 createdAt: 'desc'
             }
         })
-        return NextResponse.json(users)
+        // レスポンス用にデータを整形
+        const formattedUsers = users.map(user => ({
+            ...user,
+            apiUsageCount: user._count.apiUsage,
+        }))
+
+        return NextResponse.json(formattedUsers)
     } catch (error: unknown) {
         console.error('Failed to fetch users:', error)
         if (error instanceof Error && error.message === 'Admin permission required') {
