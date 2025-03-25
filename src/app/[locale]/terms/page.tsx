@@ -5,23 +5,6 @@ import ReactMarkdown from 'react-markdown'
 import { markdownStyle } from '@/lib/markdown'
 import { getCurrentLocale } from '@/locale/server'
 
-export const locales = [
-  'en-US',
-  'fr-FR',
-  'de-DE',
-  'es-ES',
-  'ja-JP',
-  'zh-CN',
-  'zh-TW',
-  'ko-KR',
-  'pt-BR',
-  'ru-RU',
-  'uk-UA',
-  'it-IT',
-  'vi-VN',
-  'hi-IN',
-] as const
-
 // Define metadata for each locale
 const metadataByLocale = {
   'en-US': {
