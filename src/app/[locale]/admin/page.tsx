@@ -5,6 +5,14 @@ import { useEffect, useState } from "react";
 import { User } from "@prisma/client";
 import { UserDrawer } from "@/components/ui/user-drawer";
 import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
     Select,
     SelectContent,
     SelectItem,
@@ -42,7 +50,19 @@ interface UsageStats {
 
 export default function AdminPage() {
     const { isLoading, isAuthenticated, getPermission } = useKindeBrowserClient();
-    const [users, setUsers] = useState<UserWithSubscriptionsUsage[]>([]);
+    const [usersData, setUsersData] = useState<{
+        users: UserWithSubscriptionsUsage[];
+        total: number;
+        page: number;
+        perPage: number;
+        totalPages: number;
+    }>({
+        users: [],
+        total: 0,
+        page: 1,
+        perPage: 10,
+        totalPages: 1
+    });
     const [editingUser, setEditingUser] = useState<UserWithSubscriptionsUsage | null>(null);
     const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
     const [loading, setLoading] = useState(true);
@@ -68,15 +88,15 @@ export default function AdminPage() {
         fetchUsageStats(locale);
     };
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (page = 1, perPage = 10) => {
         try {
-            const response = await fetch('/api/admin/users');
+            const response = await fetch(`/api/admin/users?page=${page}&perPage=${perPage}`);
             if (!response.ok) {
                 throw new Error(response.status === 401 ?
                     'Unauthorized' : 'Failed to fetch users');
             }
             const data = await response.json();
-            setUsers(data);
+            setUsersData(data);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
@@ -279,7 +299,7 @@ export default function AdminPage() {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {users.map((user) => (
+                                        {usersData.users.map((user) => (
                                             <tr key={user.id} className={user.deletedAt ? "opacity-70" : ""}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                                     {user.deletedAt ? (
@@ -318,6 +338,43 @@ export default function AdminPage() {
                                 </table>
                             </div>
                         )}
+                    </div>
+
+                    <div className="flex justify-center mt-4">
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() => usersData.page > 1 && fetchUsers(usersData.page - 1, usersData.perPage)}
+                                        className={usersData.page <= 1 ? "opacity-50 pointer-events-none" : ""}
+                                    />
+                                </PaginationItem>
+                                {Array.from({ length: Math.min(5, usersData.totalPages) }, (_, i) => {
+                                    const pageNum = Math.max(1,
+                                        Math.min(
+                                            usersData.totalPages - 4,
+                                            usersData.page - 2
+                                        )
+                                    ) + i;
+                                    return (
+                                        <PaginationItem key={pageNum}>
+                                            <PaginationLink
+                                                isActive={pageNum === usersData.page}
+                                                onClick={() => fetchUsers(pageNum, usersData.perPage)}
+                                            >
+                                                {pageNum}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    );
+                                })}
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() => usersData.page < usersData.totalPages && fetchUsers(usersData.page + 1, usersData.perPage)}
+                                        className={usersData.page >= usersData.totalPages ? "opacity-50 pointer-events-none" : ""}
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
                     </div>
                 </div>
             </div>

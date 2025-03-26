@@ -10,30 +10,46 @@ async function checkAdminPermission() {
     }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         await checkAdminPermission()
 
-        const users = await prisma.user.findMany({
-            include: {
-                subscriptions: true,
-                _count: {
-                    select: {
-                        apiUsage: true
+        const { searchParams } = new URL(request.url)
+        const page = Number(searchParams.get('page')) || 1
+        const perPage = Number(searchParams.get('perPage')) || 10
+
+        const [users, total] = await Promise.all([
+            prisma.user.findMany({
+                skip: (page - 1) * perPage,
+                take: perPage,
+                include: {
+                    subscriptions: true,
+                    _count: {
+                        select: {
+                            apiUsage: true
+                        }
                     }
+                },
+                orderBy: {
+                    createdAt: 'desc'
                 }
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        })
+            }),
+            prisma.user.count()
+        ])
+
         // Format response data
         const formattedUsers = users.map(user => ({
             ...user,
             apiUsageCount: user._count.apiUsage,
         }))
 
-        return NextResponse.json(formattedUsers)
+        return NextResponse.json({
+            users: formattedUsers,
+            total,
+            page,
+            perPage,
+            totalPages: Math.ceil(total / perPage)
+        })
     } catch (error: unknown) {
         console.error('Failed to fetch users:', error)
         if (error instanceof Error && error.message === 'Admin permission required') {
