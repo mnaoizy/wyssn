@@ -1,6 +1,7 @@
 'use client'
 
 import { useI18n } from '@/locale/client'
+import { Skeleton } from '@/components/ui/skeleton'
 import { LanguageSelector } from '@/components/language-selector'
 import {
     RegisterLink,
@@ -19,22 +20,31 @@ interface NavigationProps {
 
 export function Navigation({ locale }: NavigationProps) {
     const t = useI18n()
-    const { isAuthenticated } = useKindeBrowserClient()
+    const { isAuthenticated, isLoading } = useKindeBrowserClient()
 
     return (
         <nav className="border-b border-neutral-200">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-2">
-                        <Link
-                            href={`/${locale}`}
-                            className="font-serif text-lg font-semibold tracking-tighter select-none uppercase"
-                        >
-                            Wyssn
-                        </Link>
-                        <span className="text-xs text-neutral-500 font-mono mt-1 select-none hidden sm:inline">
-                            /wɪzn/
-                        </span>
+                        {isLoading ? (
+                            <>
+                                <Skeleton className="h-6 w-20" />
+                                <Skeleton className="h-3 w-12 hidden sm:block" />
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    href={`/${locale}`}
+                                    className="font-serif text-lg font-semibold tracking-tighter select-none uppercase"
+                                >
+                                    Wyssn
+                                </Link>
+                                <span className="text-xs text-neutral-500 font-mono mt-1 select-none hidden sm:inline">
+                                    /wɪzn/
+                                </span>
+                            </>
+                        )}
                     </div>
 
                     {/* Desktop Navigation */}
@@ -42,23 +52,40 @@ export function Navigation({ locale }: NavigationProps) {
                         className="hidden md:flex items-center justify-end space-x-4 flex-1"
                         data-testid="desktop-nav"
                     >
-                        <LanguageSelector />
-                        <div className="flex items-center space-x-4 text-sm">
-                            <AdminLink />
-                            <Link
-                                href={`/${locale}/changelog`}
-                                className="hover:text-neutral-500 transition-colors"
-                            >
-                                {t('nav.changelog')}
-                            </Link>
-                            {!isAuthenticated && (
-                                <Link
-                                    href={`/${locale}/pricing`}
-                                    className="hover:text-neutral-500 transition-colors"
-                                >
-                                    {t('nav.pricing')}
-                                </Link>
-                            )}
+                        {isLoading ? (
+                            <div className="flex items-center space-x-4">
+                                <Skeleton className="h-8 w-8 rounded-full" />
+                                <Skeleton className="h-4 w-20" />
+                                <Skeleton className="h-4 w-16" />
+                            </div>
+                        ) : (
+                            <>
+                                <LanguageSelector />
+                                <div className="flex items-center space-x-4 text-sm">
+                                    <AdminLink />
+                                    <Link
+                                        href={`/${locale}/changelog`}
+                                        className="hover:text-neutral-500 transition-colors"
+                                    >
+                                        {t('nav.changelog')}
+                                    </Link>
+                                    {!isAuthenticated && (
+                                        <Link
+                                            href={`/${locale}/pricing`}
+                                            className="hover:text-neutral-500 transition-colors"
+                                        >
+                                            {t('nav.pricing')}
+                                        </Link>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                        {isLoading ? (
+                            <div className="flex space-x-2">
+                                <Skeleton className="h-9 w-20 rounded-md" />
+                                <Skeleton className="h-9 w-20 rounded-md" />
+                            </div>
+                        ) : (
                             <div className="space-x-2">
                                 {isAuthenticated ? (
                                     <>
@@ -107,17 +134,26 @@ export function Navigation({ locale }: NavigationProps) {
                                     </>
                                 )}
                             </div>
-                        </div>
+                        )}
                     </div>
+                </div>
 
-                    {/* Mobile Navigation */}
-                    <div
-                        className="flex md:hidden items-center space-x-4"
-                        data-testid="mobile-nav"
-                    >
-                        <LanguageSelector />
-                        <MobileMenuButton />
-                    </div>
+                {/* Mobile Navigation */}
+                <div
+                    className="flex md:hidden items-center space-x-4"
+                    data-testid="mobile-nav"
+                >
+                    {isLoading ? (
+                        <>
+                            <Skeleton className="h-8 w-8 rounded-full" />
+                            <Skeleton className="h-8 w-8 rounded-md" />
+                        </>
+                    ) : (
+                        <>
+                            <LanguageSelector />
+                            <MobileMenuButton />
+                        </>
+                    )}
                 </div>
             </div>
         </nav>
