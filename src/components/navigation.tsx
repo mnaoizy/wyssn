@@ -34,15 +34,6 @@ function LogoContent({ locale }: { locale: string }) {
     )
 }
 
-function LogoLoading() {
-    return (
-        <>
-            <Skeleton className="h-6 w-20" />
-            <Skeleton className="h-3 w-12 hidden sm:block" />
-        </>
-    )
-}
-
 function DesktopNavContent({ locale, t, isAuthenticated }: {
     locale: string;
     t: I18nClient;
@@ -69,16 +60,6 @@ function DesktopNavContent({ locale, t, isAuthenticated }: {
                 )}
             </div>
         </>
-    )
-}
-
-function DesktopNavLoading() {
-    return (
-        <div className="flex items-center space-x-4">
-            <Skeleton className="h-8 w-8 rounded-full" />
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-4 w-16" />
-        </div>
     )
 }
 
@@ -153,15 +134,6 @@ function MobileNavContent() {
     )
 }
 
-function MobileNavLoading() {
-    return (
-        <>
-            <Skeleton className="h-8 w-8 rounded-full" />
-            <Skeleton className="h-8 w-8 rounded-md" />
-        </>
-    )
-}
-
 export function Navigation({ locale }: NavigationProps) {
     const t = useI18n()
     const { isAuthenticated, isLoading } = useKindeBrowserClient()
@@ -171,7 +143,7 @@ export function Navigation({ locale }: NavigationProps) {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-2">
-                        {isLoading ? <LogoLoading /> : <LogoContent locale={locale} />}
+                        <LogoContent locale={locale} />
                     </div>
 
                     {/* Desktop Navigation */}
@@ -179,11 +151,7 @@ export function Navigation({ locale }: NavigationProps) {
                         className="hidden md:flex items-center justify-end space-x-4 flex-1"
                         data-testid="desktop-nav"
                     >
-                        {isLoading ? (
-                            <DesktopNavLoading />
-                        ) : (
-                            <DesktopNavContent locale={locale} t={t} isAuthenticated={isAuthenticated} />
-                        )}
+                        <DesktopNavContent locale={locale} t={t} isAuthenticated={isAuthenticated} />
                         {isLoading ? (
                             <AuthButtonsLoading />
                         ) : (
@@ -197,7 +165,7 @@ export function Navigation({ locale }: NavigationProps) {
                     className="flex md:hidden items-center space-x-4"
                     data-testid="mobile-nav"
                 >
-                    {isLoading ? <MobileNavLoading /> : <MobileNavContent />}
+                    <MobileNavContent />
                 </div>
             </div>
         </nav>
