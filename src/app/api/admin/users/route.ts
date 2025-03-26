@@ -23,14 +23,11 @@ export async function GET() {
                     }
                 }
             },
-            where: {
-                deletedAt: null
-            },
             orderBy: {
                 createdAt: 'desc'
             }
         })
-        // レスポンス用にデータを整形
+        // Format response data
         const formattedUsers = users.map(user => ({
             ...user,
             apiUsageCount: user._count.apiUsage,
@@ -47,6 +44,42 @@ export async function GET() {
         }
         return NextResponse.json(
             { error: 'Failed to fetch users' },
+            { status: 500 }
+        )
+    }
+}
+
+export async function PATCH(request: Request) {
+    try {
+        await checkAdminPermission()
+
+        const { userId, suspended } = await request.json()
+
+        if (!userId || typeof suspended !== 'boolean') {
+            return NextResponse.json(
+                { error: 'Invalid request body' },
+                { status: 400 }
+            )
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                deletedAt: suspended ? new Date() : null
+            }
+        })
+
+        return NextResponse.json(updatedUser)
+    } catch (error: unknown) {
+        console.error('Failed to update user:', error)
+        if (error instanceof Error && error.message === 'Admin permission required') {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            )
+        }
+        return NextResponse.json(
+            { error: 'Failed to update user' },
             { status: 500 }
         )
     }

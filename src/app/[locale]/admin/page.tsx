@@ -3,6 +3,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User } from "@prisma/client";
+import { UserDrawer } from "@/components/ui/user-drawer";
 import {
     Select,
     SelectContent,
@@ -42,6 +43,7 @@ interface UsageStats {
 export default function AdminPage() {
     const { isLoading, isAuthenticated, getPermission } = useKindeBrowserClient();
     const [users, setUsers] = useState<UserWithSubscriptionsUsage[]>([]);
+    const [editingUser, setEditingUser] = useState<UserWithSubscriptionsUsage | null>(null);
     const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedLocale, setSelectedLocale] = useState<string>("all");
@@ -122,178 +124,213 @@ export default function AdminPage() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
+        <>
+            <div className="container mx-auto p-4">
+                <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
 
-            <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="p-4 border-b">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-xl font-semibold">API Usage Statistics</h2>
+                <div className="space-y-6">
+                    <div className="bg-white rounded-lg shadow overflow-hidden">
+                        <div className="p-4 border-b">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-xl font-semibold">API Usage Statistics</h2>
 
-                            {!loading && usageStats && usageStats.allLocales && usageStats.allLocales.length > 0 && (
-                                <div className="w-48">
-                                    <Select
-                                        value={selectedLocale}
-                                        onValueChange={handleLocaleChange}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Filter by locale" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Locales</SelectItem>
-                                            {usageStats?.allLocales?.map(locale => (
-                                                <SelectItem key={locale} value={locale}>
-                                                    {locale}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                {!loading && usageStats && usageStats.allLocales && usageStats.allLocales.length > 0 && (
+                                    <div className="w-48">
+                                        <Select
+                                            value={selectedLocale}
+                                            onValueChange={handleLocaleChange}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Filter by locale" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Locales</SelectItem>
+                                                {usageStats?.allLocales?.map(locale => (
+                                                    <SelectItem key={locale} value={locale}>
+                                                        {locale}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="p-4">
+                            {loading ? (
+                                <div>Loading usage stats...</div>
+                            ) : (
+                                <div>
+                                    <div className="mb-4">
+                                        <h3 className="text-lg font-medium">
+                                            Total API Calls: {usageStats?.totalUsage || 0}
+                                            {selectedLocale !== "all" && (
+                                                <span className="text-sm text-gray-500 ml-2">
+                                                    (Filtered by: {selectedLocale})
+                                                </span>
+                                            )}
+                                        </h3>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="bg-white p-4 rounded-lg shadow">
+                                            <h3 className="text-lg font-medium mb-4">Summary Statistics</h3>
+                                            <div className="space-y-2">
+                                                <p>Total API Calls: {usageStats?.totalUsage || 0}</p>
+                                                <p>Total Unique Users: {usageStats?.totalUsers || 0}</p>
+                                                <p>Average Input Length: {
+                                                    typeof usageStats?.overallAvgInputLength === 'number'
+                                                        ? usageStats.overallAvgInputLength.toFixed(2)
+                                                        : '0.00'
+                                                } chars</p>
+
+                                                {/* ロケール別使用量表示（オプショナル） */}
+                                                {selectedLocale === "all" && usageStats?.localeStats && (
+                                                    <div className="mt-4">
+                                                        <h4 className="text-sm font-medium mb-2">Top Locales</h4>
+                                                        <div className="max-h-40 overflow-y-auto">
+                                                            <table className="min-w-full text-sm">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th className="text-left">Locale</th>
+                                                                        <th className="text-right">Usage</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {usageStats.localeStats.slice(0, 10).map(stat => (
+                                                                        <tr key={stat.locale}>
+                                                                            <td>{stat.locale}</td>
+                                                                            <td className="text-right">{stat.count}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-white p-4 rounded-lg shadow">
+                                            <h3 className="text-lg font-medium mb-4">Daily Statistics</h3>
+                                            <div className="overflow-x-auto">
+                                                <table className="min-w-full divide-y divide-gray-200">
+                                                    <thead className="bg-gray-50">
+                                                        <tr>
+                                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Calls</th>
+                                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unique Users</th>
+                                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Input</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="bg-white divide-y divide-gray-200">
+                                                        {usageStats?.dailyStats.length === 0 ? (
+                                                            <tr>
+                                                                <td colSpan={4} className="px-4 py-4 text-center text-sm text-gray-500">
+                                                                    No data available for the selected locale.
+                                                                </td>
+                                                            </tr>
+                                                        ) : (
+                                                            usageStats?.dailyStats.map((day) => (
+                                                                <tr key={day.date}>
+                                                                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                                        {new Date(day.date).toLocaleDateString()}
+                                                                    </td>
+                                                                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                                        {day.count}
+                                                                    </td>
+                                                                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                                        {day.uniqueUsers}
+                                                                    </td>
+                                                                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                                        {typeof day.avgInputLength === 'number'
+                                                                            ? day.avgInputLength.toFixed(2)
+                                                                            : '0.00'}
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        )}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
-                    <div className="p-4">
+
+                    <div className="bg-white rounded-lg shadow overflow-hidden">
+                        <div className="p-4 border-b">
+                            <h2 className="text-xl font-semibold">User Management</h2>
+                        </div>
                         {loading ? (
-                            <div>Loading usage stats...</div>
+                            <div className="p-4">Loading users...</div>
                         ) : (
-                            <div>
-                                <div className="mb-4">
-                                    <h3 className="text-lg font-medium">
-                                        Total API Calls: {usageStats?.totalUsage || 0}
-                                        {selectedLocale !== "all" && (
-                                            <span className="text-sm text-gray-500 ml-2">
-                                                (Filtered by: {selectedLocale})
-                                            </span>
-                                        )}
-                                    </h3>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="bg-white p-4 rounded-lg shadow">
-                                        <h3 className="text-lg font-medium mb-4">Summary Statistics</h3>
-                                        <div className="space-y-2">
-                                            <p>Total API Calls: {usageStats?.totalUsage || 0}</p>
-                                            <p>Total Unique Users: {usageStats?.totalUsers || 0}</p>
-                                            <p>Average Input Length: {
-                                                typeof usageStats?.overallAvgInputLength === 'number'
-                                                    ? usageStats.overallAvgInputLength.toFixed(2)
-                                                    : '0.00'
-                                            } chars</p>
-
-                                            {/* ロケール別使用量表示（オプショナル） */}
-                                            {selectedLocale === "all" && usageStats?.localeStats && (
-                                                <div className="mt-4">
-                                                    <h4 className="text-sm font-medium mb-2">Top Locales</h4>
-                                                    <div className="max-h-40 overflow-y-auto">
-                                                        <table className="min-w-full text-sm">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th className="text-left">Locale</th>
-                                                                    <th className="text-right">Usage</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {usageStats.localeStats.slice(0, 10).map(stat => (
-                                                                    <tr key={stat.locale}>
-                                                                        <td>{stat.locale}</td>
-                                                                        <td className="text-right">{stat.count}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-white p-4 rounded-lg shadow">
-                                        <h3 className="text-lg font-medium mb-4">Daily Statistics</h3>
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full divide-y divide-gray-200">
-                                                <thead className="bg-gray-50">
-                                                    <tr>
-                                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Calls</th>
-                                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unique Users</th>
-                                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Input</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="bg-white divide-y divide-gray-200">
-                                                    {usageStats?.dailyStats.length === 0 ? (
-                                                        <tr>
-                                                            <td colSpan={4} className="px-4 py-4 text-center text-sm text-gray-500">
-                                                                No data available for the selected locale.
-                                                            </td>
-                                                        </tr>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscription</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {users.map((user) => (
+                                            <tr key={user.id} className={user.deletedAt ? "opacity-70" : ""}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                    {user.deletedAt ? (
+                                                        <span className="line-through">{user.name}</span>
                                                     ) : (
-                                                        usageStats?.dailyStats.map((day) => (
-                                                            <tr key={day.date}>
-                                                                <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                                    {new Date(day.date).toLocaleDateString()}
-                                                                </td>
-                                                                <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                                    {day.count}
-                                                                </td>
-                                                                <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                                    {day.uniqueUsers}
-                                                                </td>
-                                                                <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                                    {typeof day.avgInputLength === 'number'
-                                                                        ? day.avgInputLength.toFixed(2)
-                                                                        : '0.00'}
-                                                                </td>
-                                                            </tr>
-                                                        ))
+                                                        user.name
                                                     )}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {user.deletedAt ? (
+                                                        <span className="line-through">{user.email}</span>
+                                                    ) : (
+                                                        user.email
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {user.apiUsageCount}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {getSubscriptionStatus(user)}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {new Date(user.createdAt).toLocaleDateString()}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    <button
+                                                        onClick={() => setEditingUser(user)}
+                                                        className="text-blue-600 hover:text-blue-800"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
                     </div>
                 </div>
-
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="p-4 border-b">
-                        <h2 className="text-xl font-semibold">User Management</h2>
-                    </div>
-                    {loading ? (
-                        <div className="p-4">Loading users...</div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscription</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {users.map((user) => (
-                                        <tr key={user.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.apiUsageCount}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {getSubscriptionStatus(user)}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {new Date(user.createdAt).toLocaleDateString()}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
             </div>
-        </div>
+
+            <UserDrawer
+                user={editingUser!}
+                open={!!editingUser}
+                onOpenChange={(open) => !open && setEditingUser(null)}
+                onUserUpdated={() => {
+                    fetchUsers();
+                    setEditingUser(null);
+                }}
+            />
+        </>
     );
 }

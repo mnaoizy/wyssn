@@ -124,11 +124,12 @@ export async function POST(req: Request) {
             );
         }
 
-        // サブスクリプション確認
+        // Check user status and subscription
         const dbUser = await db.user.findUnique({
             where: { kindeId: user.id },
             select: {
                 id: true,
+                deletedAt: true,
                 subscriptions: {
                     select: { status: true }
                 },
@@ -142,6 +143,15 @@ export async function POST(req: Request) {
             );
         }
 
+        // Check if user is suspended
+        if (dbUser.deletedAt) {
+            return NextResponse.json(
+                { error: 'Forbidden', details: 'Your account has been suspended' },
+                { status: 403 }
+            );
+        }
+
+        // Check subscription status
         const subscribed = dbUser.subscriptions.some(
             subscription => ['active', 'trialing'].includes(subscription.status)
         );
