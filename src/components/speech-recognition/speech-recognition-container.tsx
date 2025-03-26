@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { conversationSuggestionSchema } from '@/types/shared-types'
 import { useSuggestions } from '@/hooks/use-suggestions'
 import { ClientSuggestion } from '@/types/suggestions'
-import { Spinner } from '@/components/spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 // Import our new components
 import { RecognitionStatus } from './recognition-status'
@@ -60,11 +60,11 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   // References for submission functionality
   const submitRef = useRef<
     | ((data: {
-        message: string
-        translationLanguage?: string | null
-        locale: Locale
-        context?: string
-      }) => void)
+      message: string
+      translationLanguage?: string | null
+      locale: Locale
+      context?: string
+    }) => void)
     | undefined
   >(undefined)
   const resetHiddenRef = useRef<(() => void) | undefined>(undefined)
@@ -319,8 +319,23 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               />
             </div>
           ) : (
-            <div className="flex justify-center items-center h-32">
-              <Spinner />
+            <div className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div className="flex gap-2">
+                  <Skeleton className="h-9 w-24" />
+                  <Skeleton className="h-9 w-24" />
+                </div>
+                <Skeleton className="h-10 w-10 rounded-full" />
+              </div>
+
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-48" />
+                <div className="h-32 rounded-md border p-4">
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              </div>
             </div>
           )}
         </div>

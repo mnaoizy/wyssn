@@ -97,21 +97,21 @@ export function AddContext() {
               )}
               <Textarea
                 ref={textareaRef}
-                className="h-full w-full resize-none bg-transparent px-3 py-2 text-sm outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
+                className="h-full w-full resize-none bg-transparent px-3 py-2 text-base outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
                 onChange={handleChange}
                 value={note}
                 placeholder=""
-                // autoFocusを追加
                 autoFocus
-                // カーソル表示のための追加スタイル
                 style={{
                   fontSize: '16px',
                   overflowWrap: 'break-word',
                   wordWrap: 'break-word',
                   wordBreak: 'break-word',
                   WebkitTextFillColor: 'currentcolor',
+                  WebkitFontSmoothing: 'antialiased',
+                  textRendering: 'optimizeLegibility',
                   imeMode: 'active',
-                  caretColor: 'auto', // カーソル色を明示的に設定
+                  caretColor: 'auto',
                 }}
               />
             </div>
