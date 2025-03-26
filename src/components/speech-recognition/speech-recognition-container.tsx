@@ -271,9 +271,15 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
 
           {mounted ? (
             <div
-              className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8"
+              className={cn(
+                "w-full max-w-full p-1 md:p-4 border rounded-lg mb-8 transition-shadow",
+                isListening
+                  ? "border-gray-300 shadow-[0_4px_30px_rgba(0,0,0,0.12)] bg-white"
+                  : "border-gray-200 shadow-[0_4px_30px_rgba(0,0,0,0.08)] bg-white"
+              )}
               data-testid="speech-recognition-container"
             >
+
               {/* Control Panel */}
               <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <ControlPanel

@@ -1,5 +1,5 @@
 import { ConversationRequest, conversationRequestSchema, conversationSuggestionSchema } from '@/types/shared-types';
-import { createGroq } from '@ai-sdk/groq';
+import { google } from '@ai-sdk/google';
 import { streamObject, DeepPartial } from 'ai';
 import { defaultLocale, locales, Locale } from '@/locale/config';
 import { NextResponse, after } from 'next/server';
@@ -8,13 +8,9 @@ import { db } from '@/lib/prisma-client';
 import { AISDKExporter } from 'langsmith/vercel';
 import { generateSubstantivePrompt } from './lib/prompts';
 
-const groq = createGroq({
-    apiKey: process.env.GROQ_API_KEY,
-
-})
 
 // Function-calling用に明示的に定義
-const model = groq('mistral-saba-24b');
+const model = google("gemini-2.0-flash-lite-preview-02-05")
 // 生成中の部分的なデータ型
 export type PartialConversationSuggestion = DeepPartial<typeof conversationSuggestionSchema>
 
