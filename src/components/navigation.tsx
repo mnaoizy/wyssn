@@ -1,7 +1,6 @@
 'use client'
 
-import { useI18n } from '@/locale/client'
-type I18nClient = ReturnType<typeof useI18n>
+import { I18nClient, useI18n } from '@/locale/client'
 import { Skeleton } from '@/components/ui/skeleton'
 import { LanguageSelector } from '@/components/language-selector'
 import {

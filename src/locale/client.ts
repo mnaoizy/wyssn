@@ -8,3 +8,5 @@ export const {
     useChangeLocale,
     useCurrentLocale
 } = createI18nClient(messagesImport)
+
+export type I18nClient = ReturnType<typeof useI18n>
