@@ -101,7 +101,7 @@ export default {
     },
     features: {
       core_features: 'Усі основні функції включено',
-      requests_free_daily: 'Обмежено до 50 запитів на день',
+      requests_free_daily: 'Обмежено до100запитів на день',
       requests_free_monthly: 'Обмежено до 500 запитів на місяць',
       standard_support: 'Стандартна підтримка',
       requests_pro_daily: 'Обмежено до 500 запитів на день',

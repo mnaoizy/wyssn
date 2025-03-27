@@ -123,7 +123,7 @@ export default {
     },
     features: {
       core_features: 'All core features included',
-      requests_free_daily: 'Limited to 50 requests per day',
+      requests_free_daily: 'Limited to100requests per day',
       requests_free_monthly: 'Limited to 500 requests per month',
       standard_support: 'Standard support',
       requests_pro_daily: 'Limited to 500 requests per day',

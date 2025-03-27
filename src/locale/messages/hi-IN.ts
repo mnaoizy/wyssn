@@ -111,7 +111,7 @@ export default {
     },
     features: {
       core_features: 'सभी मुख्य सुविधाएं शामिल हैं',
-      requests_free_daily: 'प्रति दिन 50 अनुरोधों तक सीमित',
+      requests_free_daily: 'प्रति दिन100अनुरोधों तक सीमित',
       requests_free_monthly: 'प्रति माह 500 अनुरोधों तक सीमित',
       standard_support: 'मानक सहायता',
       requests_pro_daily: 'प्रति दिन 500 अनुरोधों तक सीमित',

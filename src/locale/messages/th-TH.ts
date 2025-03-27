@@ -109,7 +109,7 @@ export default {
     },
     features: {
       core_features: 'รวมคุณสมบัติหลักทั้งหมด',
-      requests_free_daily: 'จำกัดที่ 50 คำขอต่อวัน',
+      requests_free_daily: 'จำกัดที่100คำขอต่อวัน',
       requests_free_monthly: 'จำกัดที่ 500 คำขอต่อเดือน',
       standard_support: 'การสนับสนุนมาตรฐาน',
       requests_pro_daily: 'จำกัดที่ 500 คำขอต่อวัน',

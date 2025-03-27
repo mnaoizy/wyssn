@@ -112,7 +112,7 @@ export default {
     },
     features: {
       core_features: 'Bao gồm tất cả các tính năng cốt lõi',
-      requests_free_daily: 'Giới hạn 50 yêu cầu mỗi ngày',
+      requests_free_daily: 'Giới hạn100yêu cầu mỗi ngày',
       requests_free_monthly: 'Giới hạn 500 yêu cầu mỗi tháng',
       standard_support: 'Hỗ trợ tiêu chuẩn',
       requests_pro_daily: 'Giới hạn 500 yêu cầu mỗi ngày',

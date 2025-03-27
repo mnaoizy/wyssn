@@ -113,7 +113,7 @@ export default {
     },
     features: {
       core_features: 'Alle Kernfunktionen inbegriffen',
-      requests_free_daily: 'Begrenzt auf 50 Anfragen pro Tag',
+      requests_free_daily: 'Begrenzt auf100Anfragen pro Tag',
       requests_free_monthly: 'Begrenzt auf 500 Anfragen pro Monat',
       standard_support: 'Standard-Support',
       requests_pro_daily: 'Begrenzt auf 500 Anfragen pro Tag',

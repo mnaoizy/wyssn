@@ -100,7 +100,7 @@ export default {
     },
     features: {
       core_features: 'Tutte le funzionalità principali incluse',
-      requests_free_daily: 'Limitato a 50 richieste al giorno',
+      requests_free_daily: 'Limitato a100richieste al giorno',
       requests_free_monthly: 'Limitato a 500 richieste al mese',
       standard_support: 'Supporto standard',
       requests_pro_daily: 'Limitato a 500 richieste al giorno',
