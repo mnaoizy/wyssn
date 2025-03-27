@@ -12,6 +12,21 @@ export default function Loading() {
       </div>
 
       <div className="space-y-8">
+
+        <section>
+          <Skeleton className="h-7 w-32 mb-3" />
+          <div className="rounded-md border border-gray-200 p-5 bg-white shadow-sm">
+            <div className="mb-3">
+              <Skeleton className="h-4 w-20 mb-1" />
+              <Skeleton className="h-5 w-48" />
+            </div>
+            <div>
+              <Skeleton className="h-4 w-20 mb-1" />
+              <Skeleton className="h-5 w-64" />
+            </div>
+          </div>
+        </section>
+
         <section>
           <Skeleton className="h-7 w-32 mb-3" />
           <div className="rounded-md border border-gray-200 p-5 bg-white shadow-sm">
