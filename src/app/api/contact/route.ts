@@ -1,8 +1,26 @@
 import { NextResponse } from 'next/server'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { db as prisma } from '@/lib/prisma-client'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+
+const ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(1, '1 m'),
+})
 
 export async function POST(request: Request) {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1'
+    console.log('Contact form request from IP:', ip)
+    const { success } = await ratelimit.limit(ip)
+
+    if (!success) {
+        return NextResponse.json(
+            { error: 'Too many requests. Please try again later.' },
+            { status: 429 }
+        )
+    }
+
     const { getUser } = getKindeServerSession()
     const user = await getUser()
     const { email, subject, message } = await request.json()

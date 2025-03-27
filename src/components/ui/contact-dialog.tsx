@@ -40,16 +40,17 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
                 body: JSON.stringify(formData),
             })
 
-            if (response.ok) {
-                setOpen(false)
-                setFormData({ email: user?.email || '', subject: '', message: '' })
-                toast.success('Message sent successfully!')
-            } else {
-                throw new Error('Failed to send message')
+            if (!response.ok) {
+                const errorData = await response.json()
+                throw new Error(errorData.error || 'Failed to send message')
             }
+
+            setOpen(false)
+            setFormData({ email: user?.email || '', subject: '', message: '' })
+            toast.success('Message sent successfully!')
         } catch (error) {
             console.error('Submission error:', error)
-            toast.error('Failed to send message. Please try again.')
+            toast.error(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
         } finally {
             setIsSubmitting(false)
         }

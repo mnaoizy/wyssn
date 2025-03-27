@@ -6,6 +6,7 @@ import { NextResponse, after } from 'next/server';
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from '@/lib/prisma-client';
 import { Redis } from '@upstash/redis';
+import { Ratelimit } from '@upstash/ratelimit';
 import { AISDKExporter } from 'langsmith/vercel';
 import { generateSubstantivePrompt } from './lib/prompts';
 
@@ -71,30 +72,19 @@ export async function POST(req: Request) {
             );
         }
 
-        // Initialize Redis client
-        const redis = Redis.fromEnv();
-
         // Rate limiting - 100 requests per day per user
-        const rateLimitKey = `rate_limit:${dbUser.id}`;
+        const ratelimit = new Ratelimit({
+            redis: Redis.fromEnv(),
+            limiter: Ratelimit.slidingWindow(100, '1 d'),
+        });
 
-        try {
-            // Use pipeline for atomic operations
-            const pipeline = redis.pipeline();
-            pipeline.incr(rateLimitKey);
-            pipeline.expire(rateLimitKey, 86400, 'NX'); // Only set expire if key doesn't have one
-            const results = await pipeline.exec();
+        const { success } = await ratelimit.limit(`user_${dbUser.id}`);
 
-            const current = results?.[0] as number || 1; // Default to 1 if results unavailable
-
-            if (current > 100) {
-                return NextResponse.json(
-                    { error: 'Rate limit exceeded', details: 'Too many requests' },
-                    { status: 429 }
-                );
-            }
-        } catch (error) {
-            console.error('Redis error:', error);
-            // Allow request to proceed if Redis fails
+        if (!success) {
+            return NextResponse.json(
+                { error: 'Rate limit exceeded', details: 'Too many requests (max 100 per day)' },
+                { status: 429 }
+            );
         }
 
         // リクエストボディを取得してバリデーション
