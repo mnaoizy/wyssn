@@ -23,7 +23,7 @@ function LogoContent({ locale }: { locale: string }) {
         <>
             <Link
                 href={`/${locale}`}
-                className="font-serif text-lg font-semibold tracking-tighter select-none uppercase"
+                className="font-serif text-base sm:text-lg font-semibold tracking-tighter select-none uppercase truncate"
             >
                 Wyssn
             </Link>
@@ -140,9 +140,9 @@ export function Navigation({ locale }: NavigationProps) {
 
     return (
         <nav className="border-b border-neutral-200">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl">
-                <div className="flex justify-between items-center h-16">
-                    <div className="flex items-center gap-2">
+            <div className="w-full max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl flex flex-row">
+                <div className="flex justify-between items-center h-12 sm:h-16 px-2 sm:px-0 w-full">
+                    <div className="flex items-center gap-1 min-w-0">
                         <LogoContent locale={locale} />
                     </div>
 
@@ -162,7 +162,7 @@ export function Navigation({ locale }: NavigationProps) {
 
                 {/* Mobile Navigation */}
                 <div
-                    className="flex md:hidden items-center space-x-4"
+                    className="flex md:hidden items-center space-x-2 ml-2"
                     data-testid="mobile-nav"
                 >
                     <MobileNavContent />

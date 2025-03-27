@@ -3,7 +3,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { X } from 'lucide-react'
+import { XIcon } from 'lucide-react'
 import { useCurrentLocale, useI18n } from '@/locale/client'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import { AdminLink } from './admin-link'
@@ -12,6 +12,7 @@ import {
   LogoutLink,
   RegisterLink,
 } from '@kinde-oss/kinde-auth-nextjs/components'
+import { Button } from '@/components/ui/button'
 
 type MobileNavigationContextType = {
   isOpen: boolean
@@ -104,13 +105,15 @@ export function MobileNavigationPanel() {
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-serif font-semibold uppercase">Wyssn</h2>
-          <button
+          <Button
             aria-label="Close menu"
-            className="p-2 rounded-md hover:bg-gray-100"
             onClick={closeMenu}
+            variant="ghost"
+            size="icon"
+            className='rounded-full'
           >
-            <X size={24} />
-          </button>
+            <XIcon className="size-6" />
+          </Button>
         </div>
 
         <nav className="flex-1">
@@ -119,8 +122,8 @@ export function MobileNavigationPanel() {
               <Link
                 href={`/${locale}`}
                 className={`block py-2 px-4 rounded-md ${pathname === `/${locale}`
-                    ? 'bg-gray-100 font-medium'
-                    : 'hover:bg-gray-50'
+                  ? 'bg-gray-100 font-medium'
+                  : 'hover:bg-gray-50'
                   }`}
               >
                 Home
@@ -138,8 +141,8 @@ export function MobileNavigationPanel() {
               <Link
                 href={`/${locale}/changelog`}
                 className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/changelog`
-                    ? 'bg-gray-100 font-medium'
-                    : 'hover:bg-gray-50'
+                  ? 'bg-gray-100 font-medium'
+                  : 'hover:bg-gray-50'
                   }`}
               >
                 {t('nav.changelog')}
@@ -149,8 +152,8 @@ export function MobileNavigationPanel() {
               <Link
                 href={`/${locale}/pricing`}
                 className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/pricing`
-                    ? 'bg-gray-100 font-medium'
-                    : 'hover:bg-gray-50'
+                  ? 'bg-gray-100 font-medium'
+                  : 'hover:bg-gray-50'
                   }`}
               >
                 {t('nav.pricing')}
@@ -163,8 +166,8 @@ export function MobileNavigationPanel() {
                   <Link
                     href={`/${locale}/account`}
                     className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/account`
-                        ? 'bg-gray-100 font-medium'
-                        : 'hover:bg-gray-50'
+                      ? 'bg-gray-100 font-medium'
+                      : 'hover:bg-gray-50'
                       }`}
                   >
                     {t('nav.account')}
