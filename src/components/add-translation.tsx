@@ -51,8 +51,8 @@ export function AddTranslation({
           value={selectedLanguage || ''}
           onValueChange={(value) => handleLanguageChange(value as Locale)}
         >
-          <SelectTrigger>
-            <div className="flex items-center">
+          <SelectTrigger className='bg-white'>
+            <div className="flex items-center" >
               <LanguagesIcon className="h-4 w-4 mr-2" />
               <SelectValue placeholder={t('main.translation')} />
             </div>

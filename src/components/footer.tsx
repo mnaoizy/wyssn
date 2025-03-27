@@ -2,6 +2,7 @@
 
 import { useI18n } from '@/locale/client'
 import Link from 'next/link'
+import { ContactDialog } from '@/components/ui/contact-dialog'
 
 interface FooterProps {
     locale: string
@@ -40,7 +41,11 @@ export function Footer({ locale }: FooterProps) {
                                 特定商取引法に基づく表記
                             </Link>
                         )}
-                        <span className="cursor-default">{t('footer.contact')}</span>
+                        <ContactDialog>
+                            <span className="hover:text-neutral-500 transition-colors cursor-pointer">
+                                {t('footer.contact')}
+                            </span>
+                        </ContactDialog>
                         <Link
                             href={`/${locale}/changelog`}
                             className="hover:text-neutral-500 transition-colors"

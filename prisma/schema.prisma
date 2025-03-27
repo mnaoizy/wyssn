@@ -19,6 +19,7 @@ model User {
 
   subscriptions Subscription[]
   apiUsage      ApiUsage[]
+  Contact       Contact[]
 
   @@map("users")
 }
@@ -79,4 +80,18 @@ model ApiUsage {
   @@index([userId])
   @@index([createdAt])
   @@map("api_usage")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("contacts")
 }
