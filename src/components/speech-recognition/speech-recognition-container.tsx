@@ -64,6 +64,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
       translationLanguage?: string | null
       locale: Locale
       context?: string
+      utteranceHistory?: Array<string>
     }) => void)
     | undefined
   >(undefined)
@@ -173,6 +174,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                 translationLanguage: translationLanguage,
                 locale: currentLocale,
                 context: contextValue || undefined,
+                utteranceHistory: contextUtterances.filter(u => u.isFinal).map(u => u.text)
               })
 
               // Reset the counter after submission

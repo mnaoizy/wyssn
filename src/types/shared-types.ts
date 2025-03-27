@@ -2,12 +2,11 @@ import { z } from 'zod';
 
 // リクエストスキーマの定義
 export const conversationRequestSchema = z.object({
-    message: z.string(),
+    utteranceHistory: z.array(z.string()),
     context: z.string().nullish(),
     translationLanguage: z.string().nullish(),
     locale: z.string().nullish(),
-    detailLevel: z.enum(['brief', 'standard', 'detailed']).optional(),
-
+    detailLevel: z.enum(['brief', 'standard', 'detailed']).optional()
 });
 
 // レスポンススキーマ（すでに持っているものを再利用）

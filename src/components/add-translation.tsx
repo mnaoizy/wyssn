@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePersistentState } from '@/hooks/use-persistent-state'
-import { useI18n } from '@/locale/client'
+import { useCurrentLocale, useI18n } from '@/locale/client'
 import { LanguagesIcon, XIcon } from 'lucide-react'
 import {
   Select,
@@ -26,6 +26,7 @@ export function AddTranslation({
   const [selectedLanguage, setSelectedLanguage] = usePersistentState<Locale | null>("wyssn-translation-language", null)
   const [showRemoveButton, setShowRemoveButton] = useState(false)
   const t = useI18n()
+  const locale = useCurrentLocale()
 
   // Notify parent of persisted language on component mount and when language changes
   useEffect(() => {
@@ -57,11 +58,13 @@ export function AddTranslation({
             </div>
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(SUPPORTED_LOCALES).map(([code, name]) => (
-              <SelectItem key={code} value={code}>
-                {name}
-              </SelectItem>
-            ))}
+            {Object.entries(SUPPORTED_LOCALES)
+              .filter(([code]) => code !== locale)
+              .map(([code, name]) => (
+                <SelectItem key={code} value={code}>
+                  {name}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
 
