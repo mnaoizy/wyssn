@@ -10,6 +10,7 @@ import { useI18n } from "@/locale/client";
 interface PlansProps {
     userSubscription?: Subscription & { usageCount?: number } | null;
     subscriptionManagementUrl: string | null;
+    showHeading?: boolean;
 }
 
 interface PriceDetails {
@@ -40,7 +41,7 @@ function formatCurrency(amount: number | null, currency: string, locale: string)
     }).format(value);
 }
 
-export function PlansSection({ userSubscription, subscriptionManagementUrl }: PlansProps) {
+export function PlansSection({ userSubscription, subscriptionManagementUrl, showHeading = true }: PlansProps) {
     const params = useParams();
     const router = useRouter();
     const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale || 'en-US';
@@ -154,14 +155,16 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl }: Pl
 
     return (
         <div>
-            <div className="text-center mb-6">
-                <h3 className="text-xl font-bold tracking-tight sm:text-2xl">
-                    {t("plans.heading")}
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                    {t("plans.subheading")}
-                </p>
-            </div>
+            {showHeading && (
+                <div className="text-center mb-6">
+                    <h3 className="text-xl font-bold tracking-tight sm:text-2xl">
+                        {t("plans.heading")}
+                    </h3>
+                    <p className="mt-2 text-muted-foreground">
+                        {t("plans.subheading")}
+                    </p>
+                </div>
+            )}
             <div className="grid gap-4 md:grid-cols-3">
                 {/* Free Plan */}
                 <SubscriptionPlanCard
