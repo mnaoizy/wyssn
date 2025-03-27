@@ -74,6 +74,10 @@ export default {
     error_portal_failed:
       'Failed to access the billing portal. Please try again later.',
     error_generic: 'An error occurred. Please try again.',
+    usage: 'Usage',
+    today_usage: "Today's Usage",
+    total_usage: 'Total Usage',
+    reset_time: 'Reset Time',
     current_usage: 'Current usage: {count} / {limit} requests this month',
     subscription_renewal: 'Your subscription will {action} on {date}',
     subscription_renew: 'renew',

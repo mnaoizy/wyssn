@@ -7,6 +7,7 @@ import { getI18n } from "@/locale/server";
 import Link from "next/link";
 import { stripe } from "@/lib/stripe";
 import { buttonVariants } from "@/components/ui/button";
+import { Redis } from '@upstash/redis';
 
 type SearchParamsType = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -39,24 +40,26 @@ export default async function AccountPage({
     const showError = error !== undefined;
     const errorType = error as string;
 
-    // Initialize with null subscription and portal URL
+    // Initialize variables
     let userSubscription = null;
     let portalSessionUrl = null;
+    let dbUserId: string | null = null;
 
     try {
         // First try to get the user without including subscriptions
         // This can help avoid complex join issues
-        const userBasic = await db.user.findUnique({
+        const userData = await db.user.findUnique({
             where: { kindeId: user.id },
             select: { id: true, stripeCustomerId: true },
         });
 
-        if (userBasic) {
+        if (userData) {
+            dbUserId = userData.id;
             // If we can get the basic user, then try to get subscription details
             try {
                 // Using a separate query for subscriptions can help avoid statement preparation issues
                 const userSubs = await db.subscription.findMany({
-                    where: { userId: userBasic.id },
+                    where: { userId: userData.id },
                     orderBy: { createdAt: "desc" },
                     take: 1
                 });
@@ -64,9 +67,9 @@ export default async function AccountPage({
                 userSubscription = userSubs[0] || null;
 
                 // Create customer portal session
-                if (userBasic.stripeCustomerId) {
+                if (userData.stripeCustomerId) {
                     const portalSession = await stripe.billingPortal.sessions.create({
-                        customer: userBasic.stripeCustomerId,
+                        customer: userData.stripeCustomerId,
                         return_url: `${process.env.NEXT_PUBLIC_APP_URL}/account`,
                     });
 
@@ -83,6 +86,20 @@ export default async function AccountPage({
         console.error("Error fetching user data:", error);
         // Continue with null subscription - we'll show the free plan
     }
+
+    // Get usage data
+    const redis = Redis.fromEnv();
+    const currentUsage = dbUserId ? await redis.get<number>(`rate_limit:${dbUserId}`).catch(() => 0) : 0;
+    const ttl = dbUserId ? await redis.ttl(`rate_limit:${dbUserId}`).catch(() => 0) : 0;
+
+    // Get total API usage count
+    const totalUsage = dbUserId ? await db.apiUsage.count({
+        where: { userId: dbUserId }
+    }) : 0;
+
+    // Calculate reset time (current time + TTL seconds)
+    const resetTime = new Date();
+    resetTime.setSeconds(resetTime.getSeconds() + ttl);
 
     return (
         <div className="container max-w-5xl mx-auto py-10 px-4 sm:px-6">
@@ -145,6 +162,25 @@ export default async function AccountPage({
                     <Suspense fallback={<div className="flex justify-center py-8">{t("account.loading")}</div>}>
                         <PlansSection userSubscription={userSubscription} subscriptionManagementUrl={portalSessionUrl} />
                     </Suspense>
+                </section>
+                <section>
+                    <h2 className="text-xl font-semibold mb-3">{t("account.usage")}</h2>
+                    <div className="rounded-md border border-gray-200 p-5 bg-white shadow-sm">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <div className="font-medium text-sm text-gray-500">{t("account.today_usage")}</div>
+                                <div>{currentUsage || 0} / 100</div>
+                            </div>
+                            <div>
+                                <div className="font-medium text-sm text-gray-500">{t("account.total_usage")}</div>
+                                <div>{totalUsage}</div>
+                            </div>
+                            <div className="col-span-2">
+                                <div className="font-medium text-sm text-gray-500">{t("account.reset_time")}</div>
+                                <div>{resetTime.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </div>
         </div>
