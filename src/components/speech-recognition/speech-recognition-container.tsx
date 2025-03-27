@@ -107,6 +107,9 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     isLoadingRef.current = isLoading
   }, [submit, resetHidden, isLoading])
 
+  // Track if we've ever been in listening state
+  const [hasEverListened, setHasEverListened] = useState(false)
+
   const {
     isListening,
     error,
@@ -196,6 +199,13 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     }
   }, [interimTranscript])
 
+  // Track if we've ever been in listening state
+  useEffect(() => {
+    if (isListening) {
+      setHasEverListened(true)
+    }
+  }, [isListening])
+
   // Auxiliary useEffect to reflect the hook's utterance history in the context
   useEffect(() => {
     if (speechUtterances.length > 0) {
@@ -214,9 +224,6 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   const finalUtterances = contextUtterances
     .filter((u) => u.isFinal)
     .sort((a, b) => a.timestamp - b.timestamp) // Sort by timestamp in ascending order
-
-  // Check if utterances exist
-  const hasUtterances = contextUtterances.length > 0
 
   // Helper function to handle interval changes
   const handleUtteranceIntervalChange = (interval: number) => {
@@ -247,7 +254,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
             <div
               className={cn(
                 'transition-all duration-1200 ease-custom h-auto',
-                hasUtterances
+                hasEverListened
                   ? '-mt-4 md:-mt-8'
                   : 'mt-4 md:mt-8 lg:mt-8 xl:mt-16'
               )}
@@ -256,7 +263,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               <div
                 className={cn(
                   'transform transition-transform duration-1000 ease-custom origin-center',
-                  hasUtterances ? 'scale-80' : 'scale-100'
+                  hasEverListened ? 'scale-80' : 'scale-100'
                 )}
               >
                 <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-neutral-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight">
