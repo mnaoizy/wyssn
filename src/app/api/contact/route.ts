@@ -52,11 +52,59 @@ export async function POST(request: Request) {
             },
         })
 
-        // Send to Slack
+        // Send to Slack with rich formatting
         const slackWebhookUrl = process.env.SLACK_CONTACT_WEBHOOK_URL
         if (slackWebhookUrl) {
             const payload = {
-                text: `New contact form submission\n\n*From:* ${email}${dbUser ? ` (DB User ID: ${dbUser.id})` : ''}\n*Subject:* ${subject}\n*Message:* ${message}`,
+                blocks: [
+                    {
+                        type: "header",
+                        text: {
+                            type: "plain_text",
+                            text: "📬 New Contact Form Submission",
+                            emoji: true
+                        }
+                    },
+                    {
+                        type: "section",
+                        fields: [
+                            {
+                                type: "mrkdwn",
+                                text: `*From:*\n${email}`
+                            },
+                            {
+                                type: "mrkdwn",
+                                text: `*Status:*\n${dbUser ? "Logged in user" : "Guest user"}`
+                            }
+                        ]
+                    },
+                    {
+                        type: "section",
+                        fields: [
+                            {
+                                type: "mrkdwn",
+                                text: `*Subject:*\n${subject}`
+                            },
+                            dbUser ? {
+                                type: "mrkdwn",
+                                text: `*User ID:*\n${dbUser.id}`
+                            } : {
+                                type: "mrkdwn",
+                                text: "*User ID:*\nNot available"
+                            }
+                        ]
+                    },
+                    {
+                        type: "divider"
+                    },
+                    {
+                        type: "section",
+                        text: {
+                            type: "mrkdwn",
+                            text: `*Message:*\n\`\`\`${message}\`\`\``
+                        }
+                    }
+                ]
             }
 
             await fetch(slackWebhookUrl, {
