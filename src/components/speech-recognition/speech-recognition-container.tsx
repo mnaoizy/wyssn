@@ -251,7 +251,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     <main className="flex-grow flex flex-col">
       {/* Hero Section */}
       <section className="flex-grow flex justify-center items-start py-8 sm:py-10 md:py-12 lg:py-16">
-        <div className="w-full max-w-5xl mx-auto px-2 sm:px-3 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center min-w-sm relative">
+        <div className="w-full max-w-5xl mx-auto px-2 sm:px-3 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center min-w-xs relative">
           {/* Add wrapper container with fixed height */}
           {heroTitle && heroDescription && (
             <div
@@ -279,7 +279,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                   {heroDescription}
                 </p>
               </div>
-              <div className="absolute -top-6 -left-8 sm:-top-8 sm:-left-12 md:-top-10 md:-left-14 lg:-top-12 lg:-left-16 -z-1 w-[150px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[250px]">
+              <div className="absolute -top-6 -left-4 sm:-top-8 md:-top-10 lg:-top-12 -z-1 w-[150px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[250px]">
                 <Image
                   src="/hero.png"
                   alt="Hero"
