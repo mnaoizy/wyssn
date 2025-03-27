@@ -12,7 +12,7 @@ export function AdminLink() {
 
     return (
         <Link href="/admin" className="text-sm font-medium hover:underline">
-            Admin Panel
+            Admin
         </Link>
     );
 }
