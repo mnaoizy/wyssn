@@ -5,6 +5,7 @@ import { defaultLocale, locales, Locale } from '@/locale/config';
 import { NextResponse, after } from 'next/server';
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { db } from '@/lib/prisma-client';
+import { Redis } from '@upstash/redis';
 import { AISDKExporter } from 'langsmith/vercel';
 import { generateSubstantivePrompt } from './lib/prompts';
 
@@ -157,6 +158,32 @@ export async function POST(req: Request) {
                 { error: 'Unauthorized', details: 'You must be subscribed to access this resource' },
                 { status: 401 }
             );
+        }
+
+        // Initialize Redis client
+        const redis = Redis.fromEnv();
+
+        // Rate limiting - 100 requests per day per user
+        const rateLimitKey = `rate_limit:${dbUser.id}`;
+
+        try {
+            // Use pipeline for atomic operations
+            const pipeline = redis.pipeline();
+            pipeline.incr(rateLimitKey);
+            pipeline.expire(rateLimitKey, 86400, 'NX'); // Only set expire if key doesn't have one
+            const results = await pipeline.exec();
+
+            const current = results?.[0] as number || 1; // Default to 1 if results unavailable
+
+            if (current > 100) {
+                return NextResponse.json(
+                    { error: 'Rate limit exceeded', details: 'Too many requests' },
+                    { status: 429 }
+                );
+            }
+        } catch (error) {
+            console.error('Redis error:', error);
+            // Allow request to proceed if Redis fails
         }
 
         // リクエストボディを取得してバリデーション
