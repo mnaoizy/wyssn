@@ -65,6 +65,10 @@ export default {
     error_portal_failed:
       'Impossibile accedere al portale di fatturazione. Riprova più tardi.',
     error_generic: 'Si è verificato un errore. Riprova.',
+    usage: 'Utilizzo',
+    today_usage: "Utilizzo odierno",
+    total_usage: 'Utilizzo totale',
+    reset_time: 'Ora di reset',
     current_usage: 'Utilizzo attuale: {count} / {limit} richieste questo mese',
     subscription_renewal: 'Il tuo abbonamento {action} il {date}',
     subscription_renew: 'si rinnoverà',

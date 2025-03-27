@@ -75,6 +75,10 @@ export default {
     error_portal_failed:
       'बिलिंग पोर्टल तक पहुंचने में विफल। कृपया बाद में पुनः प्रयास करें।',
     error_generic: 'एक त्रुटि हुई। कृपया पुनः प्रयास करें।',
+    usage: 'उपयोग',
+    today_usage: 'आज का उपयोग',
+    total_usage: 'कुल उपयोग',
+    reset_time: 'रीसेट समय',
     current_usage: 'वर्तमान उपयोग: इस महीने {count} / {limit} अनुरोध',
     subscription_renewal: 'आपकी सदस्यता {date} को {action} होगी',
     subscription_renew: 'नवीनीकृत',

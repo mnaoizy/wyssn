@@ -75,6 +75,10 @@ export default {
     error_portal_failed:
       'No se pudo acceder al portal de facturación. Por favor, inténtalo de nuevo más tarde.',
     error_generic: 'Ha ocurrido un error. Por favor, inténtalo de nuevo.',
+    usage: 'Uso',
+    today_usage: 'Uso de hoy',
+    total_usage: 'Uso total',
+    reset_time: 'Hora de reinicio',
     current_usage: 'Uso actual: {count} / {limit} solicitudes este mes',
     subscription_renewal: 'Tu suscripción se {action} el {date}',
     subscription_renew: 'renovará',

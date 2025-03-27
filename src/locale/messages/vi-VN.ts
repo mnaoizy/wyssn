@@ -76,6 +76,10 @@ export default {
     error_portal_failed:
       'Không thể truy cập cổng thông tin thanh toán. Vui lòng thử lại sau.',
     error_generic: 'Đã xảy ra lỗi. Vui lòng thử lại.',
+    usage: 'Mức sử dụng',
+    today_usage: 'Lượng sử dụng hôm nay',
+    total_usage: 'Tổng số lần sử dụng',
+    reset_time: 'Thời điểm thiết lập lại',
     current_usage:
       'Mức sử dụng hiện tại: {count} / {limit} yêu cầu trong tháng này',
     subscription_renewal: 'Gói đăng ký của bạn sẽ {action} vào ngày {date}',

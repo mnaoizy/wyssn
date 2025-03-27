@@ -64,6 +64,10 @@ export default {
     error_portal_failed:
       'Не вдалося отримати доступ до порталу оплати. Спробуйте пізніше.',
     error_generic: 'Сталася помилка. Спробуйте ще раз.',
+    usage: 'Використання',
+    today_usage: 'Сьогоднішнє використання',
+    total_usage: 'Загальна кількість використань',
+    reset_time: 'Час скидання',
     current_usage:
       'Поточне використання: {count} / {limit} запитів цього місяця',
     subscription_renewal: 'Ваша передплата {action} {date}',

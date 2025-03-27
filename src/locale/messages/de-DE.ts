@@ -76,6 +76,10 @@ export default {
     error_portal_failed:
       'Zugriff auf das Abrechnungsportal fehlgeschlagen. Bitte versuchen Sie es später erneut.',
     error_generic: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.',
+    usage: 'Nutzung',
+    today_usage: 'Heutige Nutzung',
+    total_usage: 'Gesamtnutzung',
+    reset_time: 'Zurücksetzungszeit',
     current_usage:
       'Aktuelle Nutzung: {count} / {limit} Anfragen in diesem Monat',
     subscription_renewal: 'Ihr Abonnement wird am {date} {action}',

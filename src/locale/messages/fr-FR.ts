@@ -75,6 +75,10 @@ export default {
     error_portal_failed:
       "Échec d'accès au portail de facturation. Veuillez réessayer plus tard.",
     error_generic: "Une erreur s'est produite. Veuillez réessayer.",
+    usage: 'Utilisation',
+    today_usage: "Utilisation d'aujourd'hui",
+    total_usage: 'Utilisation totale',
+    reset_time: 'Heure de réinitialisation',
     current_usage:
       'Utilisation actuelle : {count} / {limit} requêtes ce mois-ci',
     subscription_renewal: 'Votre abonnement {action} le {date}',
