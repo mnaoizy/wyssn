@@ -285,7 +285,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                   alt="Hero"
                   width={500}
                   height={500}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain select-none"
                   quality={100}
                   priority
                 />
