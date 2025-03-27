@@ -19,6 +19,7 @@ import { ControlPanel } from './control-panel'
 import toast from 'react-hot-toast'
 import { Locale } from '@/locale/config'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Image from 'next/image'
 
 export interface SpeechRecognitionProps {
   heroTitle?: string
@@ -250,7 +251,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     <main className="flex-grow flex flex-col">
       {/* Hero Section */}
       <section className="flex-grow flex justify-center items-start py-8 sm:py-10 md:py-12 lg:py-16">
-        <div className="w-full max-w-5xl mx-auto px-2 sm:px-3 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center min-w-sm">
+        <div className="w-full max-w-5xl mx-auto px-2 sm:px-3 lg:px-8 xl:max-w-6xl 2xl:max-w-5xl text-center min-w-sm relative">
           {/* Add wrapper container with fixed height */}
           {heroTitle && heroDescription && (
             <div
@@ -264,7 +265,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               {/* Apply transform to this element */}
               <div
                 className={cn(
-                  'transform transition-transform duration-1000 ease-custom origin-center',
+                  'transform transition-transform duration-1000 ease-custom origin-center flex flex-col items-center',
                   hasEverListened ? 'scale-80' : 'scale-100'
                 )}
               >
@@ -278,16 +279,28 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                   {heroDescription}
                 </p>
               </div>
+              <div className="absolute -top-6 -left-8 sm:-top-8 sm:-left-12 md:-top-10 md:-left-14 lg:-top-12 lg:-left-16 -z-1 w-[150px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[250px]">
+                <Image
+                  src="/hero.png"
+                  alt="Hero"
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-contain"
+                  quality={100}
+                  priority
+                />
+              </div>
+
             </div>
           )}
 
           {mounted ? (
             <div
               className={cn(
-                "w-full max-w-full p-1 md:p-4 border rounded-lg mb-8 transition-shadow",
+                "w-full max-w-full p-1 md:p-4 border rounded-lg mb-8 transition-shadow bg-white/85 backdrop-blur-md",
                 isListening
-                  ? "border-gray-300 shadow-[0_4px_30px_rgba(0,0,0,0.12)] bg-white"
-                  : "border-gray-200 shadow-[0_4px_30px_rgba(0,0,0,0.08)] bg-white"
+                  ? "border-gray-300 shadow-[0_4px_30px_rgba(0,0,0,0.12)]"
+                  : "border-gray-200 shadow-[0_4px_30px_rgba(0,0,0,0.08)]"
               )}
               data-testid="speech-recognition-container"
             >
