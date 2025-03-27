@@ -80,6 +80,19 @@ export default {
     subscription_end: '終了',
     free_plan_status: '現在フリープランをご利用中です',
   },
+  // Speech recognition errors
+  speech_recognition: {
+    no_speech: '音声が検出されませんでした。',
+    aborted: '音声入力が中断されました。',
+    audio_capture: '音声の取得に失敗しました。',
+    network: 'ネットワーク通信に失敗しました。',
+    not_allowed: 'マイクへのアクセスが拒否されました。',
+    service_not_allowed: '音声認識サービスが許可されていません。',
+    bad_grammar: '音声認識の文法にエラーがあります。',
+    language_not_supported: '言語がサポートされていません。',
+    browser_not_supported: 'お使いのブラウザは音声認識をサポートしていません。',
+  },
+
   // Subscription plans
   plans: {
     heading: 'あなたに合ったプランを選択',

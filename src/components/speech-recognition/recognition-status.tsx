@@ -1,7 +1,8 @@
 "use client";
 
-import React from 'react';
-import { AlertCircle, AlertTriangle } from 'lucide-react';
+import React, { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { useI18n } from '@/locale/client';
 
 interface RecognitionStatusProps {
     error: Error | null;
@@ -9,36 +10,58 @@ interface RecognitionStatusProps {
 }
 
 /**
- * Component to display the status of speech recognition, including errors and support status
- * Enhanced with a monochrome design and improved visual feedback
+ * Component to handle speech recognition status notifications
+ * Uses react-hot-toast to display error messages with i18n support
  */
 export const RecognitionStatus: React.FC<RecognitionStatusProps> = ({
     error,
     isSupported
 }) => {
-    if (!error && isSupported) {
-        return null;
-    }
+    const t = useI18n();
 
-    return (
-        <div className="font-mono">
-            {error && (
-                <div className="flex items-center gap-2 border border-gray-300 bg-gray-50 p-3 rounded-md mb-3 shadow-sm">
-                    <AlertCircle className="h-5 w-5 text-gray-700" />
-                    <span className="text-gray-800 text-sm">
-                        {error.message}
-                    </span>
-                </div>
-            )}
+    useEffect(() => {
+        if (error) {
+            const errorType = error.message.startsWith('Error: ')
+                ? error.message.substring(7)
+                : error.message;
 
-            {!isSupported && (
-                <div className="flex items-center gap-2 border border-gray-300 bg-gray-50 p-3 rounded-md mb-3 shadow-sm">
-                    <AlertTriangle className="h-5 w-5 text-gray-700" />
-                    <span className="text-gray-800 text-sm">
-                        Your browser does not support speech recognition.
-                    </span>
-                </div>
-            )}
-        </div>
-    );
+            let message;
+            switch (errorType) {
+                case 'no-speech':
+                    message = t('speech_recognition.no_speech');
+                    break;
+                case 'aborted':
+                    message = t('speech_recognition.aborted');
+                    break;
+                case 'audio-capture':
+                    message = t('speech_recognition.audio_capture');
+                    break;
+                case 'network':
+                    message = t('speech_recognition.network');
+                    break;
+                case 'not-allowed':
+                    message = t('speech_recognition.not_allowed');
+                    break;
+                case 'service-not-allowed':
+                    message = t('speech_recognition.service_not_allowed');
+                    break;
+                case 'bad-grammar':
+                    message = t('speech_recognition.bad_grammar');
+                    break;
+                case 'language-not-supported':
+                    message = t('speech_recognition.language_not_supported');
+                    break;
+                default:
+                    message = error.message;
+            }
+
+            toast.error(message);
+        }
+
+        if (!isSupported) {
+            toast.error(t('speech_recognition.browser_not_supported'));
+        }
+    }, [error, isSupported, t]);
+
+    return null;
 };

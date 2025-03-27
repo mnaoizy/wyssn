@@ -80,6 +80,19 @@ export default {
     subscription_end: 'end',
     free_plan_status: "You're currently on the Free plan",
   },
+
+  // Speech recognition errors
+  speech_recognition: {
+    no_speech: 'No speech was detected.',
+    aborted: 'Speech input was aborted.',
+    audio_capture: 'Audio capture failed.',
+    network: 'Network communication failed.',
+    not_allowed: 'Microphone access was denied.',
+    service_not_allowed: 'Speech recognition service not allowed.',
+    bad_grammar: 'Error in speech recognition grammar.',
+    language_not_supported: 'Language not supported.',
+    browser_not_supported: 'Your browser does not support speech recognition.',
+  },
   // Subscription plans
   plans: {
     heading: "Choose the plan that's right for you",
