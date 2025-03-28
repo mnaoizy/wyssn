@@ -97,12 +97,17 @@ export default async function AccountPage({
     const planType = subscription ? 'pro' : 'free';
     const rateLimits = { free: 100, pro: 500 };
 
-    // Get usage data with @upstash/ratelimit prefix
+    // Get current timestamp in seconds for rate limit window
+    const now = Math.floor(Date.now() / 1000);
+    const windowSize = 60 * 60 * 24; // 24 hours window
+    const currentWindow = Math.floor(now / windowSize) * windowSize;
+
+    // Get usage data with complete @upstash/ratelimit key
     const redis = Redis.fromEnv();
-    const rateLimitKey = dbUserId ? `@upstash/ratelimit:user_${dbUserId}:${planType}` : '';
+    const rateLimitKey = dbUserId ? `@upstash/ratelimit:user_${dbUserId}:${planType}:${currentWindow}` : '';
 
     // Debug Redis operations
-    console.log(`Fetching usage for key with prefix: ${rateLimitKey}`);
+    console.log(`Fetching usage for complete key: ${rateLimitKey}`);
     const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey)
         .then(val => {
             console.log(`Redis get result: ${val}`);
