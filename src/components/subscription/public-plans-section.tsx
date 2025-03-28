@@ -16,9 +16,6 @@ interface PriceDetails {
     error: boolean;
 }
 
-// Default Stripe price ID - this should be provided from an environment variable in a real app
-const STRIPE_PRICE_ID = 'price_1R4hlq03WstOAJXK9oirzXBH';
-
 // Format currency based on locale and currency
 function formatCurrency(amount: number | null, currency: string, locale: string): string {
     if (amount === null) return '';
@@ -73,7 +70,7 @@ export function PublicPlansSection() {
     useEffect(() => {
         const fetchPriceDetails = async () => {
             try {
-                const response = await fetch(`/api/stripe/price?priceId=${STRIPE_PRICE_ID}`);
+                const response = await fetch(`/api/stripe/price?priceId=${process.env.NEXT_PUBLIC_STRIPE_PRICE_ID}`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch price details');

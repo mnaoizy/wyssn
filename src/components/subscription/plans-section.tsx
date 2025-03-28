@@ -25,7 +25,7 @@ interface PriceDetails {
 // Plan features are defined inside the component to use translations
 
 // Default Stripe price ID - this should be provided from an environment variable in a real app
-const STRIPE_PRICE_ID = 'price_1R4hlq03WstOAJXK9oirzXBH';
+const STRIPE_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID;
 
 // Format currency based on locale and currency
 function formatCurrency(amount: number | null, currency: string, locale: string): string {
