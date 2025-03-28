@@ -191,9 +191,7 @@ export function PublicPlansSection() {
                 open={isContactFormOpen}
                 onOpenChange={setIsContactFormOpen}
                 subject="Enterprise plan inquiry"
-            >
-                <span>{t("plans.enterprise.contact_sales")}</span>
-            </ContactDialog>
-        </div>
+            />
+        </div >
     );
 }
