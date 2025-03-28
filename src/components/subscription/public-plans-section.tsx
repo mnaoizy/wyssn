@@ -6,6 +6,7 @@ import { SubscriptionPlanCard } from "@/components/ui/subscription-plan-card";
 import { useParams } from "next/navigation";
 import { useI18n } from "@/locale/client";
 import { SignupDialog } from "@/components/ui/signup-dialog";
+import { ContactDialog } from "@/components/ui/contact-dialog";
 
 interface PriceDetails {
     unitAmount: number | null;
@@ -101,11 +102,7 @@ export function PublicPlansSection() {
     }, []);
 
     const handleOpenContactForm = () => {
-        // In a real implementation, this would open a contact form or redirect to a contact page
         setIsContactFormOpen(true);
-        // For now, we'll just simulate opening a contact form with an alert
-        alert("Enterprise plan inquiry: Please contact our sales team at sales@example.com");
-        setIsContactFormOpen(false);
     };
 
     // Format the price with proper currency
@@ -128,7 +125,6 @@ export function PublicPlansSection() {
         { title: t("plans.features.requests_pro_daily"), included: true },
         { title: t("plans.features.requests_pro_monthly"), included: true },
         { title: t("plans.features.priority_support"), included: true },
-        { title: "Better model (llama-3.1-8b-instant)", included: true },
     ];
 
     const ENTERPRISE_PLAN_FEATURES = [
@@ -192,6 +188,15 @@ export function PublicPlansSection() {
                 isOpen={isSignupDialogOpen}
                 onClose={handleCloseSignupDialog}
             />
+
+            {/* Contact Dialog */}
+            <ContactDialog
+                open={isContactFormOpen}
+                onOpenChange={setIsContactFormOpen}
+                subject="Enterprise plan inquiry"
+            >
+                <span>{t("plans.enterprise.contact_sales")}</span>
+            </ContactDialog>
         </div>
     );
 }

@@ -6,6 +6,7 @@ import { createCheckoutSession } from "@/lib/subscription-service";
 import { Subscription } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import { useI18n } from "@/locale/client";
+import { ContactDialog } from "@/components/ui/contact-dialog";
 
 interface PlansProps {
     userSubscription?: Subscription & { usageCount?: number } | null;
@@ -105,11 +106,7 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl, show
     };
 
     const handleOpenContactForm = () => {
-        // In a real implementation, this would open a contact form or redirect to a contact page
         setIsContactFormOpen(true);
-        // For now, we'll just simulate opening a contact form with an alert
-        alert("Enterprise plan inquiry: Please contact our sales team at sales@example.com");
-        setIsContactFormOpen(false);
     };
 
     // Format the price with proper currency
@@ -118,16 +115,6 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl, show
         priceDetails.currency,
         locale
     );
-
-    // Get current usage limits based on plan
-    const getCurrentUsageText = () => {
-        const usageCount = userSubscription?.usageCount || 0;
-        const limit = isSubscribed ? 10000 : 500;
-        return t("account.current_usage", {
-            count: usageCount,
-            limit: limit
-        });
-    };
 
     // Create feature lists with translations
     const FREE_PLAN_FEATURES = [
@@ -142,7 +129,6 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl, show
         { title: t("plans.features.requests_pro_daily"), included: true },
         { title: t("plans.features.requests_pro_monthly"), included: true },
         { title: t("plans.features.priority_support"), included: true },
-        { title: "Better model (llama-3.1-8b-instant)", included: true },
     ];
 
     const ENTERPRISE_PLAN_FEATURES = [
@@ -206,31 +192,12 @@ export function PlansSection({ userSubscription, subscriptionManagementUrl, show
                     disabled={isContactFormOpen}
                 />
             </div>
-            {userSubscription && (
-                <div className="mt-6 text-center">
-                    <div className="inline-block rounded-md border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-muted-foreground">
-                        {isSubscribed ? (
-                            <>
-                                {userSubscription.cancelAtPeriodEnd
-                                    ? t("account.subscription_renewal", {
-                                        action: t("account.subscription_end"),
-                                        date: new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]
-                                    })
-                                    : t("account.subscription_renewal", {
-                                        action: t("account.subscription_renew"),
-                                        date: new Date(userSubscription.currentPeriodEnd).toISOString().split('T')[0]
-                                    })
-                                }
-                            </>
-                        ) : (
-                            t("account.free_plan_status")
-                        )}
-                    </div>
-                    <div className="mt-2 text-xs text-muted-foreground">
-                        {getCurrentUsageText()}
-                    </div>
-                </div>
-            )}
+            {/* Contact Dialog */}
+            <ContactDialog
+                open={isContactFormOpen}
+                onOpenChange={setIsContactFormOpen}
+                subject="Enterprise plan inquiry"
+            />
         </div>
     );
 }

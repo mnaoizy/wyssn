@@ -9,10 +9,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import { useScopedI18n } from '@/locale/client'
 
-export function ContactDialog({ children }: { children: React.ReactNode }) {
+interface ContactDialogProps {
+    children?: React.ReactNode;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    subject?: string;
+}
+
+export function ContactDialog({ children, open, onOpenChange, subject }: ContactDialogProps) {
     const t = useScopedI18n('contact')
     const { user } = useKindeBrowserClient()
-    const [open, setOpen] = useState(false)
+    const [internalOpen, setInternalOpen] = useState(false)
+    const isControlled = open !== undefined
+    const dialogOpen = isControlled ? open : internalOpen
+    const setDialogOpen = isControlled ? onOpenChange || (() => { }) : setInternalOpen
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [formData, setFormData] = useState({
         email: '',
@@ -21,7 +31,7 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
     })
 
     useEffect(() => {
-        if (open && user?.email) {
+        if (dialogOpen && user?.email) {
             setFormData(prev => ({
                 ...prev,
                 email: user.email
@@ -47,19 +57,28 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
                 throw new Error(errorData.error || 'Failed to send message')
             }
 
-            setOpen(false)
+            setDialogOpen(false)
             setFormData({ email: user?.email || '', subject: '', message: '' })
             toast.success(t('success'))
         } catch (error) {
             console.error('Submission error:', error)
-            toast.error(error instanceof Error ? error.message : t('errors.genericError'))
+            toast.error(error instanceof Error ? error.message : t('errors.generic_error'))
         } finally {
             setIsSubmitting(false)
         }
     }
 
+    useEffect(() => {
+        if (dialogOpen && subject) {
+            setFormData(prev => ({
+                ...prev,
+                subject: subject
+            }))
+        }
+    }, [dialogOpen, subject])
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
