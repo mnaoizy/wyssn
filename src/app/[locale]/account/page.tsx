@@ -97,12 +97,12 @@ export default async function AccountPage({
     const planType = subscription ? 'pro' : 'free';
     const rateLimits = { free: 100, pro: 500 };
 
-    // Get usage data
+    // Get usage data with @upstash/ratelimit prefix
     const redis = Redis.fromEnv();
-    const rateLimitKey = dbUserId ? `user_${dbUserId}:${planType}` : '';
+    const rateLimitKey = dbUserId ? `@upstash/ratelimit:user_${dbUserId}:${planType}` : '';
 
     // Debug Redis operations
-    console.log(`Fetching usage for key: ${rateLimitKey}`);
+    console.log(`Fetching usage for key with prefix: ${rateLimitKey}`);
     const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey)
         .then(val => {
             console.log(`Redis get result: ${val}`);
