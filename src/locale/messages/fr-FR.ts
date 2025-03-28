@@ -86,6 +86,23 @@ export default {
     subscription_end: 'se terminera',
     free_plan_status: 'Vous utilisez actuellement le forfait Gratuit',
   },
+  // Contact
+  contact: {
+    title: 'Contact',
+    email: 'Adresse e-mail',
+    subject: 'Sujet',
+    message: 'Message',
+    submit: 'Envoyer',
+    sending: 'Envoi en cours...',
+    success: 'Message envoyé avec succès !',
+    errors: {
+      required: 'Ce champ est obligatoire',
+      email_invalid: 'Veuillez entrer une adresse e-mail valide',
+      rate_limit: 'Trop de requêtes. Veuillez réessayer plus tard.',
+      generic_error: "Échec de l'envoi du message. Veuillez réessayer."
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'Choisissez le forfait qui vous convient',

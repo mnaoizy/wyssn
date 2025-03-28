@@ -87,6 +87,23 @@ export default {
     subscription_end: 'kết thúc',
     free_plan_status: 'Bạn đang sử dụng gói miễn phí',
   },
+  // Contact
+  contact: {
+    title: 'Liên hệ',
+    email: 'Địa chỉ email',
+    subject: 'Chủ đề',
+    message: 'Tin nhắn',
+    submit: 'Gửi',
+    sending: 'Đang gửi...',
+    success: 'Tin nhắn đã được gửi thành công!',
+    errors: {
+      required: 'Trường này là bắt buộc',
+      email_invalid: 'Vui lòng nhập địa chỉ email hợp lệ',
+      rate_limit: 'Quá nhiều yêu cầu. Vui lòng thử lại sau.',
+      generic_error: 'Gửi tin nhắn thất bại. Vui lòng thử lại.'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'Chọn gói phù hợp với bạn',

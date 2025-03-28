@@ -83,6 +83,23 @@ export default {
     subscription_end: '종료',
     free_plan_status: '현재 무료 플랜을 이용 중입니다',
   },
+  // Contact
+  contact: {
+    title: '문의하기',
+    email: '이메일 주소',
+    subject: '제목',
+    message: '메시지',
+    submit: '보내기',
+    sending: '전송 중...',
+    success: '메시지가 성공적으로 전송되었습니다!',
+    errors: {
+      required: '이 필드는 필수입니다',
+      email_invalid: '유효한 이메일 주소를 입력해주세요',
+      rate_limit: '요청이 너무 많습니다. 나중에 다시 시도해주세요.',
+      generic_error: '메시지 전송에 실패했습니다. 다시 시도해주세요.'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: '귀하에게 맞는 플랜을 선택하세요',

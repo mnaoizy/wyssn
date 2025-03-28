@@ -83,6 +83,23 @@ export default {
     subscription_end: '結束',
     free_plan_status: '您目前使用的是免費計劃',
   },
+  // Contact
+  contact: {
+    title: '聯絡我們',
+    email: '電子郵件',
+    subject: '主題',
+    message: '訊息',
+    submit: '發送',
+    sending: '發送中...',
+    success: '訊息發送成功!',
+    errors: {
+      required: '此欄位為必填項',
+      email_invalid: '請輸入有效的電子郵件地址',
+      rate_limit: '請求過多。請稍後再試。',
+      generic_error: '發送訊息失敗。請重試。'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: '選擇適合您的計劃',

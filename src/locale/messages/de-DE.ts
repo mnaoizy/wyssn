@@ -87,6 +87,23 @@ export default {
     subscription_end: 'enden',
     free_plan_status: 'Sie nutzen derzeit den kostenlosen Plan',
   },
+  // Contact
+  contact: {
+    title: 'Kontakt',
+    email: 'E-Mail-Adresse',
+    subject: 'Betreff',
+    message: 'Nachricht',
+    submit: 'Senden',
+    sending: 'Wird gesendet...',
+    success: 'Nachricht erfolgreich gesendet!',
+    errors: {
+      required: 'Dieses Feld ist erforderlich',
+      email_invalid: 'Bitte geben Sie eine gültige E-Mail-Adresse ein',
+      rate_limit: 'Zu viele Anfragen. Bitte versuchen Sie es später erneut.',
+      generic_error: 'Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'Wählen Sie den passenden Plan für Sie',

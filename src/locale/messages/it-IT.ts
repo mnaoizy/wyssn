@@ -75,6 +75,23 @@ export default {
     subscription_end: 'terminerà',
     free_plan_status: 'Attualmente stai utilizzando il piano gratuito',
   },
+  // Contact
+  contact: {
+    title: 'Contattaci',
+    email: 'Indirizzo email',
+    subject: 'Oggetto',
+    message: 'Messaggio',
+    submit: 'Invia',
+    sending: 'Invio in corso...',
+    success: 'Messaggio inviato con successo!',
+    errors: {
+      required: 'Questo campo è obbligatorio',
+      email_invalid: 'Inserisci un indirizzo email valido',
+      rate_limit: 'Troppe richieste. Riprova più tardi.',
+      generic_error: 'Invio del messaggio fallito. Riprova.'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'Scegli il piano adatto a te',

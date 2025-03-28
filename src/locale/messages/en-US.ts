@@ -51,6 +51,23 @@ export default {
     clear: 'Clear',
   },
 
+  // Contact
+  contact: {
+    title: 'Contact Us',
+    email: 'Email Address',
+    subject: 'Subject',
+    message: 'Message',
+    submit: 'Send',
+    sending: 'Sending...',
+    success: 'Message sent successfully!',
+    errors: {
+      required: 'This field is required',
+      email_invalid: 'Please enter a valid email address',
+      rate_limit: 'Too many requests. Please try again later.',
+      generic_error: 'Failed to send message. Please try again.'
+    }
+  },
+
   // Changelog page
   changelog: {
     title: 'Changelog',

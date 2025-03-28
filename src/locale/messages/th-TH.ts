@@ -79,6 +79,23 @@ export default {
     subscription_end: 'สิ้นสุด',
     free_plan_status: 'ขณะนี้คุณใช้แผนฟรี',
   },
+  // Contact
+  contact: {
+    title: 'ติดต่อเรา',
+    email: 'อีเมล',
+    subject: 'หัวข้อ',
+    message: 'ข้อความ',
+    submit: 'ส่ง',
+    sending: 'กำลังส่ง...',
+    success: 'ส่งข้อความสำเร็จแล้ว!',
+    errors: {
+      required: 'จำเป็นต้องกรอกข้อมูลนี้',
+      email_invalid: 'กรุณากรอกอีเมลที่ถูกต้อง',
+      rate_limit: 'มีการร้องขอมากเกินไป กรุณาลองใหม่ในภายหลัง',
+      generic_error: 'ส่งข้อความไม่สำเร็จ กรุณาลองใหม่'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'เลือกแผนที่เหมาะกับคุณ',

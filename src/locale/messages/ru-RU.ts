@@ -74,6 +74,23 @@ export default {
     subscription_end: 'закончится',
     free_plan_status: 'Вы используете бесплатный план',
   },
+  // Contact
+  contact: {
+    title: 'Связаться с нами',
+    email: 'Электронная почта',
+    subject: 'Тема',
+    message: 'Сообщение',
+    submit: 'Отправить',
+    sending: 'Отправка...',
+    success: 'Сообщение успешно отправлено!',
+    errors: {
+      required: 'Это поле обязательно',
+      email_invalid: 'Пожалуйста, введите действительный email',
+      rate_limit: 'Слишком много запросов. Пожалуйста, попробуйте позже.',
+      generic_error: 'Не удалось отправить сообщение. Пожалуйста, попробуйте снова.'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'Выберите подходящий вам план',

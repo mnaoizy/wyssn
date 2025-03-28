@@ -85,6 +85,23 @@ export default {
     subscription_end: 'समाप्त',
     free_plan_status: 'आप वर्तमान में मुफ्त योजना पर हैं',
   },
+  // Contact
+  contact: {
+    title: 'संपर्क करें',
+    email: 'ईमेल पता',
+    subject: 'विषय',
+    message: 'संदेश',
+    submit: 'भेजें',
+    sending: 'भेजा जा रहा है...',
+    success: 'संदेश सफलतापूर्वक भेजा गया!',
+    errors: {
+      required: 'यह फ़ील्ड आवश्यक है',
+      email_invalid: 'कृपया एक वैध ईमेल पता दर्ज करें',
+      rate_limit: 'बहुत अधिक अनुरोध। कृपया बाद में पुनः प्रयास करें।',
+      generic_error: 'संदेश भेजने में विफल। कृपया पुनः प्रयास करें।'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'अपने लिए सही योजना चुनें',

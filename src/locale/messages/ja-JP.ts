@@ -92,6 +92,23 @@ export default {
     browser_not_supported: 'お使いのブラウザは音声認識をサポートしていません',
   },
 
+  // Contact
+  contact: {
+    title: 'お問い合わせ',
+    email: 'メールアドレス',
+    subject: '件名',
+    message: 'メッセージ',
+    submit: '送信',
+    sending: '送信中...',
+    success: 'メッセージが送信されました',
+    errors: {
+      required: 'この項目は必須です',
+      email_invalid: '有効なメールアドレスを入力してください',
+      rate_limit: 'リクエストが多すぎます。しばらくしてから再試行してください。',
+      generic_error: 'メッセージの送信に失敗しました。後で再試行してください。'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'あなたに合ったプランを選択',

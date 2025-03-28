@@ -74,6 +74,23 @@ export default {
     subscription_end: 'encerrada',
     free_plan_status: 'Você está atualmente no plano Gratuito',
   },
+  // Contact
+  contact: {
+    title: 'Contato',
+    email: 'Endereço de e-mail',
+    subject: 'Assunto',
+    message: 'Mensagem',
+    submit: 'Enviar',
+    sending: 'Enviando...',
+    success: 'Mensagem enviada com sucesso!',
+    errors: {
+      required: 'Este campo é obrigatório',
+      email_invalid: 'Por favor, insira um e-mail válido',
+      rate_limit: 'Muitas solicitações. Por favor, tente novamente mais tarde.',
+      generic_error: 'Falha ao enviar mensagem. Por favor, tente novamente.'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: 'Escolha o plano ideal para você',

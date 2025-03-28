@@ -81,7 +81,7 @@ export default async function RootLayout({
         trackScreenViews={true}
       />
       <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
-        <body className="antialiased min-h-screen bg-white">
+        <body className="antialiased bg-white">
           <TopProgressBarProvider>
             <MobileNavigationProvider>{children}</MobileNavigationProvider>
             <Toaster />

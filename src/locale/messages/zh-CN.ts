@@ -83,6 +83,23 @@ export default {
     subscription_end: '结束',
     free_plan_status: '您目前使用的是免费计划',
   },
+  // Contact
+  contact: {
+    title: '联系我们',
+    email: '电子邮箱',
+    subject: '主题',
+    message: '消息',
+    submit: '发送',
+    sending: '发送中...',
+    success: '消息发送成功!',
+    errors: {
+      required: '此字段为必填项',
+      email_invalid: '请输入有效的电子邮箱地址',
+      rate_limit: '请求过多。请稍后再试。',
+      generic_error: '发送消息失败。请重试。'
+    }
+  },
+
   // Subscription plans
   plans: {
     heading: '选择适合您的计划',

@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import toast from 'react-hot-toast'
-import { Button } from './button'
-import { Textarea } from './textarea'
-import { Input } from './input'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './dialog'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { useScopedI18n } from '@/locale/client'
 
 export function ContactDialog({ children }: { children: React.ReactNode }) {
+    const t = useScopedI18n('contact')
     const { user } = useKindeBrowserClient()
     const [open, setOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -47,10 +49,10 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
 
             setOpen(false)
             setFormData({ email: user?.email || '', subject: '', message: '' })
-            toast.success('Message sent successfully!')
+            toast.success(t('success'))
         } catch (error) {
             console.error('Submission error:', error)
-            toast.error(error instanceof Error ? error.message : 'Failed to send message. Please try again.')
+            toast.error(error instanceof Error ? error.message : t('errors.genericError'))
         } finally {
             setIsSubmitting(false)
         }
@@ -63,12 +65,12 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Contact Us</DialogTitle>
+                    <DialogTitle>{t('title')}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium mb-1">
-                            Email Address
+                            {t('email')}
                         </label>
                         <Input
                             id="email"
@@ -81,7 +83,7 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
                     </div>
                     <div>
                         <label htmlFor="subject" className="block text-sm font-medium mb-1">
-                            Subject
+                            {t('subject')}
                         </label>
                         <Input
                             id="subject"
@@ -92,7 +94,7 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
                     </div>
                     <div>
                         <label htmlFor="message" className="block text-sm font-medium mb-1">
-                            Message
+                            {t('message')}
                         </label>
                         <Textarea
                             id="message"
@@ -103,7 +105,7 @@ export function ContactDialog({ children }: { children: React.ReactNode }) {
                         />
                     </div>
                     <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? 'Sending...' : 'Send'}
+                        {isSubmitting ? t('sending') : t('submit')}
                     </Button>
                 </form>
             </DialogContent>
