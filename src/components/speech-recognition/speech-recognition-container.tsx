@@ -90,7 +90,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
         const errorData = JSON.parse(errorMessage.replace('Error: ', ''))
 
         if (errorData.error === 'Rate limit exceeded') {
-          toast.error(`Rate limit exceeded: ${errorData.details}`, {
+          toast.error(errorData.details, {
             duration: 5000,
           })
         } else {
