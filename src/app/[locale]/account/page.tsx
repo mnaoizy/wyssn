@@ -87,17 +87,19 @@ export default async function AccountPage({
         // Continue with null subscription - we'll show the free plan
     }
 
-    // Get subscription status
-    const isSubscribed = dbUserId ? await db.subscription.findFirst({
+    // Get subscription status and plan type
+    const subscription = dbUserId ? await db.subscription.findFirst({
         where: {
             userId: dbUserId,
             status: { in: ['active', 'trialing'] }
         }
-    }).then(sub => !!sub) : false;
+    }) : null;
+    const planType = subscription ? 'pro' : 'free';
+    const rateLimits = { free: 100, pro: 500 };
 
     // Get usage data
     const redis = Redis.fromEnv();
-    const rateLimitKey = dbUserId ? `user_${dbUserId}_${isSubscribed}` : '';
+    const rateLimitKey = dbUserId ? `user_${dbUserId}:${planType}` : '';
     const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey).catch(() => 0) : 0;
     const ttl = dbUserId ? await redis.ttl(rateLimitKey).catch(() => 0) : 0;
 
@@ -106,7 +108,7 @@ export default async function AccountPage({
         where: { userId: dbUserId }
     }) : 0;
 
-    const maxUsage = isSubscribed ? 500 : 100;
+    const maxUsage = rateLimits[planType];
 
     // Calculate reset time (current time + TTL seconds)
     const resetTime = new Date();

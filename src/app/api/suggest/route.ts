@@ -60,26 +60,26 @@ export async function POST(req: Request) {
             );
         }
 
-        // Check subscription status and set rate limit accordingly
-        const subscribed = dbUser.subscriptions.some(
-            subscription => ['active', 'trialing'].includes(subscription.status)
+        // Determine plan type
+        const subscription = dbUser.subscriptions.find(
+            sub => ['active', 'trialing'].includes(sub.status)
         );
+        const planType = subscription ? 'pro' : 'free';
+        const rateLimits = { free: 100, pro: 500 };
 
-        // Rate limiting - 500 for subscribed users, 100 for free users per day
+        // Rate limiting based on plan type
         const ratelimit = new Ratelimit({
             redis: Redis.fromEnv(),
-            limiter: Ratelimit.slidingWindow(subscribed ? 500 : 100, '1 d'),
+            limiter: Ratelimit.slidingWindow(rateLimits[planType], '1 d'),
         });
 
-        const { success } = await ratelimit.limit(`user_${dbUser.id}_${subscribed}`);
+        const { success } = await ratelimit.limit(`user_${dbUser.id}:${planType}`);
 
         if (!success) {
             return NextResponse.json(
                 {
                     error: 'Rate limit exceeded',
-                    details: subscribed
-                        ? 'Too many requests (max 500 per day for subscribed users)'
-                        : 'Too many requests (max 100 per day for free users)'
+                    details: `Too many requests (max ${rateLimits[planType]} per day for ${planType} users)`
                 },
                 { status: 429 }
             );
