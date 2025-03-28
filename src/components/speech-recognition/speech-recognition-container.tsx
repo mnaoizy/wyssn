@@ -363,7 +363,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
               />
             </div>
           ) : (
-            <div className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8">
+            <div className="w-full max-w-full p-1 md:p-4 border rounded-lg shadow-sm mb-8 bg-white/80 backdrop-blur-xl">
               <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <div className="flex gap-2">
                   <Skeleton className="h-9 w-24" />
