@@ -37,7 +37,7 @@ export function ContactDialog({ children, open, onOpenChange, subject }: Contact
                 email: user.email
             }))
         }
-    }, [open, user?.email])
+    }, [dialogOpen, user?.email])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
