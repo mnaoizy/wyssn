@@ -100,8 +100,24 @@ export default async function AccountPage({
     // Get usage data
     const redis = Redis.fromEnv();
     const rateLimitKey = dbUserId ? `user_${dbUserId}:${planType}` : '';
-    const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey).catch(() => 0) : 0;
-    const ttl = dbUserId ? await redis.ttl(rateLimitKey).catch(() => 0) : 0;
+
+    // Debug Redis operations
+    console.log(`Fetching usage for key: ${rateLimitKey}`);
+    const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey)
+        .then(val => {
+            console.log(`Redis get result: ${val}`);
+            return val ?? 0;
+        })
+        .catch(err => {
+            console.error('Redis get error:', err);
+            return 0;
+        }) : 0;
+
+    const ttl = dbUserId ? await redis.ttl(rateLimitKey)
+        .catch(err => {
+            console.error('Redis ttl error:', err);
+            return 0;
+        }) : 0;
 
     // Get total API usage count
     const totalUsage = dbUserId ? await db.apiUsage.count({
