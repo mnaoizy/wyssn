@@ -19,7 +19,7 @@ import { ControlPanel } from './control-panel'
 import toast from 'react-hot-toast'
 import { Locale } from '@/locale/config'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import Image from 'next/image'
+// import Image from 'next/image'
 
 export interface SpeechRecognitionProps {
   heroTitle?: string
@@ -292,7 +292,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                   {heroDescription}
                 </p>
               </div>
-              <div className="absolute -top-6 -left-4 sm:-top-8 md:-top-10 lg:-top-12 -z-1 w-[150px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[250px]">
+              {/* <div className="absolute -top-6 -left-4 sm:-top-8 md:-top-10 lg:-top-12 -z-1 w-[150px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[250px]">
                 <Image
                   src="/hero.png"
                   alt="Hero"
@@ -302,7 +302,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                   quality={100}
                   priority
                 />
-              </div>
+              </div> */}
 
             </div>
           )}

@@ -81,7 +81,7 @@ export default async function RootLayout({
         trackScreenViews={true}
       />
       <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
-        <body className="antialiased bg-white">
+        <body className="antialiased bg-white bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat">
           <TopProgressBarProvider>
             <MobileNavigationProvider>{children}</MobileNavigationProvider>
             <Toaster />

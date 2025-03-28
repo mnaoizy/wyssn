@@ -12,7 +12,7 @@ export function Footer({ locale }: FooterProps) {
     const t = useI18n()
 
     return (
-        <footer className="border-t border-neutral-200 py-6 sm:py-8 bg-neutral-50 mt-auto">
+        <footer className="border-t border-gray-200 backdrop-blur-lg bg-white/95  py-6 sm:py-8 mt-auto">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl">
                 <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-4">
                     <span className="font-serif text-neutral-800 font-medium uppercase text-sm order-1 md:order-none">
