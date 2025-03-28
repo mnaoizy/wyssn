@@ -12,7 +12,7 @@ export default {
     register_success: 'Зарегистрировано.',
   },
   hero: {
-    title: 'What You Should Say Next',
+    title: 'WYSSN',
     description: 'Больше никаких затруднений в общении.',
     email_placeholder: 'Введите ваш email',
     waitlist: 'Присоединяйтесь к списку ожидания для раннего доступа',

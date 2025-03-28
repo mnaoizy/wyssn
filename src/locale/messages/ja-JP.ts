@@ -15,7 +15,7 @@ export default {
 
   // Hero section
   hero: {
-    title: 'What You Should Say Next',
+    title: 'WYSSN',
     description: '心に浮かぶ言葉を、形にする手助けをします。',
     email_placeholder: 'メールアドレスを入力',
     waitlist: '早期アクセスに参加する',

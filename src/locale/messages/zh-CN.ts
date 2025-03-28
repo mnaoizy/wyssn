@@ -16,7 +16,7 @@ export default {
 
   // Hero section
   hero: {
-    title: 'What You Should Say Next',
+    title: 'WYSSN',
     description: '心有所想，言有所出。',
     email_placeholder: '输入您的邮箱',
     waitlist: '加入我们的等候名单以获取早期访问权限',

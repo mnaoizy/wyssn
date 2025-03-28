@@ -15,7 +15,7 @@ export default {
 
   // Hero section
   hero: {
-    title: 'What You Should Say Next',
+    title: 'WYSSN',
     description: 'ช่วยให้คำพูดในใจของคุณ เป็นจริงได้',
     email_placeholder: 'ป้อนอีเมลของคุณ',
     waitlist: 'ลงทะเบียนเพื่อเข้าถึงก่อนใคร',
