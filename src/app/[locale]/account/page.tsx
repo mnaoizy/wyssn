@@ -8,6 +8,7 @@ import Link from "next/link";
 import { stripe } from "@/lib/stripe";
 import { buttonVariants } from "@/components/ui/button";
 import { Redis } from '@upstash/redis';
+import { Ratelimit } from '@upstash/ratelimit';
 
 type SearchParamsType = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -97,32 +98,21 @@ export default async function AccountPage({
     const planType = subscription ? 'pro' : 'free';
     const rateLimits = { free: 100, pro: 500 };
 
-    // Get current timestamp in seconds for rate limit window (1 hour window)
-    const now = Math.floor(Date.now() / 1000);
-    const windowSize = 60 * 60; // 1 hour window (default for @upstash/ratelimit)
-    const currentWindow = Math.floor(now / windowSize);
+    // Use same rate limiting logic as API route
+    const ratelimit = new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(rateLimits[planType], '1 d'),
+    });
 
-    // Get usage data with complete @upstash/ratelimit key
+    const { remaining } = dbUserId
+        ? await ratelimit.getRemaining(`user_${dbUserId}:${planType}`)
+        : { remaining: 0 };
+
+    const currentUsage = rateLimits[planType] - remaining;
+    // Get TTL using Redis directly since resetIn is not available
     const redis = Redis.fromEnv();
-    const rateLimitKey = dbUserId ? `@upstash/ratelimit:user_${dbUserId}:${planType}:${currentWindow}` : '';
-
-    // Debug Redis operations
-    console.log(`Fetching usage for complete key: ${rateLimitKey}`);
-    const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey)
-        .then(val => {
-            console.log(`Redis get result: ${val}`);
-            return val ?? 0;
-        })
-        .catch(err => {
-            console.error('Redis get error:', err);
-            return 0;
-        }) : 0;
-
-    const ttl = dbUserId ? await redis.ttl(rateLimitKey)
-        .catch(err => {
-            console.error('Redis ttl error:', err);
-            return 0;
-        }) : 0;
+    const rateLimitKey = `@upstash/ratelimit:user_${dbUserId}:${planType}`;
+    const ttl = dbUserId ? await redis.ttl(rateLimitKey).catch(() => 0) : 0;
 
     // Get total API usage count
     const totalUsage = dbUserId ? await db.apiUsage.count({
