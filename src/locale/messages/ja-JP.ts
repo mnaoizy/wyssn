@@ -26,7 +26,7 @@ export default {
     privacy: 'プライバシー',
     terms: '利用規約',
     contact: 'お問い合わせ',
-    copyright: '© 2025 Langrics 全著作権所有',
+    copyright: '© 2025 Langrics All rights reserved.',
   },
 
   // Suggestion categories
