@@ -139,7 +139,7 @@ export function Navigation({ locale }: NavigationProps) {
     const { isAuthenticated, isLoading } = useKindeBrowserClient()
 
     return (
-        <nav className="border-b border-neutral-200">
+        <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-lg">
             <div className="w-full max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 xl:max-w-7xl 2xl:max-w-screen-2xl flex flex-row">
                 <div className="flex justify-between items-center h-12 sm:h-16 px-2 sm:px-0 w-full">
                     <div className="flex items-center gap-1 min-w-0">
