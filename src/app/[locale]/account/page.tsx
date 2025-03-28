@@ -87,15 +87,26 @@ export default async function AccountPage({
         // Continue with null subscription - we'll show the free plan
     }
 
+    // Get subscription status
+    const isSubscribed = dbUserId ? await db.subscription.findFirst({
+        where: {
+            userId: dbUserId,
+            status: { in: ['active', 'trialing'] }
+        }
+    }).then(sub => !!sub) : false;
+
     // Get usage data
     const redis = Redis.fromEnv();
-    const currentUsage = dbUserId ? await redis.get<number>(`rate_limit:${dbUserId}`).catch(() => 0) : 0;
-    const ttl = dbUserId ? await redis.ttl(`rate_limit:${dbUserId}`).catch(() => 0) : 0;
+    const rateLimitKey = dbUserId ? `user_${dbUserId}_${isSubscribed}` : '';
+    const currentUsage = dbUserId ? await redis.get<number>(rateLimitKey).catch(() => 0) : 0;
+    const ttl = dbUserId ? await redis.ttl(rateLimitKey).catch(() => 0) : 0;
 
     // Get total API usage count
     const totalUsage = dbUserId ? await db.apiUsage.count({
         where: { userId: dbUserId }
     }) : 0;
+
+    const maxUsage = isSubscribed ? 500 : 100;
 
     // Calculate reset time (current time + TTL seconds)
     const resetTime = new Date();
@@ -163,7 +174,7 @@ export default async function AccountPage({
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <div className="font-medium text-sm text-gray-500">{t("account.today_usage")}</div>
-                                <div>{currentUsage || 0} / 100</div>
+                                <div>{currentUsage || 0} / {maxUsage}</div>
                             </div>
                             <div>
                                 <div className="font-medium text-sm text-gray-500">{t("account.total_usage")}</div>

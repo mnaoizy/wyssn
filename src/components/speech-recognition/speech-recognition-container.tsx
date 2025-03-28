@@ -56,7 +56,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   // 発話カウンター
   const utteranceCounterRef = useRef<number>(0)
 
-  const { isAuthenticated } = useKindeBrowserClient()
+  const { isAuthenticated, isLoading: isAuthLoading } = useKindeBrowserClient()
 
   // References for submission functionality
   const submitRef = useRef<
@@ -78,7 +78,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
     object,
     error: suggestError,
   } = useObject({
-    api: '/api/suggest',
+    api: isAuthenticated ? '/api/suggest' : '/api/suggest-free',
     schema: conversationSuggestionSchema,
   })
 
@@ -239,11 +239,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
   }
 
   const handleStartListening = () => {
-    if (isAuthenticated) {
-      startListening()
-    } else {
-      toast.error('You need to sign in to use this.')
-    }
+    startListening()
   }
 
   return (
@@ -293,7 +289,7 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
             </div>
           )}
 
-          {mounted ? (
+          {(mounted && !isAuthLoading) ? (
             <div
               className={cn(
                 "w-full max-w-full p-1 md:p-4 border rounded-lg mb-8 transition-shadow bg-white/85 backdrop-blur-md",
