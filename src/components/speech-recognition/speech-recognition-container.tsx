@@ -166,7 +166,6 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
             const finalText = finalUtterances.map((u) => u.text).join(' ')
             // Use the actual utterance text for auto-submission
             if (submitRef.current && finalText.trim()) {
-              console.log('Auto-submitting with utterance text:', finalText)
               if (resetHiddenRef.current) {
                 resetHiddenRef.current()
               }

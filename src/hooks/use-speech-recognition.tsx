@@ -333,14 +333,6 @@ export const useSpeechRecognition = (
                     if (onFinalUtterance && typeof onFinalUtterance === 'function' && finalUtterances.length > 0) {
                         // Use the last final utterance from this batch
                         const lastFinalUtterance = finalUtterances[finalUtterances.length - 1];
-
-                        // Call the callback with only the final utterances history
-                        console.log('Calling onFinalUtterance with final utterances history:', {
-                            utterance: lastFinalUtterance,
-                            historyLength: utteranceHistory.length,
-                            finalOnly: true
-                        });
-
                         onFinalUtterance(lastFinalUtterance, [...utteranceHistory]);
                     }
                 };
