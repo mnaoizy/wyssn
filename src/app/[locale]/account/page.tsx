@@ -97,10 +97,10 @@ export default async function AccountPage({
     const planType = subscription ? 'pro' : 'free';
     const rateLimits = { free: 100, pro: 500 };
 
-    // Get current timestamp in seconds for rate limit window
+    // Get current timestamp in seconds for rate limit window (1 hour window)
     const now = Math.floor(Date.now() / 1000);
-    const windowSize = 60 * 60 * 24; // 24 hours window
-    const currentWindow = Math.floor(now / windowSize) * windowSize;
+    const windowSize = 60 * 60; // 1 hour window (default for @upstash/ratelimit)
+    const currentWindow = Math.floor(now / windowSize);
 
     // Get usage data with complete @upstash/ratelimit key
     const redis = Redis.fromEnv();
