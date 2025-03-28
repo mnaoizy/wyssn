@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
         if (!success) {
             return NextResponse.json(
-                { error: 'Rate limit exceeded', details: 'Too many requests (max 100 per day)' },
+                { error: 'Rate limit exceeded', details: 'Daily limit reached. Create a free account for more access.' },
                 { status: 429 }
             );
         }

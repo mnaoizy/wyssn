@@ -84,7 +84,25 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
 
   useEffect(() => {
     if (suggestError) {
-      toast('Failed to generate conversation suggestions')
+      console.error(suggestError.message)
+      try {
+        const errorMessage = suggestError.message || 'An error occurred'
+        const errorData = JSON.parse(errorMessage.replace('Error: ', ''))
+
+        if (errorData.error === 'Rate limit exceeded') {
+          toast.error(`Rate limit exceeded: ${errorData.details}`, {
+            duration: 5000,
+          })
+        } else {
+          toast.error(errorData.error || 'Failed to generate conversation suggestions', {
+            duration: 2000,
+          })
+        }
+      } catch {
+        toast.error('Failed to generate conversation suggestions', {
+          duration: 2000,
+        })
+      }
     }
   }, [suggestError])
 
