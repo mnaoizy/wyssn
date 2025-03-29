@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "@/lib/prisma-client";
 import { PrismaClient } from "@prisma/client";
+import { createRequestLogger } from '@/lib/logger';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_API_KEY!, {
     apiVersion: '2025-02-24.acacia',
@@ -15,8 +16,16 @@ type TransactionClient = Omit<
 >;
 
 export async function POST(request: Request) {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip');
+    const logger = createRequestLogger(ip || 'unknown');
+
     const signature = request.headers.get("stripe-signature");
     if (!signature) {
+        logger.warn({
+            message: "Missing stripe signature",
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
+            path: request.url
+        });
         return NextResponse.json({
             message: 'Missing stripe signature'
         }, {
@@ -33,18 +42,25 @@ export async function POST(request: Request) {
             signature,
             process.env.STRIPE_WEBHOOK_SECRET_KEY as string
         );
+
+        logger.info({
+            message: "Stripe webhook received",
+            eventType: event.type,
+            eventId: event.id,
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
+            path: request.url
+        });
     } catch (err) {
-        const errorMessage = `⚠️  Webhook signature verification failed. ${(err as Error).message}`;
-        console.log(errorMessage);
+        const errorMessage = `Webhook signature verification failed. ${(err as Error).message}`;
+        logger.error({
+            message: "Stripe signature verification failed",
+            error: errorMessage,
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown'
+        });
         return new Response(errorMessage, {
             status: 400
         });
     }
-
-    console.log({
-        type: event.type,
-        id: event.id,
-    });
 
     try {
         // トランザクションを開始して、イベント処理の冪等性と一貫性を確保
@@ -55,7 +71,11 @@ export async function POST(request: Request) {
             });
 
             if (existingEvent) {
-                console.log(`Event ${event.id} already processed at ${existingEvent.processedAt}, skipping`);
+                logger.info({
+                    message: "Skipping already processed event",
+                    eventId: event.id,
+                    processedAt: existingEvent.processedAt
+                });
                 return {
                     status: "skipped",
                     message: `Event ${event.id} was already processed at ${existingEvent.processedAt}`
@@ -114,21 +134,37 @@ export async function POST(request: Request) {
             };
         });
 
-        console.log(`Webhook processing result:`, result);
+        logger.info({
+            message: "Webhook processing completed",
+            eventId: event.id,
+            result: result
+        });
         return NextResponse.json(result);
     } catch (err) {
-        console.error('Error processing webhook:', err);
+        logger.error({
+            message: "Webhook processing failed",
+            eventId: event.id,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
         // 500エラーを返すとStripeは後でリトライします
         return NextResponse.json({
             status: "error",
-            message: (err instanceof Error) ? err.message : 'Unknown error'
+            message: 'Internal server error'
         }, { status: 500 });
     }
 }
 
 // チェックアウトセッション完了イベントの処理
 async function handleCheckoutSessionCompleted(event: Stripe.Event, tx: TransactionClient) {
+    const logger = createRequestLogger('stripe-webhook');
     const session = event.data.object as Stripe.Checkout.Session;
+
+    logger.info({
+        message: "Processing checkout session",
+        sessionId: session.id,
+        mode: session.mode
+    });
 
     // サブスクリプションが作成された場合
     if (session.mode === 'subscription' && session.subscription) {
@@ -162,6 +198,7 @@ async function upsertSubscription(
     customerId: string,
     tx: TransactionClient
 ) {
+    const logger = createRequestLogger(customerId);
     // StripeカスタマーIDからユーザーを検索 - 必ず存在するという前提
     const user = await tx.user.findUniqueOrThrow({
         where: { stripeCustomerId: customerId },
@@ -189,7 +226,12 @@ async function upsertSubscription(
         create: subscriptionData,
     });
 
-    console.log(`Subscription upserted for user: ${user.id}, subscription ID: ${result.id}`);
+    logger.info({
+        message: "Subscription upserted",
+        userId: user.id,
+        subscriptionId: result.id,
+        status: result.status
+    });
     return result;
 }
 

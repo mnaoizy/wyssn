@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import jwksClient from "jwks-rsa";
+import { createRequestLogger } from '@/lib/logger';
 import jwt, { JwtHeader } from "jsonwebtoken";
 import { db } from "@/lib/prisma-client";
 import { Stripe } from 'stripe';
@@ -58,9 +59,19 @@ const client = jwksClient({
 });
 
 export async function POST(req: Request) {
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip');
+    const logger = createRequestLogger(ip || 'unknown');
+
     try {
         // Get the token from the request
         const token = await req.text();
+
+        logger.info({
+            message: "Kinde webhook received",
+            eventType: "unknown", // will be updated after decoding
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
+            path: req.url
+        });
 
         // Decode the token with proper typing
         const decoded = jwt.decode(token, { complete: true }) as DecodedToken | null;
@@ -78,8 +89,12 @@ export async function POST(req: Request) {
         // Cast the verified token to our KindeEvent type
         const event = jwt.verify(token, signingKey) as unknown as KindeEvent;
 
-        console.log(`Event type: ${event.type}`);
-        console.log('Event data:', event.data);
+        logger.info({
+            message: "Kinde webhook event",
+            eventType: event.type,
+            userId: event.data.user?.id,
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown'
+        });
 
         // Handle various events with type safety
         switch (event.type) {
@@ -108,12 +123,21 @@ export async function POST(req: Request) {
 
     } catch (err) {
         if (err instanceof Error) {
-            console.error('Webhook error:', err.message);
-            return NextResponse.json({ message: err.message }, { status: 400 });
+            logger.error({
+                message: "Webhook processing failed",
+                error: err.message,
+                stack: err.stack,
+                ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown'
+            });
+            return NextResponse.json({ message: 'Webhook processing failed' }, { status: 400 });
         }
         // Handle unknown errors
-        console.error('Unknown webhook error:', err);
-        return NextResponse.json({ message: 'Unknown error occurred' }, { status: 500 });
+        logger.error({
+            message: "Unknown webhook error",
+            error: String(err),
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown'
+        });
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 
     return NextResponse.json({ status: 200, statusText: "success" });
@@ -121,7 +145,13 @@ export async function POST(req: Request) {
 
 // 個々のイベント処理を分離して管理しやすくする
 async function handleUserCreated(eventData: KindeEventData) {
-    console.log('User created:', eventData);
+    const logger = createRequestLogger(eventData.user?.id || 'unknown');
+    logger.info({
+        message: "Handling user creation",
+        userId: eventData.user?.id,
+        email: eventData.user?.email,
+        hasName: !!(eventData.user?.first_name || eventData.user?.last_name)
+    });
 
     try {
         // ユーザーデータはeventData.userに格納されている
@@ -155,9 +185,17 @@ async function handleUserCreated(eventData: KindeEventData) {
         });
 
 
-        console.log('User created in database:', user);
+        logger.info({
+            message: "User created successfully",
+            userId: user.id,
+            stripeCustomerId: user.stripeCustomerId
+        });
     } catch (error) {
-        console.error('Failed to create user in database:', error);
+        logger.error({
+            message: "Failed to create user",
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined
+        });
         throw error;
     }
 }
