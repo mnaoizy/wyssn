@@ -60,7 +60,7 @@ export function AddContext() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value
+    const newValue = e.target.value.slice(0, 10000) // Strictly enforce max length
     setNote(newValue)
     setContextValue(newValue)
   }
@@ -85,20 +85,28 @@ export function AddContext() {
       >
         <DialogTitle className="sr-only">{t('main.add_context')}</DialogTitle>
         <div className="w-full">
-          <form className="flex h-full flex-col" onSubmit={handleSubmit}>
-            <div className="relative h-[300px]">
-              {!note && (
-                <span
-                  aria-hidden="true"
-                  className="absolute top-3 left-4 text-sm text-zinc-500 select-none dark:text-zinc-400 z-10 pointer-events-none"
-                >
-                  {t('main.add_context')}
-                </span>
-              )}
-              <div className='h-[300px] overflow-y-scroll'>
+          <form className="flex h-full w-full  flex-col" onSubmit={handleSubmit}>
+            <div className="relative h-[300px] w-full">
+              <span
+                className={`absolute right-6 bottom-1 text-xs ${note.length > 9000 ? 'text-orange-500' : 'text-zinc-500'} dark:text-zinc-400`}
+              >
+                {note.length}/10000
+              </span>
+              <div className="absolute top-3 left-4 right-4 flex justify-between items-start z-10 pointer-events-none">
+                {!note && (
+                  <span
+                    aria-hidden="true"
+                    className="text-sm text-zinc-500 select-none dark:text-zinc-400"
+                  >
+                    {t('main.add_context')}
+                  </span>
+                )}
+
+              </div>
+              <div className='h-[300px] p-0 w-full overflow-y-scroll'>
                 <Textarea
                   ref={textareaRef}
-                  className="resize-none bg-transparent px-3 py-2 min-h-[300px] text-base outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
+                  className="resize-none bg-transparent px-3 py-2 w-full min-h-[300px] text-base outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
                   onChange={handleChange}
                   value={note}
                   placeholder=""
@@ -131,7 +139,7 @@ export function AddContext() {
               <Button
                 variant="outline"
                 size="sm"
-                disabled={!note.trim()}
+                disabled={!note.trim() || note.length > 10000}
                 onClick={handleClear}
                 aria-label="Clear note"
                 type="button"

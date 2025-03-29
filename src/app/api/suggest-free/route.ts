@@ -66,6 +66,14 @@ export async function POST(req: Request) {
 
         const body: ConversationRequest = validationResult.data;
 
+        // Validate context length
+        if (body.context && body.context.length > 10000) {
+            return NextResponse.json(
+                { error: 'Bad Request', details: 'Context too long (max 10000 characters)' },
+                { status: 400 }
+            );
+        }
+
         const number = 2;
         const translationLanguage = body.translationLanguage;
         const needsTranslation: boolean = !!(translationLanguage && translationLanguage !== '');
