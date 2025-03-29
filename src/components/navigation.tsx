@@ -34,7 +34,7 @@ function LogoContent({ locale }: { locale: string }) {
     )
 }
 
-function DesktopNavContent({ locale, t, isAuthenticated }: {
+function DesktopNavContent({ locale, t }: {
     locale: string;
     t: I18nClient;
     isAuthenticated: boolean
@@ -50,14 +50,14 @@ function DesktopNavContent({ locale, t, isAuthenticated }: {
                 >
                     {t('nav.changelog')}
                 </Link>
-                {!isAuthenticated && (
+                {/* {!isAuthenticated && (
                     <Link
                         href={`/${locale}/pricing`}
                         className="hover:text-neutral-500 transition-colors"
                     >
                         {t('nav.pricing')}
                     </Link>
-                )}
+                )} */}
             </div>
         </>
     )

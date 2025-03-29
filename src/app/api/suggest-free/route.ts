@@ -7,6 +7,7 @@ import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
 import { AISDKExporter } from 'langsmith/vercel';
 import { generateSubstantivePrompt } from '../suggest/lib/prompts';
+import { createRequestLogger } from '@/lib/logger';
 
 
 // Function-calling用に明示的に定義
@@ -19,11 +20,10 @@ export const maxDuration = 60;
 
 
 export async function POST(req: Request) {
+    // Get client IP from headers
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip');
+
     try {
-
-
-        // Get client IP from headers
-        const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip');
         if (!ip) {
             return NextResponse.json(
                 { error: 'Bad Request', details: 'Could not determine client IP' },
@@ -40,6 +40,12 @@ export async function POST(req: Request) {
         const { success } = await ratelimit.limit(`ip_${ip}`);
 
         if (!success) {
+            const logger = createRequestLogger(ip || 'unknown');
+            logger.warn({
+                message: "Rate limit exceeded for free tier",
+                ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
+                limit: 20
+            });
             return NextResponse.json(
                 { error: 'Rate limit exceeded', details: 'Daily limit reached. Create a free account for more access.' },
                 { status: 429 }
@@ -68,9 +74,6 @@ export async function POST(req: Request) {
         const recentInput = body.utteranceHistory.at(-1) || '';
         const olderContext = body.utteranceHistory.slice(0, -1).join(' ');
 
-        console.log('Recent input:', recentInput);
-        console.log('Older context:', olderContext || '[No older context available]');
-
         // ユーザーのロケールを取得して言語として使用
         // Next.js headers()からAccept-Languageを取得するか、リクエストのlocaleパラメータを使用
         const userLocale = body.locale || defaultLocale;
@@ -83,7 +86,19 @@ export async function POST(req: Request) {
             ? userLocale
             : defaultLocale;
 
-        console.log('Using user locale for language detection:', detectedLanguage);
+        const logger = createRequestLogger(ip || 'unknown');
+        logger.info({
+            message: "User input received",
+            inputSummary: {
+                recentInputLength: recentInput.length,
+                olderContextLength: olderContext.length,
+                detectedLanguage,
+                needsTranslation,
+                contextLength: context.length
+            },
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
+            path: req.url
+        });
 
         // 具体的な内容を含むサジェスト生成プロンプトを作成
         const prompt = generateSubstantivePrompt(
@@ -109,7 +124,14 @@ export async function POST(req: Request) {
 
         return response;
     } catch (error) {
-        console.error('Error processing request:', error);
+        const logger = createRequestLogger(ip || 'unknown');
+        logger.error({
+            message: "Error processing request",
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
+            path: req.url
+        });
         return new Response(JSON.stringify({ error: 'Failed to process request' }), {
             status: 500,
             headers: {

@@ -9,6 +9,7 @@ import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
 import { AISDKExporter } from 'langsmith/vercel';
 import { generateSubstantivePrompt } from './lib/prompts';
+import { createRequestLogger } from '@/lib/logger';
 
 
 // Function-calling用に明示的に定義
@@ -21,12 +22,18 @@ export const maxDuration = 60;
 
 
 export async function POST(req: Request) {
-    try {
-        const { getUser } = getKindeServerSession();
+    const { getUser } = getKindeServerSession();
+    // ユーザー認証
+    const user = await getUser();
+    const logger = createRequestLogger(user?.id || 'unknown');
 
-        // ユーザー認証
-        const user = await getUser();
+    try {
+
         if (!user) {
+            logger.warn({
+                message: "Unauthorized access attempt",
+                details: "User not found in Kinde session"
+            });
             return NextResponse.json(
                 { error: 'Unauthorized', details: 'User not found' },
                 { status: 401 }
@@ -46,6 +53,11 @@ export async function POST(req: Request) {
         });
 
         if (!dbUser) {
+            logger.warn({
+                message: "Unauthorized access attempt",
+                details: "User not found in database",
+                kindeId: user.id
+            });
             return NextResponse.json(
                 { error: 'Unauthorized', details: 'User not found in database' },
                 { status: 401 }
@@ -54,6 +66,11 @@ export async function POST(req: Request) {
 
         // Check if user is suspended
         if (dbUser.deletedAt) {
+            logger.warn({
+                message: "Suspended account access attempt",
+                userId: dbUser.id,
+                deletedAt: dbUser.deletedAt
+            });
             return NextResponse.json(
                 { error: 'Forbidden', details: 'Your account has been suspended' },
                 { status: 403 }
@@ -76,6 +93,12 @@ export async function POST(req: Request) {
         const { success } = await ratelimit.limit(`user_${dbUser.id}:${planType}`);
 
         if (!success) {
+            logger.warn({
+                message: "Rate limit exceeded",
+                userId: dbUser.id,
+                planType,
+                limit: rateLimits[planType]
+            });
             return NextResponse.json(
                 {
                     error: 'Rate limit exceeded',
@@ -90,6 +113,11 @@ export async function POST(req: Request) {
         const validationResult = conversationRequestSchema.safeParse(rawBody);
 
         if (!validationResult.success) {
+            logger.warn({
+                message: "Invalid request",
+                validationErrors: validationResult.error.format(),
+                userId: dbUser.id
+            });
             return NextResponse.json(
                 { error: 'Invalid request', details: validationResult.error.format() },
                 { status: 400 }
@@ -107,8 +135,13 @@ export async function POST(req: Request) {
         const recentInput = body.utteranceHistory.at(-1) || '';
         const olderContext = body.utteranceHistory.slice(0, -1).join(' ');
 
-        console.log('Recent input:', recentInput);
-        console.log('Older context:', olderContext || '[No older context available]');
+        logger.debug({
+            message: "User input details",
+            recentInputLength: recentInput.length,
+            olderContextLength: olderContext.length,
+            hasTranslation: needsTranslation,
+            userId: dbUser.id
+        });
 
         // ユーザーのロケールを取得して言語として使用
         // Next.js headers()からAccept-Languageを取得するか、リクエストのlocaleパラメータを使用
@@ -122,7 +155,20 @@ export async function POST(req: Request) {
             ? userLocale
             : defaultLocale;
 
-        console.log('Using user locale for language detection:', detectedLanguage);
+        logger.info({
+            message: "Processing user request",
+            userId: dbUser.id,
+            planType,
+            detectedLanguage,
+            needsTranslation,
+            contextLength: context.length,
+            input: {
+                recentInputLength: recentInput.length,
+                olderContextLength: olderContext.length,
+                translationLanguage,
+                number
+            }
+        });
 
         // 具体的な内容を含むサジェスト生成プロンプトを作成
         const prompt = generateSubstantivePrompt(
@@ -162,13 +208,23 @@ export async function POST(req: Request) {
                     }
                 });
             } catch (error) {
-                console.error('Error tracking API usage:', error);
+                logger.error({
+                    message: "Failed to track API usage",
+                    error: error instanceof Error ? error.message : String(error),
+                    userId: dbUser.id,
+                    stack: error instanceof Error ? error.stack : undefined
+                });
             }
         });
 
         return response;
     } catch (error) {
-        console.error('Error processing request:', error);
+        logger.error({
+            message: "Error processing request",
+            error: error instanceof Error ? error.message : String(error),
+            userId: user?.id || 'unknown',
+            stack: error instanceof Error ? error.stack : undefined
+        });
         return new Response(JSON.stringify({ error: 'Failed to process request' }), {
             status: 500,
             headers: {

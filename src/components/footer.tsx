@@ -52,12 +52,12 @@ export function Footer({ locale }: FooterProps) {
                         >
                             {t('nav.changelog')}
                         </Link>
-                        <Link
+                        {/* <Link
                             href={`/${locale}/pricing`}
                             className="hover:text-neutral-500 transition-colors"
                         >
                             {t('nav.pricing')}
-                        </Link>
+                        </Link> */}
                     </div>
 
                     <div className="text-xs sm:text-sm text-neutral-500 order-2 md:order-none mb-2 md:mb-0">

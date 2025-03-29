@@ -82,6 +82,7 @@ export default async function RootLayout({
       />
       <html lang={locale} className={`${sans.variable} ${serif.variable}`}>
         <body className="antialiased bg-white bg-[url('/bg.png')] bg-cover bg-center bg-no-repeat">
+          {/* <body className="antialiased bg-white"> */}
           <TopProgressBarProvider>
             <MobileNavigationProvider>{children}</MobileNavigationProvider>
             <Toaster />

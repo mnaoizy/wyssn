@@ -1,8 +1,8 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/prisma-client";
-import { PlansSection } from "@/components/subscription/plans-section";
-import { Suspense } from "react";
+// import { PlansSection } from "@/components/subscription/plans-section";
+// import { Suspense } from "react";
 import { getI18n } from "@/locale/server";
 import Link from "next/link";
 import { stripe } from "@/lib/stripe";
@@ -201,12 +201,12 @@ export default async function AccountPage({
                     </div>
                 </section>
 
-                <section>
+                {/* <section>
                     <h2 className="text-xl font-semibold mb-3">{t("account.subscription")}</h2>
                     <Suspense fallback={<div className="flex justify-center py-8">{t("account.loading")}</div>}>
                         <PlansSection userSubscription={userSubscription} subscriptionManagementUrl={portalSessionUrl} showHeading={false} />
                     </Suspense>
-                </section>
+                </section> */}
 
             </div>
         </div>

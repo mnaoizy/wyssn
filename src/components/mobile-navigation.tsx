@@ -148,7 +148,7 @@ export function MobileNavigationPanel() {
                 {t('nav.changelog')}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href={`/${locale}/pricing`}
                 className={`block py-2 px-4 rounded-md ${pathname === `/${locale}/pricing`
@@ -158,7 +158,7 @@ export function MobileNavigationPanel() {
               >
                 {t('nav.pricing')}
               </Link>
-            </li>
+            </li> */}
 
             {isAuthenticated ? (
               <>
