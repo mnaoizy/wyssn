@@ -30,11 +30,12 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
+        const LIMIT = 100;
 
-        // Rate limiting - 20 requests per day per IP
+        // Rate limiting - ${LIMIT} requests per day per IP
         const ratelimit = new Ratelimit({
             redis: Redis.fromEnv(),
-            limiter: Ratelimit.slidingWindow(20, '1 d'),
+            limiter: Ratelimit.slidingWindow(LIMIT, '1 d'),
         });
 
         const { success } = await ratelimit.limit(`ip_${ip}`);
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
             logger.warn({
                 message: "Rate limit exceeded for free tier",
                 ipPartial: ip ? `${ip.substring(0, 3)}...${ip.substring(ip.length - 3)}` : 'unknown',
-                limit: 20
+                limit: LIMIT
             });
             return NextResponse.json(
                 { error: 'Rate limit exceeded', details: 'Daily limit reached. Create a free account for more access.' },

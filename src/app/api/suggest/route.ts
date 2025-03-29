@@ -11,6 +11,7 @@ import { AISDKExporter } from 'langsmith/vercel';
 import { generateSubstantivePrompt } from './lib/prompts';
 import { createRequestLogger } from '@/lib/logger';
 
+const LIMIT = 500;
 
 // Function-calling用に明示的に定義
 const model = google("gemini-2.0-flash-lite-preview-02-05")
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
             sub => ['active', 'trialing'].includes(sub.status)
         );
         const planType = subscription ? 'pro' : 'free';
-        const rateLimits = { free: 100, pro: 500 };
+        const rateLimits = { free: LIMIT, pro: 500 };
 
         // Rate limiting based on plan type
         const ratelimit = new Ratelimit({

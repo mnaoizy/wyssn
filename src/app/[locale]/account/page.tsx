@@ -96,7 +96,7 @@ export default async function AccountPage({
         }
     }) : null;
     const planType = subscription ? 'pro' : 'free';
-    const rateLimits = { free: 100, pro: 500 };
+    const rateLimits = { free: 500, pro: 500 };
 
     // Use same rate limiting logic as API route
     const ratelimit = new Ratelimit({
