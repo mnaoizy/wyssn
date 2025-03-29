@@ -69,12 +69,11 @@ export function AddContext() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
           size="icon"
+          variant="outline"
           className="flex h-9 items-center rounded-md border border-zinc-950/10 bg-white px-3 text-zinc-950 dark:border-zinc-50/10 dark:bg-zinc-700 dark:text-zinc-50 cursor-pointer shadow-xs"
         >
           <PlusIcon className="size-4" />
-          {/* <span className="text-sm">{t('main.add_context')}</span> */}
         </Button>
       </DialogTrigger>
       <CustomDialogContent
@@ -96,25 +95,28 @@ export function AddContext() {
                   {t('main.add_context')}
                 </span>
               )}
-              <Textarea
-                ref={textareaRef}
-                className="h-full w-full resize-none bg-transparent px-3 py-2 text-base outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
-                onChange={handleChange}
-                value={note}
-                placeholder=""
-                autoFocus
-                style={{
-                  fontSize: '16px',
-                  overflowWrap: 'break-word',
-                  wordWrap: 'break-word',
-                  wordBreak: 'break-word',
-                  WebkitTextFillColor: 'currentcolor',
-                  WebkitFontSmoothing: 'antialiased',
-                  textRendering: 'optimizeLegibility',
-                  imeMode: 'active',
-                  caretColor: 'auto',
-                }}
-              />
+              <div className='h-[300px] overflow-y-scroll'>
+                <Textarea
+                  ref={textareaRef}
+                  className="resize-none bg-transparent px-3 py-2 min-h-[300px] text-base outline-hidden border-none focus-visible:ring-0 shadow-none break-words overflow-auto"
+                  onChange={handleChange}
+                  value={note}
+                  placeholder=""
+                  autoFocus
+                  style={{
+                    fontSize: '16px',
+                    overflowWrap: 'break-word',
+                    wordWrap: 'break-word',
+                    wordBreak: 'break-word',
+                    WebkitTextFillColor: 'currentcolor',
+                    WebkitFontSmoothing: 'antialiased',
+                    textRendering: 'optimizeLegibility',
+                    imeMode: 'active',
+                    caretColor: 'auto',
+                    scrollbarGutter: 'stable',
+                  }}
+                />
+              </div>
             </div>
             <div className="flex justify-end py-1 px-1 border-t gap-1 border-gray-200 dark:border-gray-600 bg-gray-50">
               <Button
