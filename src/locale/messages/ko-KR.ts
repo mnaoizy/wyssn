@@ -15,7 +15,7 @@ export default {
 
   // Hero section
   hero: {
-    title: 'WYSSN',
+    title: 'What You Should Say Next',
     description: '더 이상 말문이 막히지 않습니다.',
     email_placeholder: '이메일 주소',
     waitlist: '사전 신청하기',
