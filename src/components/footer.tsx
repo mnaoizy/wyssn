@@ -26,13 +26,13 @@ export function Footer({ locale }: FooterProps) {
                         >
                             {t('footer.privacy')}
                         </Link>
-                        <Link
+                        {/* <Link
                             href={`/${locale}/terms`}
                             className="hover:text-neutral-500 transition-colors"
                         >
                             {t('footer.terms')}
-                        </Link>
-
+                        </Link> */}
+                        {/* 
                         {locale === 'ja-JP' && (
                             <Link
                                 href={`/${locale}/commercial`}
@@ -40,7 +40,7 @@ export function Footer({ locale }: FooterProps) {
                             >
                                 特定商取引法に基づく表記
                             </Link>
-                        )}
+                        )} */}
                         <ContactDialog>
                             <span className="hover:text-neutral-500 transition-colors cursor-pointer">
                                 {t('footer.contact')}
