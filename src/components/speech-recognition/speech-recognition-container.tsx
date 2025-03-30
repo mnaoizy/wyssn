@@ -19,6 +19,7 @@ import { ControlPanel } from './control-panel'
 import toast from 'react-hot-toast'
 import { Locale } from '@/locale/config'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Image from 'next/image'
 // import Image from 'next/image'
 
 export interface SpeechRecognitionProps {
@@ -282,6 +283,20 @@ export const SpeechRecognitionContainer: React.FC<SpeechRecognitionProps> = ({
                   hasEverListened ? 'scale-80' : 'scale-100'
                 )}
               >
+                <a
+                  href="https://www.producthunt.com/posts/wyssn?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-wyssn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-1 sm:mb-2 lg:mb-3 block w-[150px] sm:w-[170px] lg:w-[180px]"
+                >
+                  <Image
+                    src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=947571&theme=light&t=1743307354563"
+                    alt="WYSSN - Never be at a loss for words | Product Hunt"
+                    width={180}
+                    height={39}
+                    className="h-auto w-full"
+                  />
+                </a>
                 <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-900 mb-2 sm:mb-3 lg:mb-4 leading-tight tracking-tight">
                   {heroTitle}
                 </h1>
